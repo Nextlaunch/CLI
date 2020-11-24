@@ -1,75 +1,82 @@
-use serde::ser::Serialize;
-use serde::de::Deserialize;
+use serde::Deserialize;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize, Clone)]
+pub struct LaunchResponse {
+    pub count: Option<isize>,
+    pub next: Option<String>,
+    pub previous: Option<String>,
+    pub results: Vec<Launch>,
+}
+
+#[derive(Deserialize, Clone)]
 pub struct Launch {
-    pub id: String,
-    pub url: String,
-    pub slug: String,
-    pub name: String,
+    pub id: Option<String>,
+    pub url: Option<String>,
+    pub slug: Option<String>,
+    pub name: Option<String>,
     pub status: Status,
-    pub net: String,
-    pub window_end: String,
-    pub window_start: String,
-    pub inhold: bool,
-    pub tbdtime: bool,
-    pub tbddate: bool,
-    pub probability: isize,
-    pub holdreason: String,
-    pub failreason: String,
-    pub hashtag: String,
-    pub rocket: Rocket,
-    pub mission: Mission,
-    pub pad: LaunchPad,
-    pub image_url: String,
-    pub infographic_url: String,
+    pub net: Option<String>,
+    pub window_end: Option<String>,
+    pub window_start: Option<String>,
+    pub inhold: Option<bool>,
+    pub tbdtime: Option<bool>,
+    pub tbddate: Option<bool>,
+    pub probability: Option<isize>,
+    pub holdreason: Option<String>,
+    pub failreason: Option<String>,
+    pub hashtag: Option<String>,
+    pub rocket: Option<Rocket>,
+    pub mission: Option<Mission>,
+    pub pad: Option<LaunchPad>,
+    pub image_url: Option<String>,
+    pub infographic_url: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Status {
-    pub id: isize,
-    pub name: String,
+    pub id: Option<isize>,
+    pub name: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Rocket {
-    pub id: isize,
-    pub configuration: RocketConfiguration,
+    pub id: Option<isize>,
+    pub configuration: Option<RocketConfiguration>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct RocketConfiguration {
-    pub id: isize,
-    pub url: String,
-    pub name: String,
-    pub launch_service_provider: String,
+    pub id: Option<isize>,
+    pub url: Option<String>,
+    pub name: Option<String>,
+    pub launch_service_provider: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Mission {
-    pub id: isize,
-    pub name: String,
-    pub description: String,
-    pub orbit: String,
-    pub orbit_abbrev: String,
+    pub id: Option<isize>,
+    pub name: Option<String>,
+    pub description: Option<String>,
+    pub orbit: Option<String>,
+    pub orbit_abbrev: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct LaunchPad {
-    pub id: isize,
-    pub agency_id: isize,
-    pub name: String,
-    pub info_url: String,
-    pub wiki_url: String,
-    pub map_url: String,
+    pub id: Option<isize>,
+    pub agency_id: Option<isize>,
+    pub name: Option<String>,
+    pub info_url: Option<String>,
+    pub wiki_url: Option<String>,
+    pub map_url: Option<String>,
     pub location: PadLocation,
-    pub latitude: String,
-    pub longitude: String,
+    pub latitude: Option<String>,
+    pub longitude: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct PadLocation {
-    pub id: isize,
-    pub name: String,
-    pub country_code: String,
+    pub id: Option<isize>,
+    pub name: Option<String>,
+    pub country_code: Option<String>,
 }
