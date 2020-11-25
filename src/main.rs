@@ -95,8 +95,8 @@ fn process_image(path: &str, launch: structure::Launch) {
     };
 
     let (naive_width, naive_height) = img.dimensions();
-    let desired_width: Option<u32> = Some(30);
-    let desired_height: Option<u32> = Some(10);
+    let desired_width: Option<u32> = Some(50);
+    let desired_height: Option<u32> = Some(14);
 
     let (width, height) = match (desired_width, desired_height) {
         (None, None) => (naive_width / 10, naive_height / 20),
