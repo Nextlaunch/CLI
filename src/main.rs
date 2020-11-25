@@ -27,6 +27,8 @@ fn main() {
         .build()
         .unwrap();
     loop {
+        let mut image_path: String = parse_path(previous_launch.clone());
+        counter += 1;
         if counter == 1 {
             let response = client.get("https://lldev.thespacedevs.com/2.1.0/launch/upcoming/?format=json").send();
             if response.is_ok() {
@@ -108,8 +110,6 @@ fn process_image(path: &str, launch: structure::Launch) {
 
     let display = Display::new(img, width, height);
 
-    let mut image_path: String = parse_path(previous_launch.clone());
-    counter += 1;
     let output = if cfg!(target_os = "windows") {
         print!("{}", String::from_utf8_lossy(&*Command::new("cls")
             .output()
