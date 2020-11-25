@@ -28,28 +28,36 @@ fn main() {
         .unwrap();
     loop {
         counter += 1;
-        let response = client.get("https://spacelaunchnow.me/api/3.3.0/launch/upcoming/?format=json").send();
-        if response.is_ok() {
-            let body = response.unwrap();
-            let json: structure::LaunchResponse = body.json().unwrap();
-            if json.results.is_some() {
-                let next = json.results.unwrap().first().unwrap().clone();
-                let mut meta = next.clone();
-                if meta.image_url.is_none() {
-                    meta.image_url = Some("https://spacelaunchnow-prod-east.nyc3.cdn.digitaloceanspaces.com/static/home/img/launcher.png".to_string());
-                }
+        if counter == 1 {
+            let response = client.get("https://spacelaunchnow.me/api/3.3.0/launch/upcoming/?format=json").send();
+            if response.is_ok() {
+                let body = response.unwrap();
+                let json: structure::LaunchResponse = body.json().unwrap();
+                if json.results.is_some() {
+                    let next = json.results.unwrap().first().unwrap().clone();
+                    let mut meta = next.clone();
+                    if meta.image_url.is_none() {
+                        meta.image_url = Some("https://spacelaunchnow-prod-east.nyc3.cdn.digitaloceanspaces.com/static/home/img/launcher.png".to_string());
+                    }
 
-                let image_fetch = client.get(meta.image_url.unwrap().as_str()).send().unwrap().bytes().unwrap();
-                if std::fs::File::open(temp_image).is_err() {
-                    let mut file = std::fs::File::create(temp_image).unwrap();
-                    file.write(image_fetch.as_ref()).unwrap();
+                    let image_fetch = client.get(meta.image_url.unwrap().as_str()).send().unwrap().bytes().unwrap();
+                    if std::fs::File::open(temp_image).is_err() {
+                        let mut file = std::fs::File::create(temp_image).unwrap();
+                        file.write(image_fetch.as_ref()).unwrap();
+                    } else {
+                        std::fs::remove_file(temp_image);
+                        let mut file = std::fs::File::create(temp_image).unwrap();
+                        file.write(image_fetch.as_ref()).unwrap();
+                    }
+                    previous_launch = Some(next.clone());
+                    process_image(temp_image, next);
                 } else {
-                    std::fs::remove_file(temp_image);
-                    let mut file = std::fs::File::create(temp_image).unwrap();
-                    file.write(image_fetch.as_ref()).unwrap();
+                    if previous_launch.is_some() {
+                        process_image(temp_image, previous_launch.clone().unwrap())
+                    } else {
+                        print!("\rUnable to connect to the internet")
+                    }
                 }
-                previous_launch = Some(next.clone());
-                process_image(temp_image, next);
             } else {
                 if previous_launch.is_some() {
                     process_image(temp_image, previous_launch.clone().unwrap())
@@ -57,14 +65,15 @@ fn main() {
                     print!("\rUnable to connect to the internet")
                 }
             }
-        } else {
+        } else if counter == 10 {
+            counter = 0;
             if previous_launch.is_some() {
                 process_image(temp_image, previous_launch.clone().unwrap())
             } else {
                 print!("\rUnable to connect to the internet")
             }
         }
-        std::thread::sleep(Duration::from_secs(10))
+        std::thread::sleep(Duration::from_secs(1))
     }
     std::fs::remove_file(temp_image);
 }
