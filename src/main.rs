@@ -65,15 +65,21 @@ fn main() {
                     print!("\rUnable to connect to the internet")
                 }
             }
-        } else if counter == 10 {
+        } else if counter == 60 {
             counter = 0;
             if previous_launch.is_some() {
                 process_image(temp_image, previous_launch.clone().unwrap())
             } else {
                 print!("\rUnable to connect to the internet")
             }
+        } else {
+            if previous_launch.is_some() {
+                process_image(temp_image, previous_launch.clone().unwrap())
+            } else {
+                print!("\rUnable to connect to the internet")
+            }
         }
-        std::thread::sleep(Duration::from_secs(1))
+        // std::thread::sleep(Duration::from_millis(250))
     }
     std::fs::remove_file(temp_image);
 }

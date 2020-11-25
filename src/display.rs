@@ -35,7 +35,23 @@ impl Display {
             } else if y == 2 {
                 let scheduled_naive = NaiveDateTime::parse_from_str(launch.net.clone().unwrap().as_str(), "%Y-%m-%dT%H:%M:%SZ").unwrap();
                 let scheduled = DateTime::<Utc>::from_utc(scheduled_naive, Utc).signed_duration_since(Utc::now());
-                target.push(format!("\tCountdown: T - {}H {}M {}S", scheduled.num_hours(), scheduled.num_minutes(), scheduled.num_seconds()))
+                let mut seconds = scheduled.num_seconds();
+                let mut minutes = -1;
+                let mut hours = 0;
+                let mut days = 0;
+                while seconds > 60 {
+                    if minutes == 59 {
+                        minutes = 0;
+                        hours += 1;
+                    }
+                    if hours == 23 {
+                        hours = 0;
+                        days += 1
+                    }
+                    minutes += 1;
+                    seconds -= 60;
+                }
+                target.push(format!("\tCountdown: T - {}D {}H {}M {}S", days, hours, minutes, seconds))
             }
             target.push('\n'.to_string());
         }
