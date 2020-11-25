@@ -2,6 +2,7 @@ extern crate image;
 
 use chrono::{DateTime, NaiveDateTime, Utc, Local};
 use self::image::imageops::resize;
+use proctitle::set_title;
 
 use crate::braille::ToBraille;
 
@@ -22,16 +23,30 @@ impl Display {
 
     pub fn render(&self, launch: crate::structure::Launch) -> String {
         let mut target = Vec::<String>::new();
-        let mission = launch.mission.unwrap();
+        let vehicle = launch.rocket.unwrap();
+        let v_config = vehicle.configuration.unwrap();
+        let pad = launch.pad.unwrap();
 
         for y in 0..self.char_height {
             for x in 0..self.char_width {
                 target.push(self.braillify_block(x, y).to_string());
             }
             if y == 0 {
-                target.push(format!("\tMission: {}", mission.name.clone().unwrap()))
+                if launch.mission.is_some() {
+                    target.push(format!("\tMission: {}", launch.mission.clone().unwrap().name.clone().unwrap()));
+                    set_title(format!("NextLaunch - {}", launch.mission.clone().unwrap().name.clone().unwrap()));
+                } else {
+                    let mut name = launch.name.clone().unwrap();
+                    let name_vec = name.split(" | ").collect::<Vec<&str>>();
+                    name = name_vec.last().unwrap().to_string();
+                    target.push(format!("\tMission: {}", name));
+                    set_title(format!("NextLaunch - {}", name));
+                }
             } else if y == 1 {
-                target.push(format!("\tStatus: {}", launch.status.name.clone().unwrap()))
+                if launch.status.name.clone().unwrap() == "TBD".to_string() {
+                    target.push("\x1b[33m".to_string());
+                }
+                target.push(format!("\tStatus: {}\x1b[0m", launch.status.name.clone().unwrap()))
             } else if y == 2 {
                 let scheduled_naive = NaiveDateTime::parse_from_str(launch.net.clone().unwrap().as_str(), "%Y-%m-%dT%H:%M:%SZ").unwrap();
                 let scheduled = DateTime::<Utc>::from_utc(scheduled_naive, Utc).signed_duration_since(Utc::now());
@@ -51,7 +66,70 @@ impl Display {
                     minutes += 1;
                     seconds -= 60;
                 }
-                target.push(format!("\tCountdown: T - {}D {}H {}M {}S", days, hours, minutes, seconds))
+                if launch.status.name.clone().unwrap() == "TBD".to_string() {
+                    target.push("\x1b[33m".to_string());
+                } else if launch.status.name.clone().unwrap() == "Go".to_string() {
+                    target.push("\x1b[32m".to_string());
+                }
+                target.push(format!("\tCountdown: T - {}D {}H {}M {}S\x1b[0m", days, hours, minutes, seconds))
+            } else if y == 4 {
+                target.push(format!("\tLaunch Vehicle: {}", v_config.name.clone().unwrap()))
+            } else if y == 5 {
+                target.push(format!("\tProvider: {}", v_config.launch_service_provider.clone().unwrap()))
+            } else if y == 7 {
+                let scheduled_naive = NaiveDateTime::parse_from_str(launch.window_start.clone().unwrap().as_str(), "%Y-%m-%dT%H:%M:%SZ").unwrap();
+                let scheduled = DateTime::<Utc>::from_utc(scheduled_naive, Utc).signed_duration_since(Utc::now());
+                let mut seconds = scheduled.num_seconds();
+                let mut minutes = -1;
+                let mut hours = 0;
+                let mut days = 0;
+                while seconds > 60 {
+                    if minutes == 59 {
+                        minutes = 0;
+                        hours += 1;
+                    }
+                    if hours == 23 {
+                        hours = 0;
+                        days += 1
+                    }
+                    minutes += 1;
+                    seconds -= 60;
+                }
+                if launch.status.name.clone().unwrap() == "TBD".to_string() {
+                    target.push("\x1b[33m".to_string());
+                } else if launch.status.name.clone().unwrap() == "Go".to_string() {
+                    target.push("\x1b[32m".to_string());
+                }
+                target.push(format!("\tWindow Open:  T - {}D {}H {}M {}S\x1b[0m", days, hours, minutes, seconds))
+            } else if y == 8 {
+                let scheduled_naive = NaiveDateTime::parse_from_str(launch.window_end.clone().unwrap().as_str(), "%Y-%m-%dT%H:%M:%SZ").unwrap();
+                let scheduled = DateTime::<Utc>::from_utc(scheduled_naive, Utc).signed_duration_since(Utc::now());
+                let mut seconds = scheduled.num_seconds();
+                let mut minutes = -1;
+                let mut hours = 0;
+                let mut days = 0;
+                while seconds > 60 {
+                    if minutes == 59 {
+                        minutes = 0;
+                        hours += 1;
+                    }
+                    if hours == 23 {
+                        hours = 0;
+                        days += 1
+                    }
+                    minutes += 1;
+                    seconds -= 60;
+                }
+                if launch.status.name.clone().unwrap() == "TBD".to_string() {
+                    target.push("\x1b[33m".to_string());
+                } else if launch.status.name.clone().unwrap() == "Go".to_string() {
+                    target.push("\x1b[32m".to_string());
+                }
+                target.push(format!("\tWindow Close: T - {}D {}H {}M {}S\x1b[0m", days, hours, minutes, seconds))
+            } else if y == 10 {
+                target.push(format!("\tLocation: {}", pad.name.clone().unwrap()))
+            } else if y == 11 {
+                target.push(format!("\tCountry: {}", pad.location.name.clone().unwrap()))
             }
             target.push('\n'.to_string());
         }

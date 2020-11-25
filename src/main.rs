@@ -8,6 +8,7 @@ use std::time::Duration;
 use std::io::{Write, Read};
 use bytes::Bytes;
 use crate::structure::Launch;
+use std::process::Command;
 
 mod structure;
 mod display;
@@ -28,6 +29,17 @@ fn main() {
         .unwrap();
     loop {
         counter += 1;
+        let output = if cfg!(target_os = "windows") {
+            print!("{}", String::from_utf8_lossy(&*Command::new("cls")
+                .output()
+                .expect("failed to execute process")
+                .stdout));
+        } else {
+            print!("{}", String::from_utf8_lossy(&*Command::new("clear")
+                .output()
+                .expect("failed to execute process")
+                .stdout));
+        };
         if counter == 1 {
             let response = client.get("https://spacelaunchnow.me/api/3.3.0/launch/upcoming/?format=json").send();
             if response.is_ok() {
@@ -65,7 +77,7 @@ fn main() {
                     print!("\rUnable to connect to the internet")
                 }
             }
-        } else if counter == 60 {
+        } else if counter == 10 {
             counter = 0;
             if previous_launch.is_some() {
                 process_image(temp_image, previous_launch.clone().unwrap())
@@ -79,7 +91,7 @@ fn main() {
                 print!("\rUnable to connect to the internet")
             }
         }
-        // std::thread::sleep(Duration::from_millis(250))
+        std::thread::sleep(Duration::from_millis(250));
     }
     std::fs::remove_file(temp_image);
 }
@@ -107,6 +119,6 @@ fn process_image(path: &str, launch: structure::Launch) {
 
     let display = Display::new(img, width, height);
 
-    print!("\x1B[2J\x1B[1;1H");
+    print!("\x1B[1;1H");
     print!("{}", display.render(launch));
 }
