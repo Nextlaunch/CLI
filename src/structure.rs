@@ -1,14 +1,14 @@
 use serde::Deserialize;
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct LaunchResponse {
     pub count: Option<isize>,
     pub next: Option<String>,
     pub previous: Option<String>,
-    pub results: Vec<Launch>,
+    pub results: Option<Vec<Launch>>,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Launch {
     pub id: Option<String>,
     pub url: Option<String>,
@@ -32,19 +32,19 @@ pub struct Launch {
     pub infographic_url: Option<String>,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Status {
     pub id: Option<isize>,
     pub name: Option<String>,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Rocket {
     pub id: Option<isize>,
     pub configuration: Option<RocketConfiguration>,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct RocketConfiguration {
     pub id: Option<isize>,
     pub url: Option<String>,
@@ -52,7 +52,7 @@ pub struct RocketConfiguration {
     pub launch_service_provider: Option<String>,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Mission {
     pub id: Option<isize>,
     pub name: Option<String>,
@@ -61,7 +61,7 @@ pub struct Mission {
     pub orbit_abbrev: Option<String>,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct LaunchPad {
     pub id: Option<isize>,
     pub agency_id: Option<isize>,
@@ -74,7 +74,7 @@ pub struct LaunchPad {
     pub longitude: Option<String>,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct PadLocation {
     pub id: Option<isize>,
     pub name: Option<String>,
