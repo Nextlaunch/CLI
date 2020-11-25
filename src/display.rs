@@ -25,6 +25,7 @@ impl Display {
         let mut target = Vec::<String>::new();
         let vehicle = launch.rocket.unwrap();
         let v_config = vehicle.configuration.unwrap();
+        let provider = launch.launch_service_provider.unwrap();
         let pad = launch.pad.unwrap();
 
         for y in 0..self.char_height {
@@ -75,7 +76,7 @@ impl Display {
             } else if y == 4 {
                 target.push(format!("\tLaunch Vehicle: {}", v_config.name.clone().unwrap()))
             } else if y == 5 {
-                target.push(format!("\tProvider: {}", v_config.launch_service_provider.clone().unwrap()))
+                target.push(format!("\tProvider: {}", provider.name.clone().unwrap()))
             } else if y == 7 {
                 let scheduled_naive = NaiveDateTime::parse_from_str(launch.window_start.clone().unwrap().as_str(), "%Y-%m-%dT%H:%M:%SZ").unwrap();
                 let scheduled = DateTime::<Utc>::from_utc(scheduled_naive, Utc).signed_duration_since(Utc::now());

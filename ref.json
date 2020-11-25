@@ -1,0 +1,80 @@
+{
+  "id": "107fb32b-7f28-4560-af33-2790bc4118e8",
+  "url": "https://lldev.thespacedevs.com/2.1.0/launch/107fb32b-7f28-4560-af33-2790bc4118e8/?format=json",
+  "launch_library_id": 1687,
+  "slug": "soyuz-21bfregat-m-gonets-m30-gonets-m31-gonets-m32",
+  "name": "Soyuz 2.1b/Fregat-M | Gonets-M30, Gonets-M31, Gonets-M32",
+  "status": {
+    "id": 2,
+    "name": "To Be Determined",
+    "abbrev": "TBD",
+    "description": ""
+  },
+  "net": "2020-11-25T00:00:00Z",
+  "window_end": "2020-11-25T00:00:00Z",
+  "window_start": "2020-11-25T00:00:00Z",
+  "inhold": false,
+  "tbdtime": true,
+  "tbddate": true,
+  "probability": -1,
+  "holdreason": "",
+  "failreason": "",
+  "hashtag": null,
+  "launch_service_provider": {
+    "id": 193,
+    "url": "https://lldev.thespacedevs.com/2.1.0/agencies/193/?format=json",
+    "name": "Russian Space Forces",
+    "type": "Government"
+  },
+  "rocket": {
+    "id": 2214,
+    "configuration": {
+      "id": 134,
+      "launch_library_id": 153,
+      "url": "https://lldev.thespacedevs.com/2.1.0/config/launcher/134/?format=json",
+      "name": "Soyuz 2.1B",
+      "family": "Soyuz",
+      "full_name": "Soyuz 2.1B Fregat-M",
+      "variant": "Fregat-M"
+    }
+  },
+  "mission": {
+    "id": 1205,
+    "launch_library_id": null,
+    "name": "Gonets-M30, Gonets-M31, Gonets-M32",
+    "description": "Gonets-M are an upgraded version of Gonets satellites, derived from military  communications system Strela-3. Gonets-M constellation is tasked with monitoring ecological and industrial objects, providing communication and data transmission services, covering also the remote areas like the Far North region.",
+    "launch_designator": null,
+    "type": "Communications",
+    "orbit": {
+      "id": 8,
+      "name": "Low Earth Orbit",
+      "abbrev": "LEO"
+    }
+  },
+  "pad": {
+    "id": 36,
+    "url": "https://lldev.thespacedevs.com/2.1.0/pad/36/?format=json",
+    "agency_id": 163,
+    "name": "43/3 (43L)",
+    "info_url": null,
+    "wiki_url": "",
+    "map_url": "http://maps.google.com/maps?f=q&amp;hl=en&amp;q=62.9273+N,+40.450+E&amp;ie=UTF8&amp;z=16&amp;ll=62.92755,40.450008&amp;spn=0.004365,0.021629&amp;t=h&amp;om=0&amp;iwloc=addr",
+    "latitude": "62.9273",
+    "longitude": "40.45",
+    "location": {
+      "id": 6,
+      "url": "https://lldev.thespacedevs.com/2.1.0/location/6/?format=json",
+      "name": "Plesetsk Cosmodrome, Russian Federation",
+      "country_code": "RUS",
+      "map_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launch_images/location_6_20200803142434.jpg",
+      "total_launch_count": 69,
+      "total_landing_count": 0
+    },
+    "map_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launch_images/pad_36_20200803143534.jpg",
+    "total_launch_count": 3
+  },
+  "webcast_live": false,
+  "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/soyuz25202.1b_image_20190520165337.jpg",
+  "infographic": null,
+  "program": []
+}
