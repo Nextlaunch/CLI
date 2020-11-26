@@ -15,8 +15,7 @@ keywords = [
     "cli",
     "terminal",
     "spacex",
-    "countdown",
-    "tui"
+    "countdown"
 ]
 license = "MIT"
 readme = "README.md"
