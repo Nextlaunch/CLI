@@ -112,11 +112,13 @@ fn main() {
                     content = format!("{}\t\tLocation: {}", content, pad.name.clone().unwrap())
                 } else if y == 11 {
                     content = format!("{}\t\tCountry: {}", content, pad.location.name.clone().unwrap())
-                } else if y == 19 {
+                } else if y == 18 {
                     let chrondur = Instant::now();
                     let elapsed = chrondur.duration_since(duration.clone());
                     let (_, _, minutes, seconds) = get_time(elapsed.as_secs() as i64);
-                    content = format!("{}\t\tTime since last refresh: {} Minutes, {} Seconds", content, minutes, seconds)
+                    content = format!("{}\t\tTime since last refresh: {} Minutes, {} Seconds.", content, minutes, seconds)
+                } else if y == 19 {
+                    content = format!("{}\t\tData automatically refreshes every 10 minutes", content);
                 }
                 content = format!("{}\n", content);
             }
@@ -234,7 +236,7 @@ fn countdown(timestamp: &str) -> (i32, i32, i32, i64) {
 }
 
 fn get_time(mut seconds: i64) -> (i32, i32, i32, i64) {
-    let mut minutes = -1;
+    let mut minutes = 0;
     let mut hours = 0;
     let mut days = 0;
     while seconds > 60 {
