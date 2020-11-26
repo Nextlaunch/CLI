@@ -118,3 +118,13 @@ pub struct Program {
     pub description: Option<String>,
     pub agencies: Option<Vec<LSP>>
 }
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct Article {
+    pub id: Option<String>,
+    pub title: Option<String>,
+    pub url: Option<String>,
+    pub imageUrl: Option<String>,
+    pub summary: Option<String>,
+    pub newsSite: Option<String>,
+}

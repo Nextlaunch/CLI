@@ -4,18 +4,16 @@ use display::Display;
 
 use reqwest::blocking::{ClientBuilder, Client};
 
-use bytes::Bytes;
-
 use clap::{App, Arg};
 
-use chrono::{DateTime, NaiveDateTime, Utc, Local};
+use chrono::{DateTime, NaiveDateTime, Utc};
 
 use std::time::{Duration, Instant};
-use std::io::{Write, Read};
-use std::process::{Command, exit};
+use std::io::Write;
+use std::process::Command;
 use std::process;
 
-use crate::structure::Launch;
+use crate::structure::{Launch, Article};
 
 mod structure;
 mod display;
@@ -26,7 +24,9 @@ fn main() {
     let m = App::new("My Program")
         .author("Thomas Bardsley, tom.b.2k2@gmail.com")
         .version("0.0.2")
-        .about("Watch a countdown until the next rocket launch, live in your terminal!!");
+        .about("Watch a countdown until the next rocket launch, live in your terminal!!")
+        .get_matches();
+
 
     let mut duration = Instant::now();
 
@@ -37,11 +37,11 @@ fn main() {
         .build()
         .unwrap();
 
-    let mut url: &str = "https://ll.thespacedevs.com/2.1.0/launch/upcoming/?format=json";
+    let mut articles: Vec<Article> = client.get("https://spaceflightnewsapi.net/api/v2/articles").send().unwrap().json().unwrap();
+
+    let mut url: &str = "https://lldev.thespacedevs.com/2.1.0/launch/upcoming/?format=json";
 
     let (img, mut previous_launch) = fetch_latest(&client, url);
-
-
 
     let mut lines: Vec<String> = process_image(img.as_str(), previous_launch.clone().unwrap());
 
@@ -55,6 +55,7 @@ fn main() {
             image_path = path;
             previous_launch = prev;
             duration = Instant::now();
+            articles = client.get("https://spaceflightnewsapi.net/api/v2/articles").send().unwrap().json().unwrap();
         }
 
         if previous_launch.is_some() {
@@ -66,67 +67,77 @@ fn main() {
             let pad = launch.pad.unwrap();
 
             for y in 0..lines.len() {
-                content = format!("{}{}", content, lines[y]);
-                if y == 0 {
-                    if launch.mission.is_some() {
-                        content = format!("{}\t\tMission: {}", content, launch.mission.clone().unwrap().name.clone().unwrap());
-                    } else {
-                        let mut name = launch.name.clone().unwrap();
-                        let name_vec = name.split(" | ").collect::<Vec<&str>>();
-                        name = name_vec.last().unwrap().to_string();
-                        content = format!("{}\t\tMission: {}", content, name);
+                content = format!("{}{}\x1b[0m", content, lines[y]);
+                match y {
+                    0 => {
+                        if launch.mission.is_some() {
+                            content = format!("{}\t\tMission: {}", content, launch.mission.clone().unwrap().name.clone().unwrap());
+                        } else {
+                            let mut name = launch.name.clone().unwrap();
+                            let name_vec = name.split(" | ").collect::<Vec<&str>>();
+                            name = name_vec.last().unwrap().to_string();
+                            content = format!("{}\t\tMission: {}", content, name);
+                        }
                     }
-                } else if y == 1 {
-                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() || launch.status.abbrev.clone().unwrap() == "TBC".to_string() {
-                        content = format!("{}\x1b[33m", content);
-                    } else if launch.status.abbrev.clone().unwrap() == "Go".to_string() {
-                        content = format!("{}\x1b[32m", content);
+                    1 => {
+                        content = color(launch.status.clone(), content.clone());
+
+                        content = format!("{}\t\tStatus: {}\x1b[0m", content, launch.status.name.clone().unwrap())
                     }
-                    content = format!("{}\t\tStatus: {}\x1b[0m", content, launch.status.name.clone().unwrap())
-                } else if y == 2 {
-                    let (days, hours, minutes, seconds) = countdown(launch.net.clone().unwrap().as_str(), false);
-                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() || launch.status.abbrev.clone().unwrap() == "TBC".to_string() {
-                        content = format!("{}\x1b[33m", content);
-                    } else if launch.status.abbrev.clone().unwrap() == "Go".to_string() {
-                        content = format!("{}\x1b[32m", content);
+                    2 => {
+                        let (days, hours, minutes, seconds) = countdown(launch.net.clone().unwrap().as_str(), false);
+
+                        content = color(launch.status.clone(), content.clone());
+
+                        content = format!("{}\t\tCountdown: T - {} Days, {} Hours, {} Minutes, {} Seconds    \x1b[0m", content, days, hours, minutes, seconds)
                     }
-                    content = format!("{}\t\tCountdown: T - {} Days, {} Hours, {} Minutes, {} Seconds\x1b[0m", content, days, hours, minutes, seconds)
-                } else if y == 4 {
-                    content = format!("{}\t\tLaunch Vehicle: {}", content, v_config.name.clone().unwrap())
-                } else if y == 5 {
-                    content = format!("{}\t\tProvider: {}", content, provider.name.clone().unwrap())
-                } else if y == 7 {
-                    let (days, hours, minutes, seconds) = countdown(launch.window_start.clone().unwrap().as_str(), false);
-                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() || launch.status.abbrev.clone().unwrap() == "TBC".to_string() {
-                        content = format!("{}\x1b[33m", content);
-                    } else if launch.status.abbrev.clone().unwrap() == "Go".to_string() {
-                        content = format!("{}\x1b[32m", content);
+                    4 => {
+                        content = format!("{}\t\tLaunch Vehicle: {}", content, v_config.name.clone().unwrap())
                     }
-                    content = format!("{}\t\tWindow Open: T - {} Days, {} Hours, {} Minutes, {} Seconds\x1b[0m", content, days, hours, minutes, seconds)
-                } else if y == 8 {
-                    let (days, hours, minutes, seconds) = countdown(launch.window_end.clone().unwrap().as_str(), false);
-                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() || launch.status.abbrev.clone().unwrap() == "TBC".to_string() {
-                        content = format!("{}\x1b[33m", content);
-                    } else if launch.status.abbrev.clone().unwrap() == "Go".to_string() {
-                        content = format!("{}\x1b[32m", content);
+                    5 => {
+                        content = format!("{}\t\tProvider: {}", content, provider.name.clone().unwrap())
                     }
-                    content = format!("{}\t\tWindow Close: T - {} Days, {} Hours, {} Minutes, {} Seconds\x1b[0m", content, days, hours, minutes, seconds)
-                } else if y == 10 {
-                    content = format!("{}\t\tLocation: {}", content, pad.name.clone().unwrap())
-                } else if y == 11 {
-                    content = format!("{}\t\tCountry: {}", content, pad.location.name.clone().unwrap())
-                } else if y == 18 {
-                    let chrondur = Instant::now();
-                    let elapsed = chrondur.duration_since(duration.clone());
-                    let (_, _, minutes, seconds) = get_time(elapsed.as_secs() as i64);
-                    content = format!("{}\t\tTime since last refresh: {} Minutes, {} Seconds.", content, minutes, seconds)
-                } else if y == 19 {
-                    content = format!("{}\t\tData automatically refreshes every 10 minutes", content);
+                    7 => {
+                        let (days, hours, minutes, seconds) = countdown(launch.window_start.clone().unwrap().as_str(), false);
+
+                        content = color(launch.status.clone(), content.clone());
+
+                        content = format!("{}\t\tWindow Open: T - {} Days, {} Hours, {} Minutes, {} Seconds    \x1b[0m", content, days, hours, minutes, seconds)
+                    }
+                    8 => {
+                        let (days, hours, minutes, seconds) = countdown(launch.window_end.clone().unwrap().as_str(), false);
+
+                        content = color(launch.status.clone(), content.clone());
+
+                        content = format!("{}\t\tWindow Close: T - {} Days, {} Hours, {} Minutes, {} Seconds    \x1b[0m", content, days, hours, minutes, seconds)
+                    }
+                    10 => {
+                        content = format!("{}\t\tLocation: {}", content, pad.name.clone().unwrap())
+                    }
+                    11 => {
+                        content = format!("{}\t\tCountry: {}", content, pad.location.name.clone().unwrap())
+                    }
+                    18 => {
+                        let chrondur = Instant::now();
+
+                        let elapsed = chrondur.duration_since(duration.clone());
+
+                        let (_, _, minutes, seconds) = get_time(elapsed.as_secs() as i64);
+
+                        content = format!("{}\t\tTime since last refresh: {} Minutes, {} Seconds.    ", content, minutes, seconds)
+                    }
+                    19 => {
+                        content = format!("{}\t\tData automatically refreshes every 10 minutes", content);
+                    }
+                    _ => {}
                 }
                 content = format!("{}\n", content);
             }
             print!("\x1B[1;1H");
             print!("{}", content);
+            let ac = articles.first().unwrap().clone();
+            println!("Source: {}\t Title: {}", ac.newsSite.unwrap(), ac.title.unwrap());
+            println!("url: \x1b[34m{}\x1b[0m", ac.url.unwrap());
             std::thread::sleep(Duration::from_millis(1000));
         } else {
             // print!("\rUnable to connect to the internet")
@@ -145,11 +156,12 @@ fn fetch_latest(client: &Client, url: &str) -> (String, Option<Launch>) {
             let mut results = json.results.unwrap();
             let mut launches = results.iter();
             let mut next = launches.next().unwrap().clone();
-            let (_, _, _, mut seconds) = countdown(next.net.clone().unwrap().as_str(), true);
-            while seconds < 0 {
+            let (_, _, mut minutes, mut seconds) = countdown(next.net.clone().unwrap().as_str(), false);
+            while minutes < -30 {
                 next = launches.next().unwrap().clone();
-                let (_, _, _, secs) = countdown(next.net.clone().unwrap().as_str(), true);
+                let (_, _, mins, secs) = countdown(next.net.clone().unwrap().as_str(), false);
                 seconds = secs;
+                minutes = mins;
             }
             let mut meta = next.clone();
 
@@ -199,7 +211,7 @@ fn process_image(path: &str, launch: structure::Launch) -> Vec<String> {
 
     let display = Display::new(img, width, height);
 
-    let output = if cfg!(target_os = "windows") {
+    if cfg!(target_os = "windows") {
         print!("{}", String::from_utf8_lossy(&*Command::new("cls")
             .output()
             .expect("failed to execute process")
@@ -267,6 +279,33 @@ fn get_remaining(mut seconds: i64, only_secs: bool) -> (i32, i32, i32, i64) {
             minutes += 1;
             seconds -= 60;
         };
+        while seconds < 0 {
+            if minutes == -59 {
+                minutes = 0;
+                hours -= 1;
+            }
+            if hours == -23 {
+                hours = 0;
+                days -= 1
+            }
+            minutes -= 1;
+            seconds += 60;
+        };
     }
     return (days, hours, minutes, seconds);
+}
+
+fn color(status: structure::Status, content: String) -> String {
+    let id = status.id.unwrap();
+    return match id {
+        1 => format!("{}\x1b[32m", content),
+        2 => format!("{}\x1b[33m", content),
+        3 => format!("{}\x1b[32m", content),
+        4 => format!("{}\x1b[31m\x1b[5m", content),
+        5 => format!("{}\x1b[33m\x1b[5m", content),
+        6 => format!("{}\x1b[34m\x1b[5m", content),
+        7 => format!("{}\x1b[35m\x1b[5m", content),
+        8 => format!("{}\x1b[33m", content),
+        _ => content
+    };
 }
