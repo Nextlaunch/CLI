@@ -1,15 +1,21 @@
 extern crate image;
 
-use std::process;
-use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
 use display::Display;
-use proctitle::set_title;
+
 use reqwest::blocking::{ClientBuilder, Client};
+
+use bytes::Bytes;
+
+use clap::{App, Arg};
+
+use chrono::{DateTime, NaiveDateTime, Utc, Local};
+
 use std::time::{Duration, Instant};
 use std::io::{Write, Read};
-use bytes::Bytes;
+use std::process::{Command, exit};
+use std::process;
+
 use crate::structure::Launch;
-use std::process::Command;
 
 mod structure;
 mod display;
@@ -17,6 +23,11 @@ mod braille;
 mod agencies;
 
 fn main() {
+    let m = App::new("My Program")
+        .author("Thomas Bardsley, tom.b.2k2@gmail.com")
+        .version("0.0.2")
+        .about("Watch a countdown until the next rocket launch, live in your terminal!!");
+
     let mut duration = Instant::now();
 
     let client = ClientBuilder::new()
@@ -27,7 +38,9 @@ fn main() {
         .unwrap();
 
 
-    let (_, mut previous_launch) = fetch_latest(&client, "https://lldev.thespacedevs.com/2.1.0/launch/upcoming/?format=json&status=1");
+    let (img, mut previous_launch) = fetch_latest(&client, "https://lldev.thespacedevs.com/2.1.0/launch/upcoming/?format=json&status=1");
+
+    let mut lines: Vec<String> = process_image(img.as_str(), previous_launch.clone().unwrap());
 
     loop {
         let (mut image_path, prv) = parse_path(previous_launch.clone());
@@ -42,7 +55,74 @@ fn main() {
         }
 
         if previous_launch.is_some() {
-            process_image(image_path.as_str(), previous_launch.clone().unwrap())
+            let mut content = String::new();
+            let launch = previous_launch.clone().unwrap();
+            let vehicle = launch.rocket.unwrap();
+            let v_config = vehicle.configuration.unwrap();
+            let provider = launch.launch_service_provider.unwrap();
+            let pad = launch.pad.unwrap();
+
+            for y in 0..lines.len() {
+                content = format!("{}{}", content, lines[y]);
+                if y == 0 {
+                    if launch.mission.is_some() {
+                        content = format!("{}\t\tMission: {}", content, launch.mission.clone().unwrap().name.clone().unwrap());
+                    } else {
+                        let mut name = launch.name.clone().unwrap();
+                        let name_vec = name.split(" | ").collect::<Vec<&str>>();
+                        name = name_vec.last().unwrap().to_string();
+                        content = format!("{}\t\tMission: {}", content, name);
+                    }
+                } else if y == 1 {
+                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() {
+                        content = format!("{}\x1b[33m", content);
+                    } else if launch.status.abbrev.clone().unwrap() == "Go".to_string() {
+                        content = format!("{}\x1b[32m", content);
+                    }
+                    content = format!("{}\t\tStatus: {}\x1b[0m", content, launch.status.name.clone().unwrap())
+                } else if y == 2 {
+                    let (days, hours, minutes, seconds) = countdown(launch.net.clone().unwrap().as_str());
+                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() {
+                        content = format!("{}\x1b[33m", content);
+                    } else if launch.status.abbrev.clone().unwrap() == "Go".to_string() {
+                        content = format!("{}\x1b[32m", content);
+                    }
+                    content = format!("{}\t\tCountdown: T - {} Days, {} Hours, {} Minutes, {} Seconds\x1b[0m", content, days, hours, minutes, seconds)
+                } else if y == 4 {
+                    content = format!("{}\t\tLaunch Vehicle: {}", content, v_config.name.clone().unwrap())
+                } else if y == 5 {
+                    content = format!("{}\t\tProvider: {}", content, provider.name.clone().unwrap())
+                } else if y == 7 {
+                    let (days, hours, minutes, seconds) = countdown(launch.window_start.clone().unwrap().as_str());
+                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() {
+                        content = format!("{}\x1b[33m", content);
+                    } else if launch.status.abbrev.clone().unwrap() == "Go".to_string() {
+                        content = format!("{}\x1b[32m", content);
+                    }
+                    content = format!("{}\t\tWindow Open: T - {} Days, {} Hours, {} Minutes, {} Seconds\x1b[0m", content, days, hours, minutes, seconds)
+                } else if y == 8 {
+                    let (days, hours, minutes, seconds) = countdown(launch.window_end.clone().unwrap().as_str());
+                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() {
+                        content = format!("{}\x1b[33m", content);
+                    } else if launch.status.abbrev.clone().unwrap() == "Go".to_string() {
+                        content = format!("{}\x1b[32m", content);
+                    }
+                    content = format!("{}\t\tWindow Close: T - {} Days, {} Hours, {} Minutes, {} Seconds\x1b[0m", content, days, hours, minutes, seconds)
+                } else if y == 10 {
+                    content = format!("{}\t\tLocation: {}", content, pad.name.clone().unwrap())
+                } else if y == 11 {
+                    content = format!("{}\t\tCountry: {}", content, pad.location.name.clone().unwrap())
+                } else if y == 19 {
+                    let chrondur = Instant::now();
+                    let elapsed = chrondur.duration_since(duration.clone());
+                    let (_, _, minutes, seconds) = get_time(elapsed.as_secs() as i64);
+                    content = format!("{}\t\tTime since last refresh: {} Minutes, {} Seconds", content, minutes, seconds)
+                }
+                content = format!("{}\n", content);
+            }
+            print!("\x1B[1;1H");
+            print!("{}", content);
+            std::thread::sleep(Duration::from_millis(1000));
         } else {
             // print!("\rUnable to connect to the internet")
         }
@@ -82,7 +162,7 @@ fn fetch_latest(client: &Client, url: &str) -> (String, Option<Launch>) {
     return (image_path, previous_launch);
 }
 
-fn process_image(path: &str, launch: structure::Launch) {
+fn process_image(path: &str, launch: structure::Launch) -> Vec<String> {
     let img = match image::open(path) {
         Ok(image) => image.to_luma(),
         Err(err) => {
@@ -118,8 +198,8 @@ fn process_image(path: &str, launch: structure::Launch) {
             .stdout));
     };
 
-    print!("\x1B[1;1H");
-    print!("{}", display.render(launch));
+    let lines = display.render();
+    return lines;
 }
 
 pub fn parse_path(previous: Option<Launch>) -> (String, Launch) {
@@ -146,4 +226,30 @@ pub fn parse_path(previous: Option<Launch>) -> (String, Launch) {
     }
     return (format!("{}{}.{}", tmp_dir, encoded, extension), x);
 }
+
+fn countdown(timestamp: &str) -> (i32, i32, i32, i64) {
+    let scheduled_naive = NaiveDateTime::parse_from_str(timestamp, "%Y-%m-%dT%H:%M:%SZ").unwrap();
+    let scheduled = DateTime::<Utc>::from_utc(scheduled_naive, Utc).signed_duration_since(Utc::now());
+    get_time(scheduled.num_seconds())
+}
+
+fn get_time(mut seconds: i64) -> (i32, i32, i32, i64) {
+    let mut minutes = -1;
+    let mut hours = 0;
+    let mut days = 0;
+    while seconds > 60 {
+        if minutes == 59 {
+            minutes = 0;
+            hours += 1;
+        }
+        if hours == 23 {
+            hours = 0;
+            days += 1
+        }
+        minutes += 1;
+        seconds -= 60;
+    };
+    return (days, hours, minutes, seconds);
+}
+
 
