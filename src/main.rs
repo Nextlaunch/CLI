@@ -37,8 +37,11 @@ fn main() {
         .build()
         .unwrap();
 
+    let mut url: &str = "https://ll.thespacedevs.com/2.1.0/launch/upcoming/?format=json";
 
-    let (img, mut previous_launch) = fetch_latest(&client, "https://lldev.thespacedevs.com/2.1.0/launch/upcoming/?format=json&status=1");
+    let (img, mut previous_launch) = fetch_latest(&client, url);
+
+
 
     let mut lines: Vec<String> = process_image(img.as_str(), previous_launch.clone().unwrap());
 
@@ -48,7 +51,7 @@ fn main() {
         previous_launch = Some(prv.clone());
 
         if (duration.elapsed().as_secs() as f32 / 60 as f32) > 5.0 {
-            let (path, prev) = fetch_latest(&client, "https://lldev.thespacedevs.com/2.1.0/launch/upcoming/?format=json&status=1");
+            let (path, prev) = fetch_latest(&client, url);
             image_path = path;
             previous_launch = prev;
             duration = Instant::now();
@@ -74,15 +77,15 @@ fn main() {
                         content = format!("{}\t\tMission: {}", content, name);
                     }
                 } else if y == 1 {
-                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() {
+                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() || launch.status.abbrev.clone().unwrap() == "TBC".to_string() {
                         content = format!("{}\x1b[33m", content);
                     } else if launch.status.abbrev.clone().unwrap() == "Go".to_string() {
                         content = format!("{}\x1b[32m", content);
                     }
                     content = format!("{}\t\tStatus: {}\x1b[0m", content, launch.status.name.clone().unwrap())
                 } else if y == 2 {
-                    let (days, hours, minutes, seconds) = countdown(launch.net.clone().unwrap().as_str());
-                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() {
+                    let (days, hours, minutes, seconds) = countdown(launch.net.clone().unwrap().as_str(), false);
+                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() || launch.status.abbrev.clone().unwrap() == "TBC".to_string() {
                         content = format!("{}\x1b[33m", content);
                     } else if launch.status.abbrev.clone().unwrap() == "Go".to_string() {
                         content = format!("{}\x1b[32m", content);
@@ -93,16 +96,16 @@ fn main() {
                 } else if y == 5 {
                     content = format!("{}\t\tProvider: {}", content, provider.name.clone().unwrap())
                 } else if y == 7 {
-                    let (days, hours, minutes, seconds) = countdown(launch.window_start.clone().unwrap().as_str());
-                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() {
+                    let (days, hours, minutes, seconds) = countdown(launch.window_start.clone().unwrap().as_str(), false);
+                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() || launch.status.abbrev.clone().unwrap() == "TBC".to_string() {
                         content = format!("{}\x1b[33m", content);
                     } else if launch.status.abbrev.clone().unwrap() == "Go".to_string() {
                         content = format!("{}\x1b[32m", content);
                     }
                     content = format!("{}\t\tWindow Open: T - {} Days, {} Hours, {} Minutes, {} Seconds\x1b[0m", content, days, hours, minutes, seconds)
                 } else if y == 8 {
-                    let (days, hours, minutes, seconds) = countdown(launch.window_end.clone().unwrap().as_str());
-                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() {
+                    let (days, hours, minutes, seconds) = countdown(launch.window_end.clone().unwrap().as_str(), false);
+                    if launch.status.abbrev.clone().unwrap() == "TBD".to_string() || launch.status.abbrev.clone().unwrap() == "TBC".to_string() {
                         content = format!("{}\x1b[33m", content);
                     } else if launch.status.abbrev.clone().unwrap() == "Go".to_string() {
                         content = format!("{}\x1b[32m", content);
@@ -139,7 +142,15 @@ fn fetch_latest(client: &Client, url: &str) -> (String, Option<Launch>) {
         let body = response.unwrap();
         let json: structure::LaunchResponse = body.json().unwrap();
         if json.results.is_some() {
-            let next = json.results.unwrap().first().unwrap().clone();
+            let mut results = json.results.unwrap();
+            let mut launches = results.iter();
+            let mut next = launches.next().unwrap().clone();
+            let (_, _, _, mut seconds) = countdown(next.net.clone().unwrap().as_str(), true);
+            while seconds < 0 {
+                next = launches.next().unwrap().clone();
+                let (_, _, _, secs) = countdown(next.net.clone().unwrap().as_str(), true);
+                seconds = secs;
+            }
             let mut meta = next.clone();
 
             let (impath, mta) = parse_path(Some(meta.clone()));
@@ -208,7 +219,7 @@ pub fn parse_path(previous: Option<Launch>) -> (String, Launch) {
     let tmp_dir_opt = std::env::temp_dir();
     let mut tmp_dir = tmp_dir_opt.to_str().unwrap().to_string();
 
-    let mut source: String = "https://www.iconspng.com/images/mono-unknown/mono-unknown.png".to_string();
+    let mut source = "https://web.extension.illinois.edu/stain/stains-hi/235.jpg".to_string();
 
     let encoded = String::from("logo-nextlaunch-dnf");
 
@@ -229,29 +240,33 @@ pub fn parse_path(previous: Option<Launch>) -> (String, Launch) {
     return (format!("{}{}.{}", tmp_dir, encoded, extension), x);
 }
 
-fn countdown(timestamp: &str) -> (i32, i32, i32, i64) {
+fn countdown(timestamp: &str, only_secs: bool) -> (i32, i32, i32, i64) {
     let scheduled_naive = NaiveDateTime::parse_from_str(timestamp, "%Y-%m-%dT%H:%M:%SZ").unwrap();
     let scheduled = DateTime::<Utc>::from_utc(scheduled_naive, Utc).signed_duration_since(Utc::now());
-    get_time(scheduled.num_seconds())
+    get_remaining(scheduled.num_seconds(), only_secs)
 }
 
 fn get_time(mut seconds: i64) -> (i32, i32, i32, i64) {
+    get_remaining(seconds, false)
+}
+
+fn get_remaining(mut seconds: i64, only_secs: bool) -> (i32, i32, i32, i64) {
     let mut minutes = 0;
     let mut hours = 0;
     let mut days = 0;
-    while seconds > 60 {
-        if minutes == 59 {
-            minutes = 0;
-            hours += 1;
-        }
-        if hours == 23 {
-            hours = 0;
-            days += 1
-        }
-        minutes += 1;
-        seconds -= 60;
-    };
+    if !only_secs {
+        while seconds > 60 {
+            if minutes == 59 {
+                minutes = 0;
+                hours += 1;
+            }
+            if hours == 23 {
+                hours = 0;
+                days += 1
+            }
+            minutes += 1;
+            seconds -= 60;
+        };
+    }
     return (days, hours, minutes, seconds);
 }
-
-
