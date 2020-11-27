@@ -10,7 +10,7 @@ use chrono::{DateTime, NaiveDateTime, Utc};
 
 use std::time::{Duration, Instant};
 use std::io::Write;
-use std::process::Command;
+use std::process::{Command, exit};
 use std::process;
 
 use crate::structure::{Launch, Article};
@@ -47,10 +47,15 @@ fn main() {
     } else {
         run()
     }
-
 }
 
 fn run() {
+    for x in 0..100 {
+        for y in 0..150 {
+            print!(" ");
+        }
+        print!("\n");
+    }
     let mut duration = Instant::now();
 
     let client = ClientBuilder::new()
@@ -60,7 +65,16 @@ fn run() {
         .build()
         .unwrap();
 
-    let mut articles: Vec<Article> = client.get("https://spaceflightnewsapi.net/api/v2/articles").send().unwrap().json().unwrap();
+    let mut news_request = client.get("https://spaceflightnewsapi.net/api/v2/articles").send();
+    let mut news_err: String = "".to_string();
+
+    let mut articles: Vec<Article> = Vec::new();
+
+    if news_request.is_ok() {
+        articles = news_request.unwrap().json().unwrap();
+    } else {
+        news_err = news_request.unwrap_err().to_string();
+    }
 
     let mut url: &str = "https://ll.thespacedevs.com/2.1.0/launch/upcoming/?format=json";
 
@@ -78,7 +92,12 @@ fn run() {
             image_path = path;
             previous_launch = prev;
             duration = Instant::now();
-            articles = client.get("https://spaceflightnewsapi.net/api/v2/articles").send().unwrap().json().unwrap();
+            news_request = client.get("https://spaceflightnewsapi.net/api/v2/articles").send();
+            if news_request.is_ok() {
+                articles = news_request.unwrap().json().unwrap();
+            } else {
+                news_err = news_request.unwrap_err().to_string();
+            }
         }
 
         if previous_launch.is_some() {
@@ -257,14 +276,29 @@ fn run() {
                 }
                 content = format!("{}\n", content);
             }
+            if !cfg!(target_os = "windows") {
+                print!("{}", String::from_utf8_lossy(&*Command::new("clear")
+                    .output()
+                    .expect("failed to execute process")
+                    .stdout));
+            }
+
             print!("\x1B[1;1H");
             print!("{}\n", content);
-            let ac = articles.first().unwrap().clone();
-            println!("Title:  {}\nSource: {}", ac.title.unwrap(), ac.newsSite.unwrap());
-            println!("Link:   \x1b[34m{}\x1b[0m", ac.url.unwrap());
+
+            if articles.len() > 0 {
+                let ac = articles.first().unwrap().clone();
+                println!("Title:  {}\nSource: {}", ac.title.unwrap(), ac.newsSite.unwrap());
+                if cfg!(target_os = "windows") {
+                    println!("Link:   \x1b[36m{}\x1b[0m", ac.url.unwrap());
+                } else {
+                    println!("Link:   \x1b[34m{}\x1b[0m", ac.url.unwrap());
+                }
+            } else {
+                println!("Notice: News articles appear to be unavailable at this time");
+                println!("Error: {}", news_err);
+            }
             std::thread::sleep(Duration::from_millis(1000));
-        } else {
-            // print!("\rUnable to connect to the internet")
         }
     }
 }
@@ -335,17 +369,19 @@ fn process_image(path: &str, launch: structure::Launch) -> Vec<String> {
 
     let display = Display::new(img, width, height);
 
-    if cfg!(target_os = "windows") {
-        print!("{}", String::from_utf8_lossy(&*Command::new("cls")
-            .output()
-            .expect("failed to execute process")
-            .stdout));
-    } else {
-        print!("{}", String::from_utf8_lossy(&*Command::new("clear")
-            .output()
-            .expect("failed to execute process")
-            .stdout));
-    };
+    // if cfg!(target_os = "windows") {
+    //     println!("WINDOWS");
+    //     print!("{}", String::from_utf8_lossy(&*Command::new("cls")
+    //         .output()
+    //         .expect("failed to execute process")
+    //         .stdout));
+    // } else {
+    //     println!("UNKNOWN");
+    //     print!("{}", String::from_utf8_lossy(&*Command::new("clear")
+    //         .output()
+    //         .expect("failed to execute process")
+    //         .stdout));
+    // };
 
     let lines = display.render();
     return lines;
@@ -369,6 +405,10 @@ pub fn parse_path(previous: Option<Launch>) -> (String, Launch) {
 
     let mut components: Vec<&str> = source.split(".").collect();
     let mut extension: String = components.last().unwrap().clone().to_string();
+
+    let tree = tmp_dir.split("\\").collect::<Vec<&str>>();
+
+    tmp_dir = tree.join("/");
 
     if tmp_dir.chars().last().unwrap() != '/' {
         tmp_dir = format!("{}/", tmp_dir);
