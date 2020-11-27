@@ -1,6 +1,6 @@
 [package]
 name = "nextlaunch"
-version = "0.2.0"
+version = "0.2.1"
 description = "Watch a countdown until the next rocket launch, live in your terminal!!"
 authors = ["fatalcenturion <tom.b.2k2@gmail.com>"]
 edition = "2018"
