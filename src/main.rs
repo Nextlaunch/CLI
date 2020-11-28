@@ -434,7 +434,7 @@ fn fetch_latest(client: &Client, url: &str) -> (String, Option<Launch>, Vec<Arti
             let mut launches = results.iter();
             let mut next = launches.next().unwrap().clone();
             let (mut days, mut hours, mut minutes, mut seconds) = countdown(next.net.clone().unwrap().as_str(), false);
-            while minutes < -30 && hours < -1 && days < -1 {
+            while minutes < -30 || hours < -1 || days < -1 {
                 next = launches.next().unwrap().clone();
                 let (ds, hs, mins, secs) = countdown(next.net.clone().unwrap().as_str(), false);
                 seconds = secs;
