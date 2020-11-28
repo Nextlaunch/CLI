@@ -72,7 +72,7 @@ fn run(flags: ArgMatches) {
     let minimal_mode = flags.is_present("minimal");
     let nasa_mode = flags.is_present("nasa");
 
-    let mut url: &str = "https://ll.thespacedevs.com/2.1.0/launch/upcoming/?format=json";
+    let mut url: &str = "https://lldev.thespacedevs.com/2.1.0/launch/upcoming/?format=json";
 
     let (img, mut previous_launch, mut articles, mut offline) = fetch_latest(&client, url);
 

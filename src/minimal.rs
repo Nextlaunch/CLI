@@ -308,18 +308,18 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
                             em2.push(" ##### ".to_string());
-                            em2.push(" #     ".to_string());
-                            em2.push(" #     ".to_string());
-                            em2.push(" ##### ".to_string());
-                            em2.push("     # ".to_string());
+                            em2.push(" #   # ".to_string());
+                            em2.push(" #   # ".to_string());
+                            em2.push(" #   # ".to_string());
+                            em2.push(" #   # ".to_string());
                             em2.push(" ##### ".to_string());
                             matrix.push(em2);
                         }
                         let mut elements = Vec::<String>::new();
                         elements.push(" ##### ".to_string());
-                        elements.push("     # ".to_string());
-                        elements.push("     # ".to_string());
-                        elements.push("   ### ".to_string());
+                        elements.push(" #     ".to_string());
+                        elements.push(" #     ".to_string());
+                        elements.push(" ##### ".to_string());
                         elements.push("     # ".to_string());
                         elements.push(" ##### ".to_string());
                         matrix.push(elements);
