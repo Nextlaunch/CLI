@@ -24,7 +24,7 @@ mod agencies;
 fn main() {
     let m = App::new("Next Launch")
         .author("Thomas Bardsley, tom.b.2k2@gmail.com")
-        .version("0.2.1")
+        .version("0.2.2")
         .about("Watch a countdown until the next rocket launch, live in your terminal!!")
         .arg(Arg::new("creds")
             .short('c')
@@ -72,7 +72,7 @@ fn run(flags: ArgMatches) {
     let minimal_mode = flags.is_present("minimal");
     let nasa_mode = flags.is_present("nasa");
 
-    let mut url: &str = "https://ll.thespacedevs.com/2.1.0/launch/upcoming/?format=json";
+    let mut url: &str = "https://lldev.thespacedevs.com/2.1.0/launch/upcoming/?format=json";
 
     let (img, mut previous_launch, mut articles, mut offline) = fetch_latest(&client, url);
 
@@ -126,7 +126,7 @@ fn run(flags: ArgMatches) {
                 if offline {
                     println!("Note: You are currently offline, this date will update once you have reconnected to the internet.")
                 }
-                std::thread::sleep(Duration::from_millis(1000));
+                std::thread::sleep(Duration::from_millis(500));
             } else {
                 if !minimal_mode {
                     let vehicle = launch.rocket.unwrap();
@@ -157,27 +157,33 @@ fn run(flags: ArgMatches) {
 
                                 content = color(launch.status.clone(), content.clone());
 
-                                content = format!("{}\t\tCountdown:      T -", content);
+                                content = format!("{}\t\tCountdown:      ", content);
 
-                                if days == 0 || days > 1 {
+                                if seconds < 0 {
+                                    content = format!("{}T +", content);
+                                } else {
+                                    content = format!("{}T -", content);
+                                }
+
+                                if days <= 0 || days > 1 {
                                     content = format!("{} {} days", content, days)
                                 } else {
                                     content = format!("{} {} day ", content, days)
                                 }
 
-                                if hours == 0 || hours > 1 {
+                                if hours <= 0 || hours > 1 {
                                     content = format!("{} {} hours", content, hours)
                                 } else {
                                     content = format!("{} {} hour ", content, hours)
                                 }
 
-                                if minutes == 0 || minutes > 1 {
+                                if minutes <= 0 || minutes > 1 {
                                     content = format!("{} {} minutes", content, minutes)
                                 } else {
                                     content = format!("{} {} minute ", content, minutes)
                                 }
 
-                                if seconds == 0 || seconds > 1 {
+                                if seconds <= 0 || seconds > 1 {
                                     content = format!("{} {} seconds   ", content, seconds)
                                 } else {
                                     content = format!("{} {} second    ", content, seconds)
@@ -197,25 +203,31 @@ fn run(flags: ArgMatches) {
 
                                 content = format!("{}\t\tWindow Open:    T -", content);
 
-                                if days == 0 || days > 1 {
+                                if seconds < 0 {
+                                    content = format!("{}T +", content);
+                                } else {
+                                    content = format!("{}T -", content);
+                                }
+
+                                if days <= 0 || days > 1 {
                                     content = format!("{} {} days", content, days)
                                 } else {
                                     content = format!("{} {} day ", content, days)
                                 }
 
-                                if hours == 0 || hours > 1 {
+                                if hours <= 0 || hours > 1 {
                                     content = format!("{} {} hours", content, hours)
                                 } else {
                                     content = format!("{} {} hour ", content, hours)
                                 }
 
-                                if minutes == 0 || minutes > 1 {
+                                if minutes <= 0 || minutes > 1 {
                                     content = format!("{} {} minutes", content, minutes)
                                 } else {
                                     content = format!("{} {} minute ", content, minutes)
                                 }
 
-                                if seconds == 0 || seconds > 1 {
+                                if seconds <= 0 || seconds > 1 {
                                     content = format!("{} {} seconds   ", content, seconds)
                                 } else {
                                     content = format!("{} {} second    ", content, seconds)
@@ -229,25 +241,31 @@ fn run(flags: ArgMatches) {
 
                                 content = format!("{}\t\tWindow Close:   T -", content);
 
-                                if days == 0 || days > 1 {
+                                if seconds < 0 {
+                                    content = format!("{}T +", content);
+                                } else {
+                                    content = format!("{}T -", content);
+                                }
+
+                                if days <= 0 || days > 1 {
                                     content = format!("{} {} days", content, days)
                                 } else {
                                     content = format!("{} {} day ", content, days)
                                 }
 
-                                if hours == 0 || hours > 1 {
+                                if hours <= 0 || hours > 1 {
                                     content = format!("{} {} hours", content, hours)
                                 } else {
                                     content = format!("{} {} hour ", content, hours)
                                 }
 
-                                if minutes == 0 || minutes > 1 {
+                                if minutes <= 0 || minutes > 1 {
                                     content = format!("{} {} minutes", content, minutes)
                                 } else {
                                     content = format!("{} {} minute ", content, minutes)
                                 }
 
-                                if seconds == 0 || seconds > 1 {
+                                if seconds <= 0 || seconds > 1 {
                                     content = format!("{} {} seconds   ", content, seconds)
                                 } else {
                                     content = format!("{} {} second    ", content, seconds)
@@ -283,13 +301,13 @@ fn run(flags: ArgMatches) {
                                 let (_, _, minutes, seconds) = get_time(elapsed.as_secs() as i64);
 
                                 content = format!("{}\t\tLast Refresh:  ", content);
-                                if minutes == 0 || minutes > 1 {
+                                if minutes <= 0 || minutes > 1 {
                                     content = format!("{} {} minutes", content, minutes)
                                 } else {
                                     content = format!("{} {} minute", content, minutes)
                                 }
 
-                                if seconds == 0 || seconds > 1 {
+                                if seconds <= 0 || seconds > 1 {
                                     content = format!("{} {} seconds   ", content, seconds)
                                 } else {
                                     content = format!("{} {} second    ", content, seconds)
@@ -345,7 +363,7 @@ fn run(flags: ArgMatches) {
                                 .stdout));
                         }
                         print!("{}\n", content);
-                        std::thread::sleep(Duration::from_millis(1000));
+                        std::thread::sleep(Duration::from_millis(500));
                     }
                 } else {
                     print!("\x1B[1;1H");
@@ -378,7 +396,7 @@ fn run(flags: ArgMatches) {
                     if offline {
                         println!("Note: You are currently offline, this date will update once you have reconnected to the internet.")
                     }
-                    std::thread::sleep(Duration::from_millis(1000));
+                    std::thread::sleep(Duration::from_millis(500));
                 }
             }
         }
@@ -412,12 +430,14 @@ fn fetch_latest(client: &Client, url: &str) -> (String, Option<Launch>, Vec<Arti
             let mut results = json.results.unwrap();
             let mut launches = results.iter();
             let mut next = launches.next().unwrap().clone();
-            let (_, _, mut minutes, mut seconds) = countdown(next.net.clone().unwrap().as_str(), false);
-            while minutes < -30 {
+            let (mut days, mut hours, mut minutes, mut seconds) = countdown(next.net.clone().unwrap().as_str(), false);
+            while minutes < -30 && hours < -1 && days < -1 {
                 next = launches.next().unwrap().clone();
-                let (_, _, mins, secs) = countdown(next.net.clone().unwrap().as_str(), false);
+                let (ds, hs, mins, secs) = countdown(next.net.clone().unwrap().as_str(), false);
                 seconds = secs;
                 minutes = mins;
+                hours = hs;
+                days = ds;
             }
             let mut meta = next.clone();
 
@@ -578,38 +598,72 @@ fn get_remaining(mut seconds: i64, only_secs: bool) -> (i32, i32, i32, i64) {
     let mut minutes = 0;
     let mut hours = 0;
     let mut days = 0;
+    let mut has_passed = false;
     if !only_secs {
         while seconds > 60 {
             if minutes == 59 {
                 minutes = 0;
-                hours += 1;
+                if hours == 23 {
+                    days += 1;
+                    hours = 0;
+                } else {
+                    hours += 1
+                }
+            } else {
+                minutes += 1
             }
-            if hours == 23 {
-                hours = 0;
-                days += 1
-            }
-            minutes += 1;
             seconds -= 60;
-        };
-        while seconds < 0 {
-            if minutes == -59 {
-                minutes = 0;
-                hours -= 1;
-            }
-            if hours == -23 {
-                hours = 0;
-                days -= 1
-            }
-            minutes -= 1;
-            seconds += 60;
         };
         if seconds == 60 {
             seconds = 0;
             if minutes > -1 {
-                minutes += 1
+                if minutes == 59 {
+                    minutes = 0;
+                    if hours == 23 {
+                        days += 1;
+                        hours = 0;
+                    } else {
+                        hours += 1
+                    }
+                } else {
+                    minutes += 1
+                }
             }
         }
-    }
+        while seconds < 0 {
+            has_passed = true;
+            // println!("{}, {}, {}, {}", days, hours, minutes, seconds);
+            if minutes == -59 {
+                minutes = 0;
+                if hours == -23 {
+                    days -= 1;
+                    hours = 0;
+                } else {
+                    hours -= 1
+                }
+            } else {
+                minutes -= 1
+            }
+            seconds += 60;
+        }
+        if has_passed {
+            seconds = seconds - 60;
+            if seconds == -60 {
+                seconds = 0;
+                if minutes == -59 {
+                    minutes = 0;
+                    if hours == -23 {
+                        days -= 1;
+                        hours = 0;
+                    } else {
+                        hours -= 1
+                    }
+                } else {
+                    minutes -= 1
+                }
+            }
+        }
+    };
     return (days, hours, minutes, seconds);
 }
 

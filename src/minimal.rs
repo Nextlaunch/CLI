@@ -415,6 +415,8 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
 
 pub fn render(days: Vec<Vec<String>>, hours: Vec<Vec<String>>, minutes: Vec<Vec<String>>, seconds: Vec<Vec<String>>, num_secs: i64, style: i8) {
     let mut sep_lines = Vec::<&str>::new();
+    let mut timespace = Vec::<&str>::new();
+    let mut is_t_plus = false;
     match style {
         0 => {
             sep_lines.push(" _ ");
@@ -423,6 +425,22 @@ pub fn render(days: Vec<Vec<String>>, hours: Vec<Vec<String>>, minutes: Vec<Vec<
             sep_lines.push(" _ ");
             sep_lines.push("(_)");
             sep_lines.push("   ");
+            if num_secs.is_negative() || is_t_plus {
+                is_t_plus = true;
+                timespace.push(" --+--           ");
+                timespace.push("   |        |    ");
+                timespace.push("   |        |    ");
+                timespace.push("   |     ---+--- ");
+                timespace.push("   |        |    ");
+                timespace.push("   |        |    ");
+            } else {
+                timespace.push(" --+--           ");
+                timespace.push("   |             ");
+                timespace.push("   |             ");
+                timespace.push("   |     ---+--- ");
+                timespace.push("   |             ");
+                timespace.push("   |             ");
+            }
         }
         1 => {
             sep_lines.push("   ");
@@ -432,6 +450,22 @@ pub fn render(days: Vec<Vec<String>>, hours: Vec<Vec<String>>, minutes: Vec<Vec<
             sep_lines.push("###");
             sep_lines.push("###");
             sep_lines.push("   ");
+            if num_secs.is_negative() || is_t_plus {
+                is_t_plus = true;
+                timespace.push(" #####           ");
+                timespace.push("   #        #    ");
+                timespace.push("   #        #    ");
+                timespace.push("   #     ####### ");
+                timespace.push("   #        #    ");
+                timespace.push("   #        #    ");
+            } else {
+                timespace.push(" #####           ");
+                timespace.push("   #             ");
+                timespace.push("   #             ");
+                timespace.push("   #     ####### ");
+                timespace.push("   #             ");
+                timespace.push("   #             ");
+            }
         }
         _ => {}
     }
@@ -491,9 +525,9 @@ pub fn render(days: Vec<Vec<String>>, hours: Vec<Vec<String>>, minutes: Vec<Vec<
 
     for y in 0..6 {
         if (num_secs % 2) == 0 {
-            println!("{}   {}   {}   {}   {}   {}   {}", day_lines[y], sep_lines[y], hour_lines[y], sep_lines[y], minute_lines[y], sep_lines[y], second_lines[y]);
+            println!("{}   {}   {}   {}   {}   {}   {}   {}", timespace[y], day_lines[y], sep_lines[y], hour_lines[y], sep_lines[y], minute_lines[y], sep_lines[y], second_lines[y]);
         } else {
-            println!("{}         {}         {}         {}", day_lines[y], hour_lines[y], minute_lines[y], second_lines[y]);
+            println!("{}   {}         {}         {}         {}", timespace[y], day_lines[y], hour_lines[y], minute_lines[y], second_lines[y]);
         }
     }
 }
