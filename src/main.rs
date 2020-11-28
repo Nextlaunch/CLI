@@ -72,7 +72,7 @@ fn run(flags: ArgMatches) {
     let minimal_mode = flags.is_present("minimal");
     let nasa_mode = flags.is_present("nasa");
 
-    let mut url: &str = "https://lldev.thespacedevs.com/2.1.0/launch/upcoming/?format=json";
+    let mut url: &str = "https://ll.thespacedevs.com/2.1.0/launch/upcoming/?format=json";
 
     let (img, mut previous_launch, mut articles, mut offline) = fetch_latest(&client, url);
 
@@ -166,28 +166,29 @@ fn run(flags: ArgMatches) {
                                 }
 
                                 if days <= 0 || days > 1 {
-                                    content = format!("{} {} days", content, days)
+                                    content = format!("{} {} days", content, days.abs())
                                 } else {
-                                    content = format!("{} {} day ", content, days)
+                                    content = format!("{} {} day ", content, days.abs())
                                 }
 
                                 if hours <= 0 || hours > 1 {
-                                    content = format!("{} {} hours", content, hours)
+                                    content = format!("{} {} hours", content, hours.abs())
                                 } else {
-                                    content = format!("{} {} hour ", content, hours)
+                                    content = format!("{} {} hour ", content, hours.abs())
                                 }
 
                                 if minutes <= 0 || minutes > 1 {
-                                    content = format!("{} {} minutes", content, minutes)
+                                    content = format!("{} {} minutes", content, minutes.abs())
                                 } else {
-                                    content = format!("{} {} minute ", content, minutes)
+                                    content = format!("{} {} minute ", content, minutes.abs())
                                 }
 
                                 if seconds <= 0 || seconds > 1 {
-                                    content = format!("{} {} seconds   ", content, seconds)
+                                    content = format!("{} {} seconds   ", content, seconds.abs())
                                 } else {
-                                    content = format!("{} {} second    ", content, seconds)
+                                    content = format!("{} {} second    ", content, seconds.abs())
                                 }
+
                                 content = format!("{}\x1b[0m", content);
                             }
                             4 => {
@@ -201,7 +202,7 @@ fn run(flags: ArgMatches) {
 
                                 content = color(launch.status.clone(), content.clone());
 
-                                content = format!("{}\t\tWindow Open:    T -", content);
+                                content = format!("{}\t\tWindow Open:    ", content);
 
                                 if seconds < 0 {
                                     content = format!("{}T +", content);
@@ -210,28 +211,29 @@ fn run(flags: ArgMatches) {
                                 }
 
                                 if days <= 0 || days > 1 {
-                                    content = format!("{} {} days", content, days)
+                                    content = format!("{} {} days", content, days.abs())
                                 } else {
-                                    content = format!("{} {} day ", content, days)
+                                    content = format!("{} {} day ", content, days.abs())
                                 }
 
                                 if hours <= 0 || hours > 1 {
-                                    content = format!("{} {} hours", content, hours)
+                                    content = format!("{} {} hours", content, hours.abs())
                                 } else {
-                                    content = format!("{} {} hour ", content, hours)
+                                    content = format!("{} {} hour ", content, hours.abs())
                                 }
 
                                 if minutes <= 0 || minutes > 1 {
-                                    content = format!("{} {} minutes", content, minutes)
+                                    content = format!("{} {} minutes", content, minutes.abs())
                                 } else {
-                                    content = format!("{} {} minute ", content, minutes)
+                                    content = format!("{} {} minute ", content, minutes.abs())
                                 }
 
                                 if seconds <= 0 || seconds > 1 {
-                                    content = format!("{} {} seconds   ", content, seconds)
+                                    content = format!("{} {} seconds   ", content, seconds.abs())
                                 } else {
-                                    content = format!("{} {} second    ", content, seconds)
+                                    content = format!("{} {} second    ", content, seconds.abs())
                                 }
+
                                 content = format!("{}\x1b[0m", content);
                             }
                             8 => {
@@ -239,7 +241,7 @@ fn run(flags: ArgMatches) {
 
                                 content = color(launch.status.clone(), content.clone());
 
-                                content = format!("{}\t\tWindow Close:   T -", content);
+                                content = format!("{}\t\tWindow Close:   ", content);
 
                                 if seconds < 0 {
                                     content = format!("{}T +", content);
@@ -248,28 +250,29 @@ fn run(flags: ArgMatches) {
                                 }
 
                                 if days <= 0 || days > 1 {
-                                    content = format!("{} {} days", content, days)
+                                    content = format!("{} {} days", content, days.abs())
                                 } else {
-                                    content = format!("{} {} day ", content, days)
+                                    content = format!("{} {} day ", content, days.abs())
                                 }
 
                                 if hours <= 0 || hours > 1 {
-                                    content = format!("{} {} hours", content, hours)
+                                    content = format!("{} {} hours", content, hours.abs())
                                 } else {
-                                    content = format!("{} {} hour ", content, hours)
+                                    content = format!("{} {} hour ", content, hours.abs())
                                 }
 
                                 if minutes <= 0 || minutes > 1 {
-                                    content = format!("{} {} minutes", content, minutes)
+                                    content = format!("{} {} minutes", content, minutes.abs())
                                 } else {
-                                    content = format!("{} {} minute ", content, minutes)
+                                    content = format!("{} {} minute ", content, minutes.abs())
                                 }
 
                                 if seconds <= 0 || seconds > 1 {
-                                    content = format!("{} {} seconds   ", content, seconds)
+                                    content = format!("{} {} seconds   ", content, seconds.abs())
                                 } else {
-                                    content = format!("{} {} second    ", content, seconds)
+                                    content = format!("{} {} second    ", content, seconds.abs())
                                 }
+
                                 content = format!("{}\x1b[0m", content);
                             }
                             10 => {
