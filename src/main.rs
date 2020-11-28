@@ -4,7 +4,7 @@ use display::Display;
 
 use reqwest::blocking::{ClientBuilder, Client};
 
-use clap::{App, Arg};
+use clap::{App, Arg, ArgMatches};
 
 use chrono::{DateTime, NaiveDateTime, Utc};
 
@@ -18,6 +18,7 @@ use crate::structure::{Launch, Article};
 mod structure;
 mod display;
 mod braille;
+mod minimal;
 mod agencies;
 
 fn main() {
@@ -30,26 +31,24 @@ fn main() {
             .long("credits")
             .about("Credits to all of the people who helped with this project")
             .takes_value(false))
-        // .arg(Arg::new("")
-        //     .short('c')
-        //     .long("credits")
-        //     .about("Credits to all of the people who helped with this project")
-        //     .takes_value(false))
-        // .arg(Arg::new("creds")
-        //     .short('c')
-        //     .long("credits")
-        //     .about("Credits to all of the people who helped with this project")
-        //     .takes_value(false))
+        .arg(Arg::new("retro")
+            .long("retro")
+            .about("adds a more retro feeling to the output of the program")
+            .takes_value(false))
+        .arg(Arg::new("minimal")
+            .long("minimal")
+            .about("Provides a minimalistic themed version of the program")
+            .takes_value(false))
         .get_matches();
 
     if m.is_present("creds") {
         println!("NextLaunch - Credits\n\nData Providers:\nNews:      Space Flight News API\nLaunches: The Space Devs\n")
     } else {
-        run()
+        run(m)
     }
 }
 
-fn run() {
+fn run(flags: ArgMatches) {
     for x in 0..100 {
         for y in 0..150 {
             print!(" ");
@@ -64,6 +63,9 @@ fn run() {
         .user_agent("NextLaunch Command Line Client")
         .build()
         .unwrap();
+
+    let mut retro_mode = flags.is_present("retro");
+    let mut minimal_mode = flags.is_present("minimal");
 
     let mut news_request = client.get("https://spaceflightnewsapi.net/api/v2/articles").send();
     let mut news_err: String = "".to_string();
@@ -103,202 +105,249 @@ fn run() {
         if previous_launch.is_some() {
             let mut content = String::new();
             let launch = previous_launch.clone().unwrap();
-            let vehicle = launch.rocket.unwrap();
-            let v_config = vehicle.configuration.unwrap();
-            let provider = launch.launch_service_provider.unwrap();
-            let pad = launch.pad.unwrap();
+            if !minimal_mode {
+                let vehicle = launch.rocket.unwrap();
+                let v_config = vehicle.configuration.unwrap();
+                let provider = launch.launch_service_provider.unwrap();
+                let pad = launch.pad.unwrap();
 
-            for y in 0..lines.len() {
-                content = format!("{}{}\x1b[0m", content, lines[y]);
-                match y {
-                    0 => {
-                        if launch.mission.is_some() {
-                            content = format!("{}\t\tMission:        {}", content, launch.mission.clone().unwrap().name.clone().unwrap());
-                        } else {
-                            let mut name = launch.name.clone().unwrap();
-                            let name_vec = name.split(" | ").collect::<Vec<&str>>();
-                            name = name_vec.last().unwrap().to_string();
-                            content = format!("{}\t\tMission:        {}", content, name);
+                for y in 0..lines.len() {
+                    content = format!("{}{}\x1b[0m", content, lines[y]);
+                    match y {
+                        0 => {
+                            if launch.mission.is_some() {
+                                content = format!("{}\t\tMission:        {}", content, launch.mission.clone().unwrap().name.clone().unwrap());
+                            } else {
+                                let mut name = launch.name.clone().unwrap();
+                                let name_vec = name.split(" | ").collect::<Vec<&str>>();
+                                name = name_vec.last().unwrap().to_string();
+                                content = format!("{}\t\tMission:        {}", content, name);
+                            }
                         }
+                        1 => {
+                            content = color(launch.status.clone(), content.clone());
+
+                            content = format!("{}\t\tStatus:         {}\x1b[0m", content, launch.status.name.clone().unwrap())
+                        }
+                        2 => {
+                            let (days, hours, minutes, seconds) = countdown(launch.net.clone().unwrap().as_str(), false);
+
+                            content = color(launch.status.clone(), content.clone());
+
+                            content = format!("{}\t\tCountdown:      T -", content);
+
+                            if days == 0 || days > 1 {
+                                content = format!("{} {} days", content, days)
+                            } else {
+                                content = format!("{} {} day ", content, days)
+                            }
+
+                            if hours == 0 || hours > 1 {
+                                content = format!("{} {} hours", content, hours)
+                            } else {
+                                content = format!("{} {} hour ", content, hours)
+                            }
+
+                            if minutes == 0 || minutes > 1 {
+                                content = format!("{} {} minutes", content, minutes)
+                            } else {
+                                content = format!("{} {} minute ", content, minutes)
+                            }
+
+                            if seconds == 0 || seconds > 1 {
+                                content = format!("{} {} seconds   ", content, seconds)
+                            } else {
+                                content = format!("{} {} second    ", content, seconds)
+                            }
+                            content = format!("{}\x1b[0m", content);
+                        }
+                        4 => {
+                            content = format!("{}\t\tLaunch Vehicle: {}", content, v_config.name.clone().unwrap())
+                        }
+                        5 => {
+                            content = format!("{}\t\tProvider:       {}", content, provider.name.clone().unwrap())
+                        }
+                        7 => {
+                            let (days, hours, minutes, seconds) = countdown(launch.window_start.clone().unwrap().as_str(), false);
+
+                            content = color(launch.status.clone(), content.clone());
+
+                            content = format!("{}\t\tWindow Open:    T -", content);
+
+                            if days == 0 || days > 1 {
+                                content = format!("{} {} days", content, days)
+                            } else {
+                                content = format!("{} {} day ", content, days)
+                            }
+
+                            if hours == 0 || hours > 1 {
+                                content = format!("{} {} hours", content, hours)
+                            } else {
+                                content = format!("{} {} hour ", content, hours)
+                            }
+
+                            if minutes == 0 || minutes > 1 {
+                                content = format!("{} {} minutes", content, minutes)
+                            } else {
+                                content = format!("{} {} minute ", content, minutes)
+                            }
+
+                            if seconds == 0 || seconds > 1 {
+                                content = format!("{} {} seconds   ", content, seconds)
+                            } else {
+                                content = format!("{} {} second    ", content, seconds)
+                            }
+                            content = format!("{}\x1b[0m", content);
+                        }
+                        8 => {
+                            let (days, hours, minutes, seconds) = countdown(launch.window_end.clone().unwrap().as_str(), false);
+
+                            content = color(launch.status.clone(), content.clone());
+
+                            content = format!("{}\t\tWindow Close:   T -", content);
+
+                            if days == 0 || days > 1 {
+                                content = format!("{} {} days", content, days)
+                            } else {
+                                content = format!("{} {} day ", content, days)
+                            }
+
+                            if hours == 0 || hours > 1 {
+                                content = format!("{} {} hours", content, hours)
+                            } else {
+                                content = format!("{} {} hour ", content, hours)
+                            }
+
+                            if minutes == 0 || minutes > 1 {
+                                content = format!("{} {} minutes", content, minutes)
+                            } else {
+                                content = format!("{} {} minute ", content, minutes)
+                            }
+
+                            if seconds == 0 || seconds > 1 {
+                                content = format!("{} {} seconds   ", content, seconds)
+                            } else {
+                                content = format!("{} {} second    ", content, seconds)
+                            }
+                            content = format!("{}\x1b[0m", content);
+                        }
+                        10 => {
+                            content = format!("{}\t\tLocation:       {}", content, pad.name.clone().unwrap())
+                        }
+                        11 => {
+                            content = format!("{}\t\tCountry:        {}", content, pad.location.name.clone().unwrap())
+                        }
+                        12 => {
+                            content = format!("{}\t\tLatitude:       {}", content, pad.latitude.clone().unwrap())
+                        }
+                        13 => {
+                            content = format!("{}\t\tLongitude:      {}", content, pad.longitude.clone().unwrap())
+                        }
+                        15 => {
+                            let programs = launch.program.clone().unwrap();
+                            let program = programs.first();
+                            if program.is_some() {
+                                content = format!("{}\t\tProgram:        {}", content, program.unwrap().clone().name.unwrap())
+                            } else {
+                                content = format!("{}\t\tProgram:        None", content);
+                            }
+                        }
+                        17 => {
+                            let chrondur = Instant::now();
+
+                            let elapsed = chrondur.duration_since(duration.clone());
+
+                            let (_, _, minutes, seconds) = get_time(elapsed.as_secs() as i64);
+
+                            content = format!("{}\t\tLast Refresh:  ", content);
+                            if minutes == 0 || minutes > 1 {
+                                content = format!("{} {} minutes", content, minutes)
+                            } else {
+                                content = format!("{} {} minute", content, minutes)
+                            }
+
+                            if seconds == 0 || seconds > 1 {
+                                content = format!("{} {} seconds   ", content, seconds)
+                            } else {
+                                content = format!("{} {} second    ", content, seconds)
+                            }
+                        }
+                        19 => {
+                            content = format!("{}\t\tData automatically refreshes every 10 minutes", content);
+                        }
+                        _ => {}
                     }
-                    1 => {
-                        content = color(launch.status.clone(), content.clone());
-
-                        content = format!("{}\t\tStatus:         {}\x1b[0m", content, launch.status.name.clone().unwrap())
-                    }
-                    2 => {
-                        let (days, hours, minutes, seconds) = countdown(launch.net.clone().unwrap().as_str(), false);
-
-                        content = color(launch.status.clone(), content.clone());
-
-                        content = format!("{}\t\tCountdown:      T -", content);
-
-                        if days == 0 || days > 1 {
-                            content = format!("{} {} days", content, days)
-                        } else {
-                            content = format!("{} {} day ", content, days)
-                        }
-
-                        if hours == 0 || hours > 1 {
-                            content = format!("{} {} hours", content, hours)
-                        } else {
-                            content = format!("{} {} hour ", content, hours)
-                        }
-
-                        if minutes == 0 || minutes > 1 {
-                            content = format!("{} {} minutes", content, minutes)
-                        } else {
-                            content = format!("{} {} minute ", content, minutes)
-                        }
-
-                        if seconds == 0 || seconds > 1 {
-                            content = format!("{} {} seconds   ", content, seconds)
-                        } else {
-                            content = format!("{} {} second    ", content, seconds)
-                        }
-                        content = format!("{}\x1b[0m", content);
-                    }
-                    4 => {
-                        content = format!("{}\t\tLaunch Vehicle: {}", content, v_config.name.clone().unwrap())
-                    }
-                    5 => {
-                        content = format!("{}\t\tProvider:       {}", content, provider.name.clone().unwrap())
-                    }
-                    7 => {
-                        let (days, hours, minutes, seconds) = countdown(launch.window_start.clone().unwrap().as_str(), false);
-
-                        content = color(launch.status.clone(), content.clone());
-
-                        content = format!("{}\t\tWindow Open:    T -", content);
-
-                        if days == 0 || days > 1 {
-                            content = format!("{} {} days", content, days)
-                        } else {
-                            content = format!("{} {} day ", content, days)
-                        }
-
-                        if hours == 0 || hours > 1 {
-                            content = format!("{} {} hours", content, hours)
-                        } else {
-                            content = format!("{} {} hour ", content, hours)
-                        }
-
-                        if minutes == 0 || minutes > 1 {
-                            content = format!("{} {} minutes", content, minutes)
-                        } else {
-                            content = format!("{} {} minute ", content, minutes)
-                        }
-
-                        if seconds == 0 || seconds > 1 {
-                            content = format!("{} {} seconds   ", content, seconds)
-                        } else {
-                            content = format!("{} {} second    ", content, seconds)
-                        }
-                        content = format!("{}\x1b[0m", content);
-                    }
-                    8 => {
-                        let (days, hours, minutes, seconds) = countdown(launch.window_end.clone().unwrap().as_str(), false);
-
-                        content = color(launch.status.clone(), content.clone());
-
-                        content = format!("{}\t\tWindow Close:   T -", content);
-
-                        if days == 0 || days > 1 {
-                            content = format!("{} {} days", content, days)
-                        } else {
-                            content = format!("{} {} day ", content, days)
-                        }
-
-                        if hours == 0 || hours > 1 {
-                            content = format!("{} {} hours", content, hours)
-                        } else {
-                            content = format!("{} {} hour ", content, hours)
-                        }
-
-                        if minutes == 0 || minutes > 1 {
-                            content = format!("{} {} minutes", content, minutes)
-                        } else {
-                            content = format!("{} {} minute ", content, minutes)
-                        }
-
-                        if seconds == 0 || seconds > 1 {
-                            content = format!("{} {} seconds   ", content, seconds)
-                        } else {
-                            content = format!("{} {} second    ", content, seconds)
-                        }
-                        content = format!("{}\x1b[0m", content);
-                    }
-                    10 => {
-                        content = format!("{}\t\tLocation:       {}", content, pad.name.clone().unwrap())
-                    }
-                    11 => {
-                        content = format!("{}\t\tCountry:        {}", content, pad.location.name.clone().unwrap())
-                    }
-                    12 => {
-                        content = format!("{}\t\tLatitude:       {}", content, pad.latitude.clone().unwrap())
-                    }
-                    13 => {
-                        content = format!("{}\t\tLongitude:      {}", content, pad.longitude.clone().unwrap())
-                    }
-                    15 => {
-                        let programs = launch.program.clone().unwrap();
-                        let program = programs.first();
-                        if program.is_some() {
-                            content = format!("{}\t\tProgram:        {}", content, program.unwrap().clone().name.unwrap())
-                        } else {
-                            content = format!("{}\t\tProgram:        None", content);
-                        }
-                    }
-                    17 => {
-                        let chrondur = Instant::now();
-
-                        let elapsed = chrondur.duration_since(duration.clone());
-
-                        let (_, _, minutes, seconds) = get_time(elapsed.as_secs() as i64);
-
-                        content = format!("{}\t\tLast Refresh:  ", content);
-                        if minutes == 0 || minutes > 1 {
-                            content = format!("{} {} minutes", content, minutes)
-                        } else {
-                            content = format!("{} {} minute", content, minutes)
-                        }
-
-                        if seconds == 0 || seconds > 1 {
-                            content = format!("{} {} seconds   ", content, seconds)
-                        } else {
-                            content = format!("{} {} second    ", content, seconds)
-                        }
-                    }
-                    19 => {
-                        content = format!("{}\t\tData automatically refreshes every 10 minutes", content);
-                    }
-                    _ => {}
+                    content = format!("{}\n", content);
                 }
-                content = format!("{}\n", content);
-            }
-            if !cfg!(target_os = "windows") {
-                print!("{}", String::from_utf8_lossy(&*Command::new("clear")
-                    .output()
-                    .expect("failed to execute process")
-                    .stdout));
-            }
 
-            print!("\x1B[1;1H");
-            print!("{}\n", content);
-
-            if articles.len() > 0 {
-                let ac = articles.first().unwrap().clone();
-                println!("Title:  {}\nSource: {}", ac.title.unwrap(), ac.newsSite.unwrap());
-                if cfg!(target_os = "windows") {
-                    println!("Link:   \x1b[36m{}\x1b[0m", ac.url.unwrap());
+                if articles.len() > 0 {
+                    let ac = articles.first().unwrap().clone();
+                    content = format!("{}Title:  {}\nSource: {}\n", content, ac.title.unwrap(), ac.newsSite.unwrap());
+                    if cfg!(target_os = "windows") {
+                        content = format!("{}Link:   \x1b[36m{}\x1b[0m\n", content, ac.url.unwrap());
+                    } else {
+                        content = format!("{}Link:   \x1b[34m{}\x1b[0m\n", content, ac.url.unwrap());
+                    }
                 } else {
-                    println!("Link:   \x1b[34m{}\x1b[0m", ac.url.unwrap());
+                    content = format!("{}Notice: News articles appear to be unavailable at this time\n", content);
+                }
+
+                if retro_mode {
+                    print!("\x1B[1;1H");
+                    let lines = content.split("\n").collect::<Vec<&str>>();
+                    let mut previous = "";
+                    let mut index = 0;
+                    for line in lines {
+                        print!(" {}", line);
+                        previous = line.clone();
+                        print!("\n");
+
+                        if index > 0 && index < 20 {
+                            print!("\x1b[1F{}\x1b[1E", previous)
+                        }
+                        index += 1;
+                        std::thread::sleep(Duration::from_millis(50));
+                    }
+                } else {
+                    print!("\x1B[1;1H");
+                    if !cfg!(target_os = "windows") {
+                        print!("{}", String::from_utf8_lossy(&*Command::new("clear")
+                            .output()
+                            .expect("failed to execute process")
+                            .stdout));
+                    }
+                    print!("{}\n", content);
+                    std::thread::sleep(Duration::from_millis(1000));
                 }
             } else {
-                println!("Notice: News articles appear to be unavailable at this time");
-                println!("Error: {}", news_err);
+                print!("\x1B[1;1H");
+                if !cfg!(target_os = "windows") {
+                    print!("{}", String::from_utf8_lossy(&*Command::new("clear")
+                        .output()
+                        .expect("failed to execute process")
+                        .stdout));
+                }
+                let (da, ho, mi, se) = countdown(launch.net.clone().unwrap().as_str(), false);
+                let days = crate::minimal::build_matrix(da as i64);
+                let hours = crate::minimal::build_matrix(ho as i64);
+                let mins = crate::minimal::build_matrix(mi as i64);
+                let secs = crate::minimal::build_matrix(se);
+
+                crate::minimal::render(days, hours, mins, secs);
+                let mut mission = "".to_string();
+                if launch.mission.is_some() {
+                    mission = format!("{}Mission:        {}", mission, launch.mission.clone().unwrap().name.clone().unwrap());
+                } else {
+                    let mut name = launch.name.clone().unwrap();
+                    let name_vec = name.split(" | ").collect::<Vec<&str>>();
+                    name = name_vec.last().unwrap().to_string();
+                    mission = format!("{}Mission:        {}", mission, name);
+                }
+                println!("{}{}\x1b[0m", color(launch.status.clone(), "".to_string()), mission);
+                println!("{}{}\x1b[0m", color(launch.status.clone(), "".to_string()), format!("Status:      {}", launch.status.clone().name.unwrap()));
+                println!("{}{}\x1b[0m", color(launch.status.clone(), "".to_string()), format!("Lauch Vehicle: {}", launch.rocket.clone().unwrap().configuration.unwrap().name.unwrap()));
+                std::thread::sleep(Duration::from_millis(1000));
             }
-            std::thread::sleep(Duration::from_millis(1000));
         }
     }
 }
