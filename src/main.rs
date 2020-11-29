@@ -33,15 +33,15 @@ fn main() {
             .takes_value(false))
         .arg(Arg::new("retro")
             .long("retro")
-            .about("adds a more retro feeling to the output of the program")
+            .long_about("Adds a more retro feeling to the output of the program.\n\x1b[43m\x1b[30mNOTE:\x1b[0m this mode is more resource intense than the main viewing mode due to rendering constraints")
             .takes_value(false))
         .arg(Arg::new("minimal")
             .long("minimal")
-            .about("Provides a minimalistic themed version of the program")
+            .long_about("Provides a minimalistic themed version of the program.\n\x1b[43m\x1b[30mNOTE:\x1b[0m this mode is more resource intense than the main viewing mode due to rendering constraints")
             .takes_value(false))
         .arg(Arg::new("nasa")
             .long("nasa")
-            .about("Provides a NASA countdown clock style output")
+            .long_about("Provides a NASA countdown clock style output.\n\x1b[43m\x1b[30mNOTE:\x1b[0m this mode is more resource intense than the main viewing mode due to rendering constraintsg")
             .takes_value(false))
         .get_matches();
 
