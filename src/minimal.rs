@@ -218,6 +218,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                         elements.push(" #   # ".to_string());
                         elements.push(" #   # ".to_string());
                         elements.push(" #   # ".to_string());
+                        elements.push(" #   # ".to_string());
                         elements.push(" ##### ".to_string());
                         matrix.push(elements.clone());
                         if num_str.len() < 2 {
@@ -227,6 +228,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                     '1' => {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
+                            em2.push(" ##### ".to_string());
                             em2.push(" ##### ".to_string());
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
@@ -241,6 +243,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                         elements.push("   #   ".to_string());
                         elements.push("   #   ".to_string());
                         elements.push("   #   ".to_string());
+                        elements.push("   #   ".to_string());
                         elements.push(" ##### ".to_string());
                         matrix.push(elements);
                     }
@@ -248,6 +251,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
                             em2.push(" ##### ".to_string());
+                            em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
@@ -261,6 +265,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                         elements.push("     # ".to_string());
                         elements.push(" ##### ".to_string());
                         elements.push(" #     ".to_string());
+                        elements.push(" #     ".to_string());
                         elements.push(" ##### ".to_string());
                         matrix.push(elements);
                     }
@@ -268,6 +273,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
                             em2.push(" ##### ".to_string());
+                            em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
@@ -281,6 +287,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                         elements.push("     # ".to_string());
                         elements.push("   ### ".to_string());
                         elements.push("     # ".to_string());
+                        elements.push("     # ".to_string());
                         elements.push(" ##### ".to_string());
                         matrix.push(elements);
                     }
@@ -288,6 +295,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
                             em2.push(" ##### ".to_string());
+                            em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
@@ -300,6 +308,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                         elements.push(" #   # ".to_string());
                         elements.push(" #   # ".to_string());
                         elements.push(" ##### ".to_string());
+                        elements.push("     # ".to_string());
                         elements.push("     # ".to_string());
                         elements.push("     # ".to_string());
                         matrix.push(elements);
@@ -312,6 +321,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
+                            em2.push(" #   # ".to_string());
                             em2.push(" ##### ".to_string());
                             matrix.push(em2);
                         }
@@ -320,6 +330,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                         elements.push(" #     ".to_string());
                         elements.push(" #     ".to_string());
                         elements.push(" ##### ".to_string());
+                        elements.push("     # ".to_string());
                         elements.push("     # ".to_string());
                         elements.push(" ##### ".to_string());
                         matrix.push(elements);
@@ -332,11 +343,13 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
+                            em2.push(" #   # ".to_string());
                             em2.push(" ##### ".to_string());
                             matrix.push(em2);
                         }
                         let mut elements = Vec::<String>::new();
                         elements.push(" ##### ".to_string());
+                        elements.push(" #     ".to_string());
                         elements.push(" #     ".to_string());
                         elements.push(" ##### ".to_string());
                         elements.push(" #   # ".to_string());
@@ -352,11 +365,13 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
+                            em2.push(" #   # ".to_string());
                             em2.push(" ##### ".to_string());
                             matrix.push(em2);
                         }
                         let mut elements = Vec::<String>::new();
                         elements.push(" ##### ".to_string());
+                        elements.push("     # ".to_string());
                         elements.push("     # ".to_string());
                         elements.push("     # ".to_string());
                         elements.push("     # ".to_string());
@@ -372,6 +387,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
+                            em2.push(" #   # ".to_string());
                             em2.push(" ##### ".to_string());
                             matrix.push(em2);
                         }
@@ -380,6 +396,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                         elements.push(" #   # ".to_string());
                         elements.push(" #   # ".to_string());
                         elements.push(" ##### ".to_string());
+                        elements.push(" #   # ".to_string());
                         elements.push(" #   # ".to_string());
                         elements.push(" ##### ".to_string());
                         matrix.push(elements);
@@ -392,6 +409,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
                             em2.push(" #   # ".to_string());
+                            em2.push(" #   # ".to_string());
                             em2.push(" ##### ".to_string());
                             matrix.push(em2);
                         }
@@ -400,6 +418,7 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                         elements.push(" #   # ".to_string());
                         elements.push(" #   # ".to_string());
                         elements.push(" ##### ".to_string());
+                        elements.push("     # ".to_string());
                         elements.push("     # ".to_string());
                         elements.push("     # ".to_string());
                         matrix.push(elements);
@@ -452,19 +471,21 @@ pub fn render(days: Vec<Vec<String>>, hours: Vec<Vec<String>>, minutes: Vec<Vec<
             sep_lines.push("   ");
             if num_secs.is_negative() || is_t_plus {
                 is_t_plus = true;
-                timespace.push(" #####           ");
-                timespace.push("   #        #    ");
-                timespace.push("   #        #    ");
-                timespace.push("   #     ####### ");
-                timespace.push("   #        #    ");
-                timespace.push("   #        #    ");
+                timespace.push(" #####         ");
+                timespace.push("   #           ");
+                timespace.push("   #      #    ");
+                timespace.push("   #    #####  ");
+                timespace.push("   #      #    ");
+                timespace.push("   #           ");
+                timespace.push("   #           ");
             } else {
-                timespace.push(" #####           ");
-                timespace.push("   #             ");
-                timespace.push("   #             ");
-                timespace.push("   #     ####### ");
-                timespace.push("   #             ");
-                timespace.push("   #             ");
+                timespace.push(" #####         ");
+                timespace.push("   #           ");
+                timespace.push("   #           ");
+                timespace.push("   #     ###   ");
+                timespace.push("   #           ");
+                timespace.push("   #           ");
+                timespace.push("   #           ");
             }
         }
         _ => {}
@@ -478,11 +499,11 @@ pub fn render(days: Vec<Vec<String>>, hours: Vec<Vec<String>>, minutes: Vec<Vec<
     let d_first = days.first().unwrap();
     if days.len() > 1 {
         let d_last = days.last().unwrap();
-        for y in 0..6 {
+        for y in 0..d_first.len() {
             day_lines.push(format!("{}  {}", d_first[y], d_last[y]));
         }
     } else {
-        for y in 0..6 {
+        for y in 0..d_first.len() {
             day_lines.push(d_first[y].clone());
         }
     }
@@ -490,11 +511,11 @@ pub fn render(days: Vec<Vec<String>>, hours: Vec<Vec<String>>, minutes: Vec<Vec<
     let h_first = hours.first().unwrap();
     if hours.len() > 1 {
         let h_last = hours.last().unwrap();
-        for y in 0..6 {
+        for y in 0..h_first.len() {
             hour_lines.push(format!("{}  {}", h_first[y], h_last[y]));
         }
     } else {
-        for y in 0..6 {
+        for y in 0..h_first.len() {
             hour_lines.push(h_first[y].clone());
         }
     }
@@ -502,11 +523,11 @@ pub fn render(days: Vec<Vec<String>>, hours: Vec<Vec<String>>, minutes: Vec<Vec<
     let m_first = minutes.first().unwrap();
     if minutes.len() > 1 {
         let m_last = minutes.last().unwrap();
-        for y in 0..6 {
+        for y in 0..m_first.len() {
             minute_lines.push(format!("{}  {}", m_first[y], m_last[y]));
         }
     } else {
-        for y in 0..6 {
+        for y in 0..m_first.len() {
             minute_lines.push(m_first[y].clone());
         }
     }
@@ -514,20 +535,20 @@ pub fn render(days: Vec<Vec<String>>, hours: Vec<Vec<String>>, minutes: Vec<Vec<
     let s_first = seconds.first().unwrap();
     if seconds.len() > 1 {
         let s_last = seconds.last().unwrap();
-        for y in 0..6 {
+        for y in 0..s_first.len() {
             second_lines.push(format!("{}  {}", s_first[y], s_last[y]));
         }
     } else {
-        for y in 0..6 {
+        for y in 0..s_first.len() {
             second_lines.push(s_first[y].clone());
         }
     }
 
-    for y in 0..6 {
+    for y in 0..timespace.len() {
         if (num_secs % 2) == 0 {
-            println!("{}   {}   {}   {}   {}   {}   {}   {}", timespace[y], day_lines[y], sep_lines[y], hour_lines[y], sep_lines[y], minute_lines[y], sep_lines[y], second_lines[y]);
+            println!("{}{}   {}   {}   {}   {}   {}   {}", timespace[y], day_lines[y], sep_lines[y], hour_lines[y], sep_lines[y], minute_lines[y], sep_lines[y], second_lines[y]);
         } else {
-            println!("{}   {}         {}         {}         {}", timespace[y], day_lines[y], hour_lines[y], minute_lines[y], second_lines[y]);
+            println!("{}{}         {}         {}         {}", timespace[y], day_lines[y], hour_lines[y], minute_lines[y], second_lines[y]);
         }
     }
 }

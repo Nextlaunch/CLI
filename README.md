@@ -29,6 +29,7 @@ Upcoming features i wish to add to the program.
 
 - Hackerman mode: A less efficient view mode, which randomly changes some of the characters to another character and draws the modified buffer instead of the original, but in a "Matrix Green" font style
 
+- "Wiki" mode: A way of looking at information on a specific launch, agency, rocket, launchpad, or country (generated as the data is located, to prevent)
 
 <div align="center">
     <h5 align="center">This program is provided free of charge, with no warranty, or guarantee of future updates.</h5>

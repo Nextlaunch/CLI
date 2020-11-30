@@ -1,6 +1,6 @@
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LaunchResponse {
     pub count: Option<isize>,
     pub next: Option<String>,
@@ -8,7 +8,7 @@ pub struct LaunchResponse {
     pub results: Option<Vec<Launch>>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Launch {
     pub id: Option<String>,
     pub url: Option<String>,
@@ -30,62 +30,125 @@ pub struct Launch {
     pub rocket: Option<Rocket>,
     pub mission: Option<Mission>,
     pub pad: Option<LaunchPad>,
+    // pub infoURLs: Option<Vec<String>>,
+    // pub vidURLs: Option<Vec<String>>,
     pub webcast_live: Option<bool>,
     pub image: Option<String>,
     pub infographic: Option<String>,
-    pub program: Option<Vec<Program>>
+    pub program: Option<Vec<Program>>,
+    pub orbital_launch_attempt_count: Option<isize>,
+    pub location_launch_attempt_count: Option<isize>,
+    pub pad_launch_attempt_count: Option<isize>,
+    pub agency_launch_attempt_count: Option<isize>,
+    pub orbital_launch_attempt_count_year: Option<isize>,
+    pub location_launch_attempt_count_year: Option<isize>,
+    pub pad_launch_attempt_count_year: Option<isize>,
+    pub agency_launch_attempt_count_year: Option<isize>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LSP {
     pub id: Option<isize>,
     pub url: Option<String>,
     pub name: Option<String>,
+    pub features: Option<bool>,
     #[serde(rename = "type")]
-    pub org: Option<String>
+    pub org: Option<String>,
+    pub country_code: Option<String>,
+    pub abbrev: Option<String>,
+    pub description: Option<String>,
+    pub administrator: Option<String>,
+    pub founding_year: Option<String>,
+    pub launchers: Option<String>,
+    pub spacecraft: Option<String>,
+    pub launch_library_url: Option<String>,
+    pub total_launch_count: Option<isize>,
+    pub consecutive_successful_launches: Option<isize>,
+    pub successful_launches: Option<isize>,
+    pub failed_launches: Option<isize>,
+    pub pending_launches: Option<isize>,
+    pub consecutive_successful_landings: Option<isize>,
+    pub successful_landings: Option<isize>,
+    pub failed_landings: Option<isize>,
+    pub attempted_landings: Option<isize>,
+    pub info_url: Option<String>,
+    pub wiki_url: Option<String>,
+    pub logo_url: Option<String>,
+    pub image_url: Option<String>,
+    pub nation_url: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Status {
     pub id: Option<isize>,
     pub name: Option<String>,
     pub abbrev: Option<String>,
-    pub description: Option<String>
+    pub description: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Rocket {
     pub id: Option<isize>,
     pub configuration: Option<RocketConfiguration>,
+    // pub launcher_stage: Option<Vec<String>>,
+    // pub spacecraft_stage: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RocketConfiguration {
     pub id: Option<isize>,
     pub launch_library_id: Option<isize>,
     pub url: Option<String>,
     pub name: Option<String>,
+    pub description: Option<String>,
     pub family: Option<String>,
     pub full_name: Option<String>,
-    pub variant: Option<String>
+    pub manufacturer: Option<LSP>,
+    // pub program: Option<Vec<String>>,
+    pub variant: Option<String>,
+    pub alias: Option<String>,
+    pub min_stage: Option<isize>,
+    pub max_stage: Option<isize>,
+    pub length: Option<f32>,
+    pub diameter: Option<f32>,
+    pub maiden_flight: Option<String>,
+    pub launch_mass: Option<isize>,
+    pub leo_capacity: Option<isize>,
+    pub gto_capacity: Option<isize>,
+    pub to_thrust: Option<isize>,
+    pub apogee: Option<isize>,
+    pub vehicle_range: Option<isize>,
+    pub image_url: Option<String>,
+    pub info_url: Option<String>,
+    pub wiki_url: Option<String>,
+    pub total_launch_count: Option<isize>,
+    pub consecutive_successful_launches: Option<isize>,
+    pub successful_launches: Option<isize>,
+    pub failed_launches: Option<isize>,
+    pub pending_launches: Option<isize>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Mission {
     pub id: Option<isize>,
+    pub launch_library_id: Option<isize>,
     pub name: Option<String>,
     pub description: Option<String>,
+    pub launch_designator: Option<String>,
+    #[serde(rename = "type")]
+    pub mission_type: Option<String>,
     pub orbit: Option<Orbit>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Orbit {
     pub id: Option<isize>,
     pub name: Option<String>,
-    pub abbrev: Option<String>
+    pub abbrev: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LaunchPad {
     pub id: Option<isize>,
     pub url: Option<String>,
@@ -97,9 +160,11 @@ pub struct LaunchPad {
     pub latitude: Option<String>,
     pub longitude: Option<String>,
     pub location: PadLocation,
+    pub map_image: Option<String>,
+    pub total_launch_count: Option<isize>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PadLocation {
     pub id: Option<isize>,
     pub url: Option<String>,
@@ -110,16 +175,16 @@ pub struct PadLocation {
     pub total_landing_count: Option<isize>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Program {
     pub id: Option<isize>,
     pub url: Option<String>,
     pub name: Option<String>,
     pub description: Option<String>,
-    pub agencies: Option<Vec<LSP>>
+    pub agencies: Option<Vec<LSP>>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Article {
     pub id: Option<String>,
     pub title: Option<String>,

@@ -13,7 +13,7 @@ use std::io::Write;
 use std::process::{Command, exit};
 use std::process;
 
-use crate::structure::{Launch, Article};
+use crate::structure::{Launch, Article, LaunchResponse};
 
 mod structure;
 mod display;
@@ -43,6 +43,10 @@ fn main() {
             .long("nasa")
             .long_about("Provides a NASA countdown clock style output.\n\x1b[43m\x1b[30mNOTE:\x1b[0m this mode is more resource intense than the main viewing mode due to rendering constraintsg")
             .takes_value(false))
+        .arg(Arg::new("offline")
+            .long("offline")
+            .long_about("Forces the program to assume you are offline and read directly from stale data (where available)")
+            .takes_value(false))
         .get_matches();
 
     if m.is_present("creds") {
@@ -68,13 +72,15 @@ fn run(flags: ArgMatches) {
         .build()
         .unwrap();
 
+
     let retro_mode = flags.is_present("retro");
     let minimal_mode = flags.is_present("minimal");
     let nasa_mode = flags.is_present("nasa");
+    let offline_mode = flags.is_present("offline");
 
-    let mut url: &str = "https://lldev.thespacedevs.com/2.1.0/launch/upcoming/?format=json";
+    let mut url: &str = "https://ll.thespacedevs.com/2.1.0/launch/upcoming/?format=json&mode=detailed&limit=5";
 
-    let (img, mut previous_launch, mut articles, mut offline) = fetch_latest(&client, url);
+    let (img, mut previous_launch, mut articles, mut offline) = fetch_latest(&client, url, offline_mode);
 
     let mut lines: Vec<String> = process_image(img.as_str(), previous_launch.clone().unwrap());
 
@@ -84,7 +90,7 @@ fn run(flags: ArgMatches) {
         previous_launch = Some(prv.clone());
 
         if (duration.elapsed().as_secs() as f32 / 60 as f32) > 5.0 {
-            let (path, prev, arts, off) = fetch_latest(&client, url);
+            let (path, prev, arts, off) = fetch_latest(&client, url, offline_mode);
             image_path = path;
             previous_launch = prev;
             duration = Instant::now();
@@ -406,9 +412,8 @@ fn run(flags: ArgMatches) {
     }
 }
 
-fn fetch_latest(client: &Client, url: &str) -> (String, Option<Launch>, Vec<Article>, bool) {
+fn fetch_latest(client: &Client, url: &str, mut offline: bool) -> (String, Option<Launch>, Vec<Article>, bool) {
     let mut image_path = String::new();
-    let mut offline = false;
     let mut previous_launch: Option<Launch> = None;
 
     let tmp_dir_opt = std::env::temp_dir();
@@ -422,15 +427,14 @@ fn fetch_latest(client: &Client, url: &str) -> (String, Option<Launch>, Vec<Arti
     }
 
     let launch_response = client.get(url).send();
-    let launch_path = format!("{}nextlaunch.launches.json", tmp_dir);
-    if launch_response.is_ok() {
+    let launch_path = format!("{}launches.nlx", tmp_dir);
+    if launch_response.is_ok() && !offline {
         let body = launch_response.unwrap();
 
-        let body_string = body.text().unwrap();
+        let json: structure::LaunchResponse = body.json().unwrap();
 
-        let json: structure::LaunchResponse = serde_json::from_str(body_string.clone().as_str()).unwrap();
         if json.results.is_some() {
-            let mut results = json.results.unwrap();
+            let mut results = json.results.clone().unwrap();
             let mut launches = results.iter();
             let mut next = launches.next().unwrap().clone();
             let (mut days, mut hours, mut minutes, mut seconds) = countdown(next.net.clone().unwrap().as_str(), false);
@@ -458,22 +462,24 @@ fn fetch_latest(client: &Client, url: &str) -> (String, Option<Launch>, Vec<Arti
                 let mut file = std::fs::File::create(image_path.as_str()).unwrap();
                 file.write(image_fetch.as_ref()).unwrap();
             }
+
             previous_launch = Some(next.clone());
+
             process_image(image_path.as_str(), next);
 
             if std::fs::File::open(launch_path.clone()).is_err() {
                 let mut file = std::fs::File::create(launch_path.clone()).unwrap();
-                file.write(body_string.as_ref()).unwrap();
+                file.write(bincode::serialize::<LaunchResponse>(&json).unwrap().as_slice()).unwrap();
             } else {
                 std::fs::remove_file(launch_path.clone());
                 let mut file = std::fs::File::create(launch_path.clone()).unwrap();
-                file.write(body_string.as_ref()).unwrap();
+                file.write(bincode::serialize::<LaunchResponse>(&json).unwrap().as_slice()).unwrap();
             }
         }
     } else {
         if !std::fs::File::open(launch_path.clone()).is_err() {
             let mut file = std::fs::File::open(launch_path.clone()).unwrap();
-            let json: structure::LaunchResponse = serde_json::from_reader(file).unwrap();
+            let json: structure::LaunchResponse = bincode::deserialize_from(file).unwrap();
             let mut results = json.results.unwrap();
             let mut launches = results.iter();
             let mut next = launches.next().unwrap().clone();
@@ -504,22 +510,23 @@ fn fetch_latest(client: &Client, url: &str) -> (String, Option<Launch>, Vec<Arti
 
     let mut articles: Vec<Article> = Vec::new();
 
-    let article_path = format!("{}nextlaunch.articles.json", tmp_dir);
-    if news_request.is_ok() {
-        let article_response = news_request.unwrap().text().unwrap();
-        articles = serde_json::from_str(article_response.as_str()).unwrap();
+    let article_path = format!("{}articles.nlx", tmp_dir);
+    if news_request.is_ok() && !offline {
+        let article_response: Vec<Article> = news_request.unwrap().json().unwrap();
+        articles = article_response.clone();
+
         if std::fs::File::open(article_path.clone()).is_err() {
             let mut file = std::fs::File::create(article_path.clone()).unwrap();
-            file.write(article_response.as_ref()).unwrap();
+            file.write(bincode::serialize::<Vec<Article>>(&article_response).unwrap().as_slice()).unwrap();
         } else {
             std::fs::remove_file(article_path.as_str());
             let mut file = std::fs::File::create(article_path.clone()).unwrap();
-            file.write(article_response.as_ref()).unwrap();
+            file.write(bincode::serialize::<Vec<Article>>(&article_response).unwrap().as_slice()).unwrap();
         }
     } else {
         if !std::fs::File::open(article_path.clone()).is_err() {
             let mut file = std::fs::File::open(article_path.clone()).unwrap();
-            articles = serde_json::from_reader(file).unwrap();
+            articles = bincode::deserialize_from(file).unwrap();
             offline = true;
         } else {
             println!("Unfortunately, the program has not got any cached data, and requires an internet connection to update itself.\nPlease re-launch the application once an internet connection has been established.");
