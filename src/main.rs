@@ -81,7 +81,7 @@ fn run(flags: ArgMatches) {
     let nasa_mode = flags.is_present("nasa");
     let offline_mode = flags.is_present("offline");
 
-    let mut url: &str = "https://ll.thespacedevs.com/2.1.0/launch/upcoming/?format=json&mode=detailed&limit=5";
+    let mut url: &str = "https://lldev.thespacedevs.com/2.1.0/launch/upcoming/?format=json&mode=detailed&limit=5";
 
     let (img, mut previous_launch, mut articles, mut offline) = fetch_latest(&client, url, offline_mode);
 
@@ -458,7 +458,7 @@ fn fetch_latest(client: &Client, url: &str, mut offline: bool) -> (String, Optio
             meta = mta;
             image_path = impath;
 
-            let image_fetch = client.get(meta.image.unwrap().as_str()).send().unwrap().bytes().unwrap();
+            let image_fetch = client.get(""/*meta.image.unwrap().as_str()*/).send().unwrap().bytes().unwrap();
             if std::fs::File::open(image_path.as_str()).is_err() {
                 let mut file = std::fs::File::create(image_path.as_str()).unwrap();
                 file.write(image_fetch.as_ref()).unwrap();
