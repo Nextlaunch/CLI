@@ -458,7 +458,7 @@ fn fetch_latest(client: &Client, url: &str, mut offline: bool) -> (String, Optio
             meta = mta;
             image_path = impath;
 
-            let image_fetch = client.get(""/*meta.image.unwrap().as_str()*/).send().unwrap().bytes().unwrap();
+            let image_fetch = client.get(meta.image.unwrap().as_str()).send().unwrap().bytes().unwrap();
             if std::fs::File::open(image_path.as_str()).is_err() {
                 let mut file = std::fs::File::create(image_path.as_str()).unwrap();
                 file.write(image_fetch.as_ref()).unwrap();
