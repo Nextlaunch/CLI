@@ -63,6 +63,9 @@ fn run(flags: ArgMatches) {
         }
         print!("\n");
     }
+
+    println!("\x1b[5m\x1b[32mPlease wait, NextLaunch is fetching updated launch listings\x1b[0m");
+
     let mut duration = Instant::now();
 
     let client = ClientBuilder::new()
@@ -437,9 +440,11 @@ fn fetch_latest(client: &Client, url: &str, mut offline: bool) -> (String, Optio
             let mut results = json.results.clone().unwrap();
             let mut launches = results.iter();
             let mut next = launches.next().unwrap().clone();
+            let mut status = next.status.clone().id.unwrap();
             let (mut days, mut hours, mut minutes, mut seconds) = countdown(next.net.clone().unwrap().as_str(), false);
-            while minutes < -30 || hours < -1 || days < -1 {
+            while (minutes < 0 || hours < 0 || days < 0) || (status == 3)  {
                 next = launches.next().unwrap().clone();
+                status = next.status.clone().id.unwrap();
                 let (ds, hs, mins, secs) = countdown(next.net.clone().unwrap().as_str(), false);
                 seconds = secs;
                 minutes = mins;
