@@ -181,7 +181,7 @@ jobs:
         with:
           toolchain: stable
           target: ${{env.USE_TOOLCHAIN}}
-         override: true
+          override: true
       - uses: actions-rs/cargo@v1
         with:
           use-cross: false
@@ -199,4 +199,4 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
+          branch: ${{ github.ref }}
