@@ -9,7 +9,7 @@ To view credits, launch the program via the terminal with the `-c` or `--credits
 
 
 ## Installation
-To see how ot install NextLaunch, please check the [latest release](https://github.com/fatalcenturion/NextLaunch/releases/latest)
+To see how to install NextLaunch, please check the [latest release](https://github.com/fatalcenturion/NextLaunch/releases/latest)
 
 ## Previews
 
