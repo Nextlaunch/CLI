@@ -598,7 +598,7 @@ pub fn parse_path(previous: Option<Launch>) -> (String, Launch) {
     let tmp_dir_opt = std::env::temp_dir();
     let mut tmp_dir = tmp_dir_opt.to_str().unwrap().to_string();
 
-    let mut source = "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/tsd-web/nextlaunch_image_20210131213454.png".to_string();
+    let mut source = "https://altriusrs.github.io/NextLaunch/nl3-small.png".to_string();
 
     let encoded = String::from("logo-nextlaunch-dnf");
 
