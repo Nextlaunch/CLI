@@ -15,12 +15,12 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                 match number {
                     '0' => {
                         let mut elements = Vec::<String>::new();
-                        elements.push("  ___  ".to_string());
-                        elements.push(" / _  \\".to_string());
-                        elements.push("| | | |".to_string());
-                        elements.push("| | | |".to_string());
-                        elements.push("| |_| |".to_string());
-                        elements.push(" \\___/ ".to_string());
+                        elements.push("  ___   ".to_string());
+                        elements.push(" / _  \\ ".to_string());
+                        elements.push("| | | | ".to_string());
+                        elements.push("| | | | ".to_string());
+                        elements.push("| |_| | ".to_string());
+                        elements.push(" \\___/  ".to_string());
                         matrix.push(elements.clone());
                         if num_str.len() < 2 {
                             matrix.push(elements);
@@ -29,12 +29,12 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                     '1' => {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
-                            em2.push("  ___  ".to_string());
-                            em2.push(" / _  \\".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| |_| |".to_string());
-                            em2.push(" \\___/ ".to_string());
+                            em2.push("  ___   ".to_string());
+                            em2.push(" / _  \\ ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| |_| | ".to_string());
+                            em2.push(" \\___/  ".to_string());
                             matrix.push(em2);
                         }
                         let mut elements = Vec::<String>::new();
@@ -49,12 +49,12 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                     '2' => {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
-                            em2.push("  ___  ".to_string());
-                            em2.push(" / _  \\".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| |_| |".to_string());
-                            em2.push(" \\___/ ".to_string());
+                            em2.push("  ___   ".to_string());
+                            em2.push(" / _  \\ ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| |_| | ".to_string());
+                            em2.push(" \\___/  ".to_string());
                             matrix.push(em2);
                         }
                         let mut elements = Vec::<String>::new();
@@ -69,12 +69,12 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                     '3' => {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
-                            em2.push("  ___  ".to_string());
-                            em2.push(" / _  \\".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| |_| |".to_string());
-                            em2.push(" \\___/ ".to_string());
+                            em2.push("  ___   ".to_string());
+                            em2.push(" / _  \\ ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| |_| | ".to_string());
+                            em2.push(" \\___/  ".to_string());
                             matrix.push(em2);
                         }
                         let mut elements = Vec::<String>::new();
@@ -89,12 +89,12 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                     '4' => {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
-                            em2.push("  ___  ".to_string());
-                            em2.push(" / _  \\".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| |_| |".to_string());
-                            em2.push(" \\___/ ".to_string());
+                            em2.push("  ___   ".to_string());
+                            em2.push(" / _  \\ ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| |_| | ".to_string());
+                            em2.push(" \\___/  ".to_string());
                             matrix.push(em2);
                         }
                         let mut elements = Vec::<String>::new();
@@ -109,12 +109,12 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                     '5' => {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
-                            em2.push("  ___  ".to_string());
-                            em2.push(" / _  \\".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| |_| |".to_string());
-                            em2.push(" \\___/ ".to_string());
+                            em2.push("  ___   ".to_string());
+                            em2.push(" / _  \\ ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| |_| | ".to_string());
+                            em2.push(" \\___/  ".to_string());
                             matrix.push(em2);
                         }
                         let mut elements = Vec::<String>::new();
@@ -129,12 +129,12 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                     '6' => {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
-                            em2.push("  ___  ".to_string());
-                            em2.push(" / _  \\".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| |_| |".to_string());
-                            em2.push(" \\___/ ".to_string());
+                            em2.push("  ___   ".to_string());
+                            em2.push(" / _  \\ ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| |_| | ".to_string());
+                            em2.push(" \\___/  ".to_string());
                             matrix.push(em2);
                         }
                         let mut elements = Vec::<String>::new();
@@ -149,12 +149,12 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                     '7' => {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
-                            em2.push("  ___  ".to_string());
-                            em2.push(" / _  \\".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| |_| |".to_string());
-                            em2.push(" \\___/ ".to_string());
+                            em2.push("  ___   ".to_string());
+                            em2.push(" / _  \\ ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| |_| | ".to_string());
+                            em2.push(" \\___/  ".to_string());
                             matrix.push(em2);
                         }
                         let mut elements = Vec::<String>::new();
@@ -169,12 +169,12 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                     '8' => {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
-                            em2.push("  ___  ".to_string());
-                            em2.push(" / _  \\".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| |_| |".to_string());
-                            em2.push(" \\___/ ".to_string());
+                            em2.push("  ___   ".to_string());
+                            em2.push(" / _  \\ ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| |_| | ".to_string());
+                            em2.push(" \\___/  ".to_string());
                             matrix.push(em2);
                         }
                         let mut elements = Vec::<String>::new();
@@ -189,12 +189,12 @@ pub fn build_matrix(mut num: i64, style: u8) -> Vec<Vec<String>> {
                     '9' => {
                         if num_str.len() < 2 {
                             let mut em2 = Vec::<String>::new();
-                            em2.push("  ___  ".to_string());
-                            em2.push(" / _  \\".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| | | |".to_string());
-                            em2.push("| |_| |".to_string());
-                            em2.push(" \\___/ ".to_string());
+                            em2.push("  ___   ".to_string());
+                            em2.push(" / _  \\ ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| | | | ".to_string());
+                            em2.push("| |_| | ".to_string());
+                            em2.push(" \\___/  ".to_string());
                             matrix.push(em2);
                         }
                         let mut elements = Vec::<String>::new();
@@ -546,9 +546,9 @@ pub fn render(days: Vec<Vec<String>>, hours: Vec<Vec<String>>, minutes: Vec<Vec<
 
     for y in 0..timespace.len() {
         if (num_secs % 2) == 0 {
-            println!("{}{}   {}   {}   {}   {}   {}   {}", timespace[y], day_lines[y], sep_lines[y], hour_lines[y], sep_lines[y], minute_lines[y], sep_lines[y], second_lines[y]);
+            println!("{}{}   {}   {}   {}   {}   {}   {}               ", timespace[y], day_lines[y], sep_lines[y], hour_lines[y], sep_lines[y], minute_lines[y], sep_lines[y], second_lines[y]);
         } else {
-            println!("{}{}         {}         {}         {}", timespace[y], day_lines[y], hour_lines[y], minute_lines[y], second_lines[y]);
+            println!("{}{}         {}         {}         {}               ", timespace[y], day_lines[y], hour_lines[y], minute_lines[y], second_lines[y]);
         }
     }
 }
