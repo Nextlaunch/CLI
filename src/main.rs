@@ -41,7 +41,7 @@ fn main() {
             .takes_value(false))
         .arg(Arg::new("nasa")
             .long("nasa")
-            .long_about("Provides a NASA countdown clock style output.\n\x1b[43m\x1b[30mNOTE:\x1b[0m this mode is more resource intense than the main viewing mode due to rendering constraintsg")
+            .long_about("Provides a NASA countdown clock style output.\n\x1b[43m\x1b[30mNOTE:\x1b[0m this mode is more resource intense than the main viewing mode due to rendering constraints")
             .takes_value(false))
         .arg(Arg::new("offline")
             .long("offline")
