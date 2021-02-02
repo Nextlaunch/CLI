@@ -1,6 +1,7 @@
-name: Cross-Compile
+name: CI
 on:
   push:
+    branches: ["master"]
     tags-ignore: [dev]
     paths-ignore: ['docs/*', 'binaries/*']
 defaults:
