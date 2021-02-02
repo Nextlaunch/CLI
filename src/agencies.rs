@@ -20,7 +20,7 @@ pub fn agency_logo(agency: LSP) -> &'static str {
         112  => "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/logo/yuzhnoye2520design2520bureau_logo_20190207032505.png",
         115  => "https://pbs.twimg.com/profile_images/876626369509294081/RCtHSoFG_400x400.jpg", //"https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/logo/arianespace_logo_20190207032425.png",
         118  => "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/logo/international2520launch2520services_logo_20200714154120.png",
-        // 121  => "https://dehayf5mhw1h7.cloudfront.net/wp-content/uploads/sites/1028/2020/05/30143403/Space-X.jpg",
+        121  => "https://dehayf5mhw1h7.cloudfront.net/wp-content/uploads/sites/1028/2020/05/30143403/Space-X.jpg",
         124  => "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/logo/united2520launch2520alliance_logo_20190223000119.png",
         141  => "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/logo/blue2520origin_logo_20190207032427.png",
         147  => "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/logo/rocket2520lab2520ltd_logo_20190207032456.png",
