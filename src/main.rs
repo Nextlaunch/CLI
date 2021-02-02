@@ -24,7 +24,7 @@ mod agencies;
 fn main() {
     let m = App::new("Next Launch")
         .author("Thomas Bardsley, tom.b.2k2@gmail.com")
-        .version("0.2.3")
+        .version("0.2.3 (Fictitious Phoenix)")
         .about("Watch a countdown until the next rocket launch, live in your terminal!!")
         .arg(Arg::new("creds")
             .short('c')
