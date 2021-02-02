@@ -3,6 +3,7 @@ extern crate image;
 use self::image::imageops::resize;
 
 use crate::braille::ToBraille;
+use image::imageops::FilterType;
 
 pub struct Display {
     image: image::GrayImage,
@@ -13,7 +14,7 @@ pub struct Display {
 impl Display {
     pub fn new(img: image::GrayImage, width: u32, height: u32) -> Display {
         Display {
-            image: resize(&img, width * 2, height * 4, image::Lanczos3),
+            image: resize(&img, width * 2, height * 4, FilterType::Lanczos3),
             char_width: width,
             char_height: height,
         }
