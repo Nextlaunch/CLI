@@ -12,7 +12,8 @@ To view credits, launch the program via the terminal with the `-c` or `--credits
 To see how ot install NextLaunch, please check the [latest release](https://github.com/fatalcenturion/NextLaunch/releases/latest)
 
 ## Previews
-> Coming soon
+
+![image](https://user-images.githubusercontent.com/63651404/106614416-39c03e80-6563-11eb-91f6-46d0ca5210ba.png)
 
 ## Roadmap
 
