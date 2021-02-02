@@ -502,6 +502,9 @@ fn fetch_latest(client: &Client, url: &str, mut offline: bool) -> (String, Optio
                 let mut file = std::fs::File::create(launch_path.clone()).unwrap();
                 file.write(bincode::serialize::<LaunchResponse>(&json).unwrap().as_slice()).unwrap();
             }
+        } else {
+            println!("Due to a throttled initialization, Nextlaunch was unable to fetch any data on the upcoming launches.");
+            println!("{}", json.detail.unwrap().split(". ").collect::<Vec<&str>>()[1]);
         }
     } else {
         dbg!(&offline);

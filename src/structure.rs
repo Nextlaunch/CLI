@@ -6,6 +6,7 @@ pub struct LaunchResponse {
     pub next: Option<String>,
     pub previous: Option<String>,
     pub results: Option<Vec<Launch>>,
+    pub detail: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
