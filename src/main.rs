@@ -24,7 +24,7 @@ mod agencies;
 fn main() {
     let m = App::new("Next Launch")
         .author("Thomas Bardsley, tom.b.2k2@gmail.com")
-        .version("0.2.2")
+        .version("0.2.3")
         .about("Watch a countdown until the next rocket launch, live in your terminal!!")
         .arg(Arg::new("creds")
             .short('c')
@@ -50,7 +50,29 @@ fn main() {
         .get_matches();
 
     if m.is_present("creds") {
-        println!("NextLaunch - Credits\n\nData Providers:\nNews:      Space Flight News API\nLaunches: The Space Devs\n")
+        println!(r#"NextLaunch - Credits
+
+Data Providers:
+News:      Space Flight News API <https://thespacedevs.com/snapi>
+Launches:  Launch Library 2      <https://thespacedevs.com/llapi>
+
+Developer: AltriusRS             <https://github.com/AltriusRS>
+
+Language:  Rust                  <https://rust-lang.org>
+
+Interface: (Alphabetical)
+           Accusitive            <https://github.com/accusitive>
+           Jas777                <https://github.com/jas777>
+           Zane                  <https://github.com/AnotherZane>
+
+Libraries: (Alphabetical)
+           Bincode               <https://github.com/servo/bincode>
+           Chrono                <https://github.com/chronotope/chrono>
+           Clap                  <https://github.com/clap-rs/clap>
+           Image                 <https://github.com/image-rs/image>
+           Reqwest               <https://github.com/seanmonstar/reqwest>
+           Serde                 <https://github.com/serde-rs/serde>
+"#)
     } else {
         run(m)
     }
@@ -131,7 +153,7 @@ fn run(flags: ArgMatches) {
                 }
                 println!("\n{}{}\x1b[0m", color(launch.status.clone(), "".to_string()), mission);
                 println!("{}{}\x1b[0m", color(launch.status.clone(), "".to_string()), format!("Status:           {}", launch.status.clone().name.unwrap()));
-                println!("{}{}\x1b[0m", color(launch.status.clone(), "".to_string()), format!("Lauch Vehicle:    {}", launch.rocket.clone().unwrap().configuration.unwrap().name.unwrap()));
+                println!("{}{}\x1b[0m", color(launch.status.clone(), "".to_string()), format!("Launch Vehicle:    {}", launch.rocket.clone().unwrap().configuration.unwrap().name.unwrap()));
                 if offline {
                     println!("Note: You are currently offline, this date will update once you have reconnected to the internet.")
                 }
@@ -404,7 +426,7 @@ fn run(flags: ArgMatches) {
                     }
                     println!("\n{}\x1b[0m", mission);
                     println!("{}\x1b[0m", format!("Status:           {}", launch.status.clone().name.unwrap()));
-                    println!("{}\x1b[0m", format!("Lauch Vehicle:    {}", launch.rocket.clone().unwrap().configuration.unwrap().name.unwrap()));
+                    println!("{}\x1b[0m", format!("Launch Vehicle:    {}", launch.rocket.clone().unwrap().configuration.unwrap().name.unwrap()));
                     if offline {
                         println!("Note: You are currently offline, this date will update once you have reconnected to the internet.")
                     }
@@ -442,7 +464,7 @@ fn fetch_latest(client: &Client, url: &str, mut offline: bool) -> (String, Optio
             let mut next = launches.next().unwrap().clone();
             let mut status = next.status.clone().id.unwrap();
             let (mut days, mut hours, mut minutes, mut seconds) = countdown(next.net.clone().unwrap().as_str(), false);
-            while (minutes < 0 || hours < 0 || days < 0) || (status == 3)  {
+            while (minutes < 0 || hours < 0 || days < 0) || (status == 3) {
                 next = launches.next().unwrap().clone();
                 status = next.status.clone().id.unwrap();
                 let (ds, hs, mins, secs) = countdown(next.net.clone().unwrap().as_str(), false);
@@ -482,6 +504,8 @@ fn fetch_latest(client: &Client, url: &str, mut offline: bool) -> (String, Optio
             }
         }
     } else {
+        dbg!(&offline);
+        dbg!(launch_response.unwrap_err());
         if !std::fs::File::open(launch_path.clone()).is_err() {
             let mut file = std::fs::File::open(launch_path.clone()).unwrap();
             let json: structure::LaunchResponse = bincode::deserialize_from(file).unwrap();
@@ -574,7 +598,7 @@ pub fn parse_path(previous: Option<Launch>) -> (String, Launch) {
     let tmp_dir_opt = std::env::temp_dir();
     let mut tmp_dir = tmp_dir_opt.to_str().unwrap().to_string();
 
-    let mut source = "https://web.extension.illinois.edu/stain/stains-hi/235.jpg".to_string();
+    let mut source = "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/tsd-web/nextlaunch_image_20210131213454.png".to_string();
 
     let encoded = String::from("logo-nextlaunch-dnf");
 
