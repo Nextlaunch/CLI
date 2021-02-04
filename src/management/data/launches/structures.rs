@@ -8,6 +8,7 @@ pub enum LaunchAPIop {
     READ,
     RESPONSE,
     ERROR,
+    HALT
 }
 
 #[derive(Debug, Clone)]

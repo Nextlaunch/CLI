@@ -15,11 +15,26 @@ pub async fn run(f: Flags) {
 
     s_launch.send(LaunchAPI::new(LaunchAPIop::READ));
     let launch_options = r_launch.recv().await;
-    dbg!(f);
 
     loop {
-        if last_launch_check.elapsed().as_secs() >= 15 * 60 {} else {
-            println!("\x07{}", process_seconds(last_launch_check.elapsed().as_secs()))
+        let incoming = r_launch.try_recv();
+
+        if let Ok(launch_payload) = incoming {
+            match launch_payload.op {
+                LaunchAPIop::FETCH => {}
+                LaunchAPIop::UPDATE => {}
+                LaunchAPIop::CACHE => {}
+                LaunchAPIop::READ => {}
+                LaunchAPIop::RESPONSE => {}
+                LaunchAPIop::ERROR => {}
+                LaunchAPIop::HALT => {
+                    sleep(Duration::from_secs(5 * 60)).await;
+                }
+            }
+        } else {
+            if last_launch_check.elapsed().as_secs() >= 15 * 60 {} else {
+                // println!("{}", process_seconds(last_launch_check.elapsed().as_secs()))
+            }
         }
         sleep(Duration::from_millis(500)).await;
     }
