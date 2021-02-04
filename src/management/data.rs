@@ -1,6 +1,7 @@
 pub mod telemetry;
 pub mod launches;
 
+#[derive(Debug, Clone)]
 pub struct RenderFrame {
     pub view: usize,
     pub launch: Option<launches::Launch>,
