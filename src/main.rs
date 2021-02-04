@@ -1,11 +1,10 @@
 use terminal_size::{Width, Height, terminal_size};
 
-pub mod management;
+pub use constants::*;
 
-pub const VERSION: &str = "1.0.0 (Ashes Arisen)";
-pub const NAME: &str = "Nextlaunch";
-pub const AUTHOR: &str = "Thomas B. <tom.b.2k2@gmail.com>";
-pub const DESCRIPTION: &str = "Watch a countdown until the next rocket launch, live in your terminal!";
+
+pub mod management;
+pub mod constants;
 
 
 #[tokio::main]
