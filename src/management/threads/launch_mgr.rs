@@ -1,12 +1,15 @@
 use crate::management::data::launches::{LaunchAPI, LaunchAPIop, LaunchCache, process_incoming};
+use crate::management::flags::Flags;
+use crate::{FG_RED, RESET, NAME};
+
+use std::time::{Instant, Duration};
+
+use chrono::{Local, DateTime};
+use tokio::fs::OpenOptions;
 use tokio::sync::broadcast::*;
 use tokio::time::sleep;
-use std::time::{Instant, Duration};
-use crate::management::flags::Flags;
-use tokio::fs::OpenOptions;
-use chrono::{Local, DateTime};
-use crate::{FG_RED, RESET, NAME};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
+
 
 pub async fn spawn(mut s: Sender<LaunchAPI>, mut r: Receiver<LaunchAPI>, flags: Flags) {
     tokio::spawn(async move {
@@ -43,16 +46,14 @@ pub async fn spawn(mut s: Sender<LaunchAPI>, mut r: Receiver<LaunchAPI>, flags: 
                 println!("{}FATAL EXCEPTION:{} Unable to read local data cache.\n{}", FG_RED, RESET, reason);
             } else {
                 if l_vec.len() > 0 {
-                    let parse_res: bincode::Result<LaunchCache>  = bincode::deserialize(l_vec.as_slice());
-
-                    println!("{}", launch_path);
+                    let parse_res: bincode::Result<LaunchCache> = bincode::deserialize(l_vec.as_slice());
 
                     if let Ok(cache) = parse_res {
                         launches = cache;
                     } else {
                         println!("{}EXCEPTION:{} Unable to parse local data cache.\n{}\nThe program will attempt to recover, by writing over the contents of the file\n{} will now halt for 5 minutes before writing the new contents", FG_RED, RESET, parse_res.unwrap_err(), NAME);
                         s.send(LaunchAPI::new(LaunchAPIop::HALT));
-                        sleep(Duration::from_secs(5*60)).await;
+                        sleep(Duration::from_secs(5 * 60)).await;
                         println!("five minutes has passed, Next Launch is now writing the content of the cache file");
                         cache_file.write_all(bincode::serialize(&launches).unwrap().as_slice()).await;
                         cache_file.flush().await;
@@ -67,12 +68,9 @@ pub async fn spawn(mut s: Sender<LaunchAPI>, mut r: Receiver<LaunchAPI>, flags: 
 
                     if let Ok(payload) = inc_res {
                         process_incoming(payload, &mut cache_file, &mut launches);
-                    } else {
-                        println!("NO DATA");
                     }
                     sleep(Duration::from_millis(500)).await;
                 }
-
             }
         } else {
             println!("{}FATAL EXCEPTION:{} Unable to open or create local data cache.", FG_RED, RESET);

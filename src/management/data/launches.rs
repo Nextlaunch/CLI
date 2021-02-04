@@ -10,6 +10,7 @@ mod structures;
 pub async fn update(c: &Client) {}
 
 pub async fn process_incoming(p: LaunchAPI, cache_file: &mut File, cache: &mut LaunchCache) {
+    dbg!(&p);
     match p.op {
         LaunchAPIop::FETCH => {
             dbg!(cache);

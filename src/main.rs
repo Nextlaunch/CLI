@@ -1,5 +1,3 @@
-use terminal_size::{Width, Height, terminal_size};
-
 pub use constants::*;
 
 

@@ -7,7 +7,7 @@ pub enum LaunchAPIop {
     CACHE,
     READ,
     RESPONSE,
-    ERROR,
+    ERROR(String),
     HALT
 }
 

@@ -9,5 +9,5 @@ pub struct RenderFrame {
     pub launch_refresh: Instant,
     pub launch: Option<launches::LaunchAPI>,
     pub telemetry: Option<telemetry::Snapshot>,
-    pub error: Option<(String, bool)>,
+    pub error: Option<String>,
 }

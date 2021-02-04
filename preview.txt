@@ -1,0 +1,74 @@
++======================================================================= NextLaunch ======================================================================+
+| Mission:              Starlink 17 | Status:                     Go For Launch | State:                      Clear | Humidity:                       52% |
+| Vehicle:         Falcon 9 Block 5 | Window Open:  Feb 2nd 2021 - 10:14:00 GMT | Wind Direction:  North North East | Air Pressure:           1024.5 MBar |
+| Location:      Launch Complex 39A | Window Close: Feb 2nd 2021 - 10:14:00 GMT | Wind Speed:                 3 MPH | Temperature:                   12 C |
+| Provider:                  SpaceX | T-0:          Feb 2nd 2021 - 10:14:00 GMT | Wind Bearing:          27 Degrees | Minimum Temperature:            7 C |
+| Destination:      Low Earth Orbit | Likelihood:                           70% | Visibility:              14 Miles | Maximum Temperatrue:           14 C |
++=========== Mission Info ==========+======+======== Status Info ===============+========================== Weather Information ==========================+
+| Total Launch Count:                  122 |                                                                                                              |
+| Successful Launches:                 113 |                                                                                                              |
+| Failed Launches:                       8 |                                                                                                              |
+| Pending Launches:                     35 |                                                                                                              |
+| Consecutive Successes:                 1 |                                                                                                              |
++============ Launch Statistics ===========+                                                                                                              |
+| Attempted Landings:                   96 |                                                                                                              |
+| Successful Landings:                  81 |                                                                                                              |
+| Failed Landings:                      14 |                                                                                                              |
+| Consecutive Landings:                  1 |                                                                                                              |
++=========== Landing Statistics ===========+                                                                                                              |
+| Launch Type:                  Commercial |                                                                                                              |
+| Provider CEO:                  Elon Musk |                                                                                                              |
+| Founded:                            2002 |                                                                                                              |
++========= Additional Information =========+                                                                                                              |
+| Status:                           Online |                                                                                                              |
+| Webcast:                          Online |                                                                                                              |
+| Telemetry:                        Online |                                                                                                              |
+| Last Update:    1 minute, 32 seconds ago |                                                                                                              |
+| NextLaunch V1.0.0 (Phoenix Rising)       |                                                                                                              |
++=========================================+======================+====== Countdown ==+====================+===============================================+
+|                                                                                                                                                         |
+|                                 #####          #####  #####        ###    #####        #  #   #####        #####  #####                                 |
+|                                   #            #   #  #   #   ##     #        #   ##   #  #   #   #   ##   #          #                                 |
+|                                   #    #####   #   #  #   #          #      ###        #####  #   #        #####  #####                                 |
+|                                   #            #   #  #   #   ##     #        #   ##      #   #   #   ##       #  #                                     |
+|                                   #            #####  #####        #####  #####           #   #####        #####  #####                                 |
+|                                                                                                                                                         |
++=========================================================================================================================================================+
+
+
++======================================================================= NextLaunch ======================================================================+
+| Mission:              Starlink 17 | Status:                     Go For Launch | State:                      Clear | Humidity:                       52% |
+| Vehicle:         Falcon 9 Block 5 | Window Open:  Feb 2nd 2021 - 10:14:00 GMT | Wind Direction:  North North East | Air Pressure:           1024.5 MBar |
+| Location:      Launch Complex 39A | Window Close: Feb 2nd 2021 - 10:14:00 GMT | Wind Speed:                 3 MPH | Temperature:                   12 C |
+| Provider:                  SpaceX | T-0:          Feb 2nd 2021 - 10:14:00 GMT | Wind Bearing:          27 Degrees | Minimum Temperature:            7 C |
+| Destination:      Low Earth Orbit | Likelihood:                           70% | Visibility:              14 Miles | Maximum Temperatrue:           14 C |
++=========== Mission Info ==========+======+======== Status Info ===============+========================== Weather Information ==========================+
+| Total Launch Count:                  122 | Velocity: [                                                                                  ]     7165 km/h |
+| Successful Launches:                 113 |                                                                                                              |
+| Failed Launches:                       8 |                                                                                                              |
+| Pending Launches:                     35 |                                                                                                              |
+| Consecutive Successes:                 1 |                                                                                                              |
++============ Launch Statistics ===========+                                                                                                              |
+| Attempted Landings:                   96 |                                                                                                              |
+| Successful Landings:                  81 |                                                                                                              |
+| Failed Landings:                      14 |                                                                                                              |
+| Consecutive Landings:                  1 |                                                                                                              |
++=========== Landing Statistics ===========+                                                                                                              |
+| Launch Type:                  Commercial |                                                                                                              |
+| Provider CEO:                  Elon Musk |                                                                                                              |
+| Founded:                            2002 |                                                                                                              |
++========= Additional Information =========+======================================+============================ Flight Events ============================+
+| Status:                           Online |                                      | Time                                                             Name |
+| Webcast:                          Online | Distance Travelled:          5.47 Km | T+ 74 seconds                                                   Max Q |
+| Telemetry:                        Online | Acceleration:                18.5 Gs |                                                                       |
+| Last Update:    1 minute, 32 seconds ago | Angle:                    52 Degrees |                                                                       |
+| NextLaunch V1.0.0 (Phoenix Rising)       | Aerodynamic Pressure: 30,479 Pascals |                                                                       |
++=========================================+======================+====== Countdown ==+====================+===============================================+
+|                                                                                                                                                         |
+|                                 #####          #####  #####        ###    #####        #  #   #####        #####  #####                                 |
+|                                   #            #   #  #   #   ##     #        #   ##   #  #   #   #   ##   #          #                                 |
+|                                   #    #####   #   #  #   #          #      ###        #####  #   #        #####  #####                                 |
+|                                   #            #   #  #   #   ##     #        #   ##      #   #   #   ##       #  #                                     |
+|                                   #            #####  #####        #####  #####           #   #####        #####  #####                                 |
+|                                                                                                                                                         |
++=========================================================================================================================================================+
