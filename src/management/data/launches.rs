@@ -1,4 +1,4 @@
-pub use structures::Launch;
+pub use structures::LaunchAPI;
 use reqwest::Client;
 
 mod structures;

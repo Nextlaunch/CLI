@@ -1,5 +1,23 @@
 use serde::{Serialize, Deserialize};
 
+#[derive(Debug, Clone)]
+pub enum LaunchAPIop {
+    FETCH,
+    UPDATE,
+    CACHE,
+    READ,
+    RESPONSE,
+    ERROR,
+}
+
+#[derive(Debug, Clone)]
+pub struct LaunchAPI {
+    pub op: LaunchAPIop,
+    pub launch: Option<Launch>,
+}
+
+
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LaunchResponse {
     pub count: Option<isize>,
