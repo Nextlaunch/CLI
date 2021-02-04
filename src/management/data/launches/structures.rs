@@ -17,6 +17,11 @@ pub struct LaunchAPI {
 }
 
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct LaunchCache {
+    pub launches: Vec<Launch>,
+    pub last_checked: String
+}
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LaunchResponse {

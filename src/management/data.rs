@@ -7,7 +7,7 @@ pub mod launches;
 pub struct RenderFrame {
     pub view: usize,
     pub launch_refresh: Instant,
-    pub launch: Option<launches::Launch>,
+    pub launch: Option<launches::LaunchAPI>,
     pub telemetry: Option<telemetry::Snapshot>,
     pub error: Option<(String, bool)>,
 }
