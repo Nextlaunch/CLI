@@ -24,7 +24,7 @@ readme = "README.md"
 reqwest = { version="0.11.0", features = ["blocking", "serde_json", "json"] }
 serde = { version="1.0.123", features = ["derive"] }
 chrono = "0.4.19"
-clap = "3.0.0-beta.2"
 bincode = "1.3.1"
 websocket = "0.26.2"
-term_size = "0.3.2"
+terminal_size = "0.1.16"
+tokio = { version = "1.1.1", features = ["full"] }
