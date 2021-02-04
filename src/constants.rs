@@ -8,7 +8,12 @@ pub const DESCRIPTION:   &str = "Watch a countdown until the next rocket launch,
 pub const LAUNCH_API:    &str = "https://lldev.thespacedevs.com/2.1.0/launch/upcoming/?format=json&mode=detailed&limit=5";
 pub const TELEMETRY_API: &str = "ws://api.launchdashboard.space";
 pub const NEWS_API:      &str = "https://spaceflightnewsapi.net/api/v2/articles";
-// pub const WEATHER_API: &str = "https://www.metaweather.com/api/"
+pub const WEATHER_API:   &str = "https://www.metaweather.com/api/";
+pub const FC_BASE:       &str = "https://flightclub.io/result/2d?id=";
+pub const SLN_BASE:      &str = "https://spacelaunchnow.me/launch/";
+pub const G4L_BASE:      &str = "https://go4liftoff.com/launch/";
+pub const NL_BASE:       &str = "https://nextlaunch.org/rooms/";
+
 
 // ANSI codes based off of documentation found here:
 // https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
