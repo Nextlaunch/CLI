@@ -8,6 +8,7 @@ use std::time::Duration;
 use chrono::{Local, DateTime};
 use tokio::sync::broadcast::*;
 use tokio::time::{sleep, Instant};
+use crate::management::rendering::render;
 
 pub mod views;
 
@@ -46,14 +47,9 @@ pub async fn spawn(mut s: Sender<RenderFrame>, mut r: Receiver<RenderFrame>, fla
                     }
                 };
 
-                process_frame(frame).await;
+                render(frame.clone(), previous.clone()).await;
             }
             sleep(Duration::from_millis(500)).await;
         }
     });
-}
-
-
-pub async fn process_frame(f: Frame) {
-
 }

@@ -125,10 +125,10 @@ Libraries: (Alphabetical)
 | Provider:                  SpaceX | T-0:          Feb 2nd 2021 - 10:14:00 GMT | Wind Bearing:          27 Degrees | Minimum Temperature:            7 C |
 | Destination:      Low Earth Orbit | Likelihood:                           \x1b[32m70%\x1b[0m | Visibility:              \x1b[32m14 Miles\x1b[0m | Maximum Temperatrue:           14 C |
 +=========== Mission Info ==========+======+======== Status Info ===============+========================== Weather Information ==========================+
-| Total Launch Count:                  122 |                                                                                                              |
-| Successful Launches:                 113 |                                                                                                              |
-| Failed Launches:                       8 |                                                                                                              |
-| Pending Launches:                     35 |                                                                                                              |
+| Total Launch Count:                  122 | View on:                                                                                                     |
+| Successful Launches:                 113 | Flight Club:      \x1b[34m{}272f4f21-0998-4078-9094-d1867dcb897d\x1b[0m                    |
+| Failed Launches:                       8 | Space Launch Now: \x1b[34m{}falcon-9-block-5-starlink-17\x1b[0m                              |
+| Pending Launches:                     35 | Go 4 Liftoff:     \x1b[34m{}falcon-9-block-5-starlink-17\x1b[0m                                 |
 | Consecutive Successes:                 1 |                                                                                                              |
 +============ Launch Statistics ===========+                                                                                                              |
 | Attempted Landings:                   96 |                                                                                                              |
@@ -154,7 +154,7 @@ Libraries: (Alphabetical)
 |                                   #            #####  #####        #####  #####           #   #####        #####  #####                                 |
 |                                                                                                                                                         |
 +=========================================================================================================================================================+
-");
+", FC_BASE, SLN_BASE, G4L_BASE);
         exit(1);
     } else if f.preview_2 {
         println!("\
@@ -169,7 +169,7 @@ Libraries: (Alphabetical)
 | Successful Launches:                 113 | Flight Club:      \x1b[34m{}272f4f21-0998-4078-9094-d1867dcb897d\x1b[0m                    |
 | Failed Launches:                       8 | Space Launch Now: \x1b[34m{}falcon-9-block-5-starlink-17\x1b[0m                              |
 | Pending Launches:                     35 | Go 4 Liftoff:     \x1b[34m{}falcon-9-block-5-starlink-17\x1b[0m                                 |
-| Consecutive Successes:                 1 | Nextlaunch Web:   \x1b[34m{}falcon-9-block-5-starlink-17\x1b[0m                                  |
+| Consecutive Successes:                 1 |                                                                                                              |
 +============ Launch Statistics ===========+                                                                                                              |
 | Attempted Landings:                   96 |                                                                                                              |
 | Successful Landings:                  81 |                                                                                                              |
@@ -194,8 +194,7 @@ Libraries: (Alphabetical)
 |                                   #            #####  #####        #####  #####           #   #####        #####  #####                                 |
 |                                                                                                                                                         |
 +=========================================================================================================================================================+",
-                 FC_BASE, SLN_BASE, G4L_BASE, NL_BASE);
+                 FC_BASE, SLN_BASE, G4L_BASE);
         exit(1);
     }
-
 }

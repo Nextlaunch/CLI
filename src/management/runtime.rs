@@ -50,9 +50,16 @@ pub async fn run(f: Flags) {
                 }
             }
         } else {
-            if last_launch_check.elapsed().as_secs() >= 15 * 60 {} else {
-                println!("\x1b[1A{}", process_seconds(last_launch_check.elapsed().as_secs()));
-            }
+            s_render.send(RenderFrame {
+                view: 0,
+                launch_refresh: last_launch_check.clone(),
+                launch: None,
+                telemetry: None,
+                error: None
+            });
+            // if last_launch_check.elapsed().as_secs() >= 15 * 60 {} else {
+            //     println!("\x1b[1A{}", process_seconds(last_launch_check.elapsed().as_secs()));
+            // }
         }
         sleep(Duration::from_millis(500)).await;
     }

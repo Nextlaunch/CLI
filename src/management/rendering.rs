@@ -15,4 +15,23 @@ pub async fn render(frame: structures::Frame, previous: Option<structures::Frame
         height = 35
     }
     println!("w: {} chars - h: {} chars", width, height);
+
+    let lines: Vec<String> = vec!();
+    for y in 0..height-2 {
+        if y == 0 || y == height-3 {
+            println!("+");
+            for x in 0..(width-2) {
+                println!("\x1b[1A\x1b[{}C=", x);
+            }
+            println!("\x1b[1A\x1b[{}C+", width-1);
+        } else {
+            println!("|");
+            for x in 0..(width-2) {
+                println!("\x1b[1A\x1b[{}C ", x);
+            }
+            println!("\x1b[1A\x1b[{}C|", width-1);
+        }
+
+    }
+
 }
