@@ -1,0 +1,22 @@
+{
+  "name": "nextlaunch",
+  "version": "1.0.0",
+  "description": "Watch a countdown until the next rocket launch, live in your terminal!!",
+  "main": "list.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AltriusRS/NextLaunch.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AltriusRS/NextLaunch/issues"
+  },
+  "homepage": "https://github.com/AltriusRS/NextLaunch#readme",
+  "dependencies": {
+    "geolib": "^3.3.1"
+  }
+}

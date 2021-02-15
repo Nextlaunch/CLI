@@ -1,5 +1,7 @@
 use std::fmt::{Display, Formatter, Result};
 
+mod map_lat_long;
+
 pub fn process_seconds(mut seconds: u64) -> TimeFrame {
     let mut minutes = 0;
     let mut hours = 0;

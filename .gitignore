@@ -4,3 +4,6 @@
 Cargo.lock
 old/*
 ref.json
+*/node_modules/*
+/node-utils/package-lock.json
+/node-utils/linkts.txt

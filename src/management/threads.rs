@@ -8,7 +8,7 @@ use crate::management::flags::Flags;
 mod launch_mgr;
 mod telemetry_mgr;
 mod render_mgr;
-
+mod weather_rs;
 
 pub async fn spawn_threads(f: Flags) -> ((Sender<LaunchAPI>, Receiver<LaunchAPI>), (Sender<Snapshot>, Receiver<Snapshot>), (Sender<RenderFrame>, Receiver<RenderFrame>)) {
     let (s_launch, mut r_launch): (Sender<LaunchAPI>, Receiver<LaunchAPI>) = channel(5);
