@@ -24,8 +24,11 @@ pub async fn run(f: Flags) {
         launch_refresh: last_launch_check.clone(),
         launch: None,
         telemetry: None,
-        error: None
+        error: None,
     });
+
+    let mut idx: u8 = 0;
+
     loop {
         let incoming = r_launch.try_recv();
 
@@ -42,7 +45,7 @@ pub async fn run(f: Flags) {
                         launch_refresh: last_launch_check.clone(),
                         launch: None,
                         telemetry: None,
-                        error: Some(reason)
+                        error: Some(reason),
                     });
                 }
                 LaunchAPIop::HALT => {
@@ -50,13 +53,18 @@ pub async fn run(f: Flags) {
                 }
             }
         } else {
-            s_render.send(RenderFrame {
-                view: 0,
-                launch_refresh: last_launch_check.clone(),
-                launch: None,
-                telemetry: None,
-                error: None
-            });
+            if idx == 1 {
+                s_render.send(RenderFrame {
+                    view: 0,
+                    launch_refresh: last_launch_check.clone(),
+                    launch: None,
+                    telemetry: None,
+                    error: None,
+                });
+                idx = 0;
+            } else {
+                idx += 1;
+            }
             // if last_launch_check.elapsed().as_secs() >= 15 * 60 {} else {
             //     println!("\x1b[1A{}", process_seconds(last_launch_check.elapsed().as_secs()));
             // }

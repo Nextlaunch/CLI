@@ -1,4 +1,4 @@
-use crate::management::rendering::structures::Frame;
+use crate::management::rendering::structures::{Frame, Cell, Line, Alignment};
 use crate::management::data::RenderFrame;
 use crate::management::flags::Flags;
 use crate::constants::*;
@@ -32,17 +32,57 @@ pub async fn spawn(mut s: Sender<RenderFrame>, mut r: Receiver<RenderFrame>, fla
         let mut file_ok = true;
 
         let mut previous: Option<Frame> = None;
+
+        let mut frame_count: u16 = 0;
+
         loop {
+            frame_count += 1;
             let inc_res = r.try_recv();
 
             if let Ok(payload) = inc_res {
                 let frame = match payload.view {
                     0 => {
-                        views::regular::process(payload).await
+                        Frame {
+                            rows: vec![
+                                vec![
+                                    Cell {
+                                        width: 0,
+                                        height: 1,
+                                        lines: vec![
+                                            Line {
+                                                align: Alignment::Middle,
+                                                length: 0,
+                                                content: format!("This is frame {}", frame_count),
+                                                title: None,
+                                                value: None,
+                                            }
+                                        ],
+                                    }
+                                ]
+                            ],
+
+                        }
+                        // views::regular::process(payload).await
                     }
                     _ => {
                         Frame {
-                            cells: vec![]
+                            rows: vec![
+                                vec![
+                                    Cell {
+                                        width: 0,
+                                        height: 1,
+                                        lines: vec![
+                                            Line {
+                                                align: Alignment::Middle,
+                                                length: 0,
+                                                content: "This is frame 1".to_string(),
+                                                title: None,
+                                                value: None,
+                                            }
+                                        ],
+                                    }
+                                ]
+                            ],
                         }
                     }
                 };
