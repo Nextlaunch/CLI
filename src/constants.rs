@@ -1,4 +1,6 @@
 pub use metadata::*;
+pub use controls::*;
+pub use colors::*;
 
 // metadata
 mod metadata {

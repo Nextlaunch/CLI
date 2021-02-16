@@ -1,20 +1,27 @@
-use crate::management::rendering::structures::{Frame, Cell, Line, Alignment};
 use crate::management::data::RenderFrame;
 use crate::management::flags::Flags;
 use crate::constants::*;
 
 use std::time::Duration;
+use std::process::exit;
 
 use chrono::{Local, DateTime};
 use tokio::sync::broadcast::*;
 use tokio::time::{sleep, Instant};
-use crate::management::rendering::render;
+use tui::Terminal;
+use tui::backend::CrosstermBackend;
+use std::io::Stdout;
+use crossterm::event::EventStream;
 
 pub mod views;
 
 
 pub async fn spawn(mut s: Sender<RenderFrame>, mut r: Receiver<RenderFrame>, flags: Flags) {
     tokio::spawn(async move {
+        let mut reader = EventStream::new();
+        let stdout = std::io::stdout();
+        let backend = CrosstermBackend::new(stdout);
+        let mut terminal: Terminal<CrosstermBackend<Stdout>> = Terminal::new(backend).unwrap();
         let tmp_dir_opt = std::env::temp_dir();
         let mut tmp_dir = tmp_dir_opt.to_str().unwrap().to_string();
         let tree = tmp_dir.split("\\").collect::<Vec<&str>>();
@@ -31,63 +38,25 @@ pub async fn spawn(mut s: Sender<RenderFrame>, mut r: Receiver<RenderFrame>, fla
 
         let mut file_ok = true;
 
-        let mut previous: Option<Frame> = None;
-
         let mut frame_count: u16 = 0;
 
         loop {
             frame_count += 1;
+            // let inc_keys = reader.poll_next();
             let inc_res = r.try_recv();
 
-            if let Ok(payload) = inc_res {
-                let frame = match payload.view {
-                    0 => {
-                        Frame {
-                            rows: vec![
-                                vec![
-                                    Cell {
-                                        width: 0,
-                                        height: 1,
-                                        lines: vec![
-                                            Line {
-                                                align: Alignment::Middle,
-                                                length: 0,
-                                                content: format!("This is frame {}", frame_count),
-                                                title: None,
-                                                value: None,
-                                            }
-                                        ],
-                                    }
-                                ]
-                            ],
+            // if
 
-                        }
-                        // views::regular::process(payload).await
+            if let Ok(payload) = inc_res {
+                match payload.view {
+                    0 => {
+                        views::regular::process(Some(payload), &mut terminal).await
                     }
                     _ => {
-                        Frame {
-                            rows: vec![
-                                vec![
-                                    Cell {
-                                        width: 0,
-                                        height: 1,
-                                        lines: vec![
-                                            Line {
-                                                align: Alignment::Middle,
-                                                length: 0,
-                                                content: "This is frame 1".to_string(),
-                                                title: None,
-                                                value: None,
-                                            }
-                                        ],
-                                    }
-                                ]
-                            ],
-                        }
+                        eprintln!("Unknown viewing mode, fatal error");
+                        exit(1)
                     }
-                };
-
-                render(frame.clone(), previous.clone()).await;
+                }
             }
             sleep(Duration::from_millis(500)).await;
         }
