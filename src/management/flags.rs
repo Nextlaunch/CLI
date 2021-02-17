@@ -96,6 +96,7 @@ Data Providers:
 News:      Space Flight News API <https://thespacedevs.com/snapi>
 Launches:  Launch Library 2      <https://thespacedevs.com/llapi>
 Telemetry: Launch Dashboard      <https://github.com/shahar603/Launch-Dashboard-API>
+Weather:   WeatherAPI            <https://www.weatherapi.com/>
 
 Developer: AltriusRS             <https://github.com/AltriusRS>
 
