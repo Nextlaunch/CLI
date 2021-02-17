@@ -12,14 +12,19 @@ use tui::Terminal;
 use tui::backend::CrosstermBackend;
 use std::io::Stdout;
 use crossterm::event::EventStream;
+use crossterm::ExecutableCommand;
+use crossterm::terminal::ClearType;
 
 pub mod views;
 
 
 pub async fn spawn(mut s: Sender<RenderFrame>, mut r: Receiver<RenderFrame>, flags: Flags) {
     tokio::spawn(async move {
-        let mut reader = EventStream::new();
-        let stdout = std::io::stdout();
+
+        let mut stdout = std::io::stdout();
+
+        stdout.execute(crossterm::terminal::Clear(ClearType::All));
+
         let backend = CrosstermBackend::new(stdout);
         let mut terminal: Terminal<CrosstermBackend<Stdout>> = Terminal::new(backend).unwrap();
         let tmp_dir_opt = std::env::temp_dir();
@@ -42,10 +47,7 @@ pub async fn spawn(mut s: Sender<RenderFrame>, mut r: Receiver<RenderFrame>, fla
 
         loop {
             frame_count += 1;
-            // let inc_keys = reader.poll_next();
             let inc_res = r.try_recv();
-
-            // if
 
             if let Ok(payload) = inc_res {
                 match payload.view {
