@@ -57,7 +57,7 @@ mod colors {
 // https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
 
     // controls - Color
-    pub const RESET: &str = "\x1b[0m";
+    pub const RESET: &str = "";
     pub const BRIGHT: &str = "\x1b[1m";
 
     pub const FG_BLACK: &str = "\x1b[30m";
@@ -77,4 +77,168 @@ mod colors {
     pub const BG_MAGENTA: &str = "\x1b[45m";
     pub const BG_CYAN: &str = "\x1b[46m";
     pub const BG_WHITE: &str = "\x1b[47m";
+}
+
+
+pub mod weather {
+    pub const UNKNOWN: [&str; 5] = [
+        "    .-.      ",
+        "     __)     ",
+        "    (        ",
+        "     `-᾿     ",
+        "      •      ",
+    ];
+
+    pub const CLEAR: [&str; 5] = [
+        "             ",
+        "             ",
+        "             ",
+        "             ",
+        "             ",
+    ];
+
+
+    pub const CLOUDY: [&str; 5] = [
+        "             ",
+        "     .--.    ",
+        "  .-(    ).  ",
+        " (___.__)__) ",
+        "             ",
+    ];
+
+    pub const FOG: [&str; 5] = [
+        "             ",
+        " _ - _ - _ - ",
+        "  _ - _ - _  ",
+        " _ - _ - _ - ",
+        "             ",
+    ];
+
+    pub const HEAVY_RAIN: [&str; 5] = [
+        "     .-.     ",
+        "    (   ).   ",
+        "   (___(__)  ",
+        "  ‚ʻ‚ʻ‚ʻ‚ʻ   ",
+        "  ‚ʻ‚ʻ‚ʻ‚ʻ   ",
+    ];
+
+    pub const HEAVY_SHOWERS: [&str; 5] = [
+        " _`/\"\".-.    ",
+        "  ,\\_(   ).  ",
+        "   /(___(__) ",
+        "   ‚ʻ‚ʻ‚ʻ‚ʻ  ",
+        "   ‚ʻ‚ʻ‚ʻ‚ʻ  ",
+    ];
+
+    pub const HEAVY_SNOW: [&str; 5] = [
+        "     .-.     ",
+        "    (   ).   ",
+        "   (___(__)  ",
+        "   * * * *   ",
+        "  * * * *    ",
+    ];
+
+    pub const HEAVY_SNOW_SHOWERS: [&str; 5] = [
+        " _`/\"\".-.    ",
+        "  ,\\_(   ).  ",
+        "   /(___(__) ",
+        "    * * * *  ",
+        "   * * * *   ",
+    ];
+
+    pub const LIGHT_RAIN: [&str; 5] = [
+        "     .-.     ",
+        "    (   ).   ",
+        "   (___(__)  ",
+        "    ʻ ʻ ʻ ʻ  ",
+        "   ʻ ʻ ʻ ʻ   ",
+    ];
+
+    pub const LIGHT_SHOWERS: [&str; 5] = [
+        " _`/\"\".-.    ",
+        "  ,\\_(   ).  ",
+        "   /(___(__) ",
+        "     ʻ ʻ ʻ ʻ ",
+        "    ʻ ʻ ʻ ʻ  ",
+    ];
+
+    pub const LIGHT_SLEET: [&str; 5] = [
+        "     .-.     ",
+        "    (   ).   ",
+        "   (___(__)  ",
+        "    ʻ * ʻ *  ",
+        "   * ʻ * ʻ   ",
+    ];
+
+    pub const LIGHT_SLEET_SHOWERS: [&str; 5] = [
+        " _`/\"\".-.    ",
+        "  ,\\_(   ).  ",
+        "   /(___(__) ",
+        "     ʻ * ʻ * ",
+        "    * ʻ * ʻ  ",
+    ];
+
+    pub const LIGHT_SNOW: [&str; 5] = [
+        "     .-.     ",
+        "    (   ).   ",
+        "   (___(__)  ",
+        "    *  *  *  ",
+        "   *  *  *   ",
+    ];
+
+    pub const LIGHT_SNOW_SHOWERS: [&str; 5] = [
+        " _`/\"\".-.    ",
+        "  ,\\_(   ).  ",
+        "   /(___(__) ",
+        "     *  *  * ",
+        "    *  *  *  ",
+    ];
+
+    pub const PARTLY_CLOUDY: [&str; 5] = [
+        "   \\  /      ",
+        " _ /\"\".-.    ",
+        "   \\_(   ).  ",
+        "   /(___(__) ",
+        "             ",
+    ];
+
+    pub const SUNNY: [&str; 5] = [
+        "    \\   /    ",
+        "     .-.     ",
+        "  ‒ (   ) ‒  ",
+        "     `-᾿     ",
+        "    /   \\    ",
+    ];
+
+    pub const THUNDER_HEAVY_RAIN: [&str; 5] = [
+        "     .-.     ",
+        "    (   ).   ",
+        "   (___(__)  ",
+        "  ‚ʻ⚡ʻ‚⚡‚ʻ   ",
+        "  ‚ʻ‚ʻ⚡ʻ‚ʻ   ",
+    ];
+
+    pub const THUNDERY_SHOWERS: [&str; 5] = [
+        " _`/\"\".-.    ",
+        "  ,\\_(   ).  ",
+        "   /(___(__) ",
+        "    ⚡ʻ ʻ⚡ʻ ʻ ",
+        "    ʻ ʻ ʻ ʻ  ",
+    ];
+
+    pub const THUNDERY_SNOW_SHOWERS: [&str; 5] = [
+        " _`/\"\".-.    ",
+        "  ,\\_(   ).  ",
+        "   /(___(__) ",
+        "     *⚡ *⚡ * ",
+        "    *  *  *  ",
+    ];
+
+    pub const VERY_CLOUDY: [&str; 5] = [
+        "             ",
+        "     .--.    ",
+        "  .-(    ).  ",
+        " (___.__)__) ",
+        "             ",
+    ];
 }
