@@ -238,12 +238,14 @@ Libraries: (Alphabetical)
 
         println!("
 \x1b[1;37mList of VT240 (Sixel) incompatible terminal emulators\x1b[0m
-- \x1b[1;31mTerminal.app (MacOS default)\x1b[0m  \x1b[1;31mFAILED\x1b[0m
-- \x1b[1;31mHyper\x1b[0m                         \x1b[1;31mFAILED\x1b[0m
+- \x1b[1;31mTerminal.app (MacOS default)\x1b[0m  \x1b[1;31mFAILED\x1b[0m - Prints garbage
+- \x1b[1;31mHyper\x1b[0m                         \x1b[1;31mFAILED\x1b[0m - Prints nothing
 
 \x1b[1;35mThese lists contain only the terminals which have been tested or queued for testing.
 If your terminal of choice isnt listed, please feel free to open an issue on github.\x1b[0m
 ");
+
+        println!("The following content is a sample Sixel output.\nIf you can see a rocket then your terminal supports Sixels.\n{}", crate::sixel::TEST);
         exit(0);
     }
 }
