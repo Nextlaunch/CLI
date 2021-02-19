@@ -11,7 +11,7 @@ pub mod sixel;
 
 #[tokio::main]
 async fn main() {
-    print!("{}", sixel::CONTENT);
+    println!("{}\n\n\x1b[1;37mWelcome to NextLaunch.\x1b[0m\nA state of the art program, providing advanced access to the world's rocket launches and space news, directly in your terminal", sixel::CONTENT);
 
     exit(0);
 
