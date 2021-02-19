@@ -241,8 +241,8 @@ Libraries: (Alphabetical)
 - \x1b[1;31mTerminal.app (MacOS default)\x1b[0m  \x1b[1;31mFAILED\x1b[0m
 - \x1b[1;31mHyper\x1b[0m                         \x1b[1;31mFAILED\x1b[0m
 
-\x1b[1;35mThese lists contain only the terminals which have been tested or queued for testing
-If your terminal of choice isnt listed, please feel free to open an issue on github\x1b[0m
+\x1b[1;35mThese lists contain only the terminals which have been tested or queued for testing.
+If your terminal of choice isnt listed, please feel free to open an issue on github.\x1b[0m
 ");
         exit(0);
     }
