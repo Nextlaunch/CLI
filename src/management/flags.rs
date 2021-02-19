@@ -224,8 +224,7 @@ Libraries: (Alphabetical)
 - \x1b[1;32miTerm2\x1b[0m                     *nix           \x1b[1;32mTESTED\x1b[0m
 - \x1b[1;32mxTerm\x1b[0m                      *nix           \x1b[1;32mTESTED\x1b[0m                     \x1b[1;31mUse the \x1b[1;32m`-ti vt340`\x1b[1;31m flag at startup to enable the feature\x1b[0m
 - \x1b[1;32mMinTTy\x1b[0m                     Windows        \x1b[1;32mTESTED\x1b[0m
-- \x1b[1;33mMLterm\x1b[0m                     Unknown        \x1b[1;33mREPORTED\x1b[0m   (needs test)
-- \x1b[1;33mWIndows Terminal\x1b[0m           Windows        \x1b[1;33mREPORTED\x1b[0m   (needs test)
+- \x1b[1;32mMLterm\x1b[0m                     Unknown        \x1b[1;32mTESTED\x1b[0m
 - \x1b[1;33mDEC VT series (240+)\x1b[0m       Hardware       \x1b[1;35mCLAIMED\x1b[0m    \x1b[1;31m(won't test)\x1b[0m
 - \x1b[1;33mDECTerm (dxterm)\x1b[0m           *nix           \x1b[1;33mREPORTED\x1b[0m   \x1b[1;31m(won't test)\x1b[0m    Unable to locate installation methods or source code
 - \x1b[1;33mKermit\x1b[0m                     Unknown        \x1b[1;33mREPORTED\x1b[0m   \x1b[1;31m(won't test)\x1b[0m    No available compatible machine
@@ -238,10 +237,19 @@ Libraries: (Alphabetical)
 
         println!("
 \x1b[1;37mList of VT240 (Sixel) incompatible terminal emulators\x1b[0m
-  Name                       Platform       Status    Notes
-- \x1b[1;31mTerminal.app\x1b[0m               MacOS          \x1b[1;31mFAILED\x1b[0m    Prints garbage
-- \x1b[1;31mHyper\x1b[0m                      Any            \x1b[1;31mFAILED\x1b[0m    Prints nothing
-- \x1b[1;31mAlactritty\x1b[0m                 Any            \x1b[1;31mFAILED\x1b[0m    Prints nothing - \x1b[1;33mMay be added in upcoming revisions\x1b[0m
+  Name                       Platform       Status    Reference Link          Notes
+- \x1b[1;31mTerminal.app\x1b[0m               MacOS          \x1b[1;31mFAILED\x1b[0m                            Prints garbage
+- \x1b[1;31mHyper\x1b[0m                      Any            \x1b[1;31mFAILED\x1b[0m    \x1b[1;34mhttps://git.io/JtyH0\x1b[0m    Prints nothing
+- \x1b[1;31mHyper\x1b[0m \x1b[1;33m->\x1b[0m \x1b[1;31mxterm.js\x1b[0m                                   \x1b[1;34mhttps://git.io/JtyHN\x1b[0m
+- \x1b[1;31mAlactritty\x1b[0m                 Any            \x1b[1;31mFAILED\x1b[0m    \x1b[1;34mhttps://git.io/JtyHC\x1b[0m    Prints nothing - \x1b[1;33mMay be added in upcoming revisions\x1b[0m
+- \x1b[1;31mWindows Terminal\x1b[0m           Windows        \x1b[1;31mFAILED\x1b[0m    \x1b[1;34mhttps://git.io/JtyHJ\x1b[0m    Prints nothing - \x1b[1;33mMay be added in upcoming revisions\x1b[0m
+- \x1b[1;31mCMD.exe\x1b[0m                    Windows        \x1b[1;31mFAILED\x1b[0m                            Prints garbage
+- \x1b[1;31mPowershell\x1b[0m                 Windows        \x1b[1;31mFAILED\x1b[0m                            Prints garbage
+- \x1b[1;31mCmder\x1b[0m                      Windows        \x1b[1;31mFAILED\x1b[0m                            Prints garbage
+- \x1b[1;31mConEmu\x1b[0m                     Windows        \x1b[1;31mFAILED\x1b[0m    \x1b[1;34mhttps://git.io/JtyQ5\x1b[0m    Prints garbage - \x1b[1;33mMay be added in upcoming revisions\x1b[0m
+- \x1b[1;31mTerminator\x1b[0m                 *nix           \x1b[1;31mFAILED\x1b[0m                            Prints nothing - \x1b[1;31mDeveloper has stated that sixel will not be supported\x1b[0m
+- \x1b[1;31mKiTTY\x1b[0m                      Windows        \x1b[1;31mFAILED\x1b[0m    \x1b[1;34mhttps://git.io/Jtydz\x1b[0m    Prints garbage - \x1b[33mMay be added, but not by original developer\x1b[0m
+- \x1b[1;31mPuTTY\x1b[0m                      Windows        \x1b[1;31mFAILED\x1b[0m                            Prints garbage
 
 \x1b[1;35mThese lists contain only the terminals which have been tested or queued for testing.
 If your terminal of choice isnt listed, please feel free to open an issue on github.\x1b[0m

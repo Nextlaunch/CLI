@@ -14,8 +14,12 @@ use tui::buffer::Cell;
 use tui::style::Color::Yellow;
 use std::iter::FromIterator;
 use crate::utilities::map_weather::map_weather;
+use std::time::Instant;
+
 
 pub async fn process(i: Option<RenderFrame>, out: &mut Terminal<CrosstermBackend<Stdout>>) {
+    let frame_present = i.is_some();
+
     let mut s = stdout();
 
     let g4l = Text::styled("Go For Launch", Style::default().fg(Color::Green));
@@ -26,9 +30,36 @@ pub async fn process(i: Option<RenderFrame>, out: &mut Terminal<CrosstermBackend
     let hol = Text::styled("On Hold", Style::default().fg(Color::Gray));
     let inf = Text::styled("In Flight", Style::default().fg(Color::LightGreen));
     let paf = Text::styled("Partial Failure", Style::default().fg(Color::LightYellow));
+    let inf = Text::styled("In Flight", Style::default().fg(Color::LightGreen));
+    let fetching = Text::raw("Fetching...");
 
-    if i.is_some() {
-        let frame = i.unwrap();
+    if frame_present {
+        let frame = i.unwrap_or(RenderFrame {
+            view: 0,
+            launch_refresh: Instant::now(),
+            launch: None,
+            telemetry: None,
+            error: None,
+        });
+
+        let status = match frame.launch {
+            Some(frame) => {
+                match frame.launch {
+                    Some(launch) => {
+                        match launch.status.id {
+                            None => fetching,
+                            Some(status) => {
+                                match status {
+                                    _ => fetching
+                                }
+                            }
+                        }
+                    }
+                    None => fetching
+                }
+            }
+            None => fetching
+        };
 
         if let Some(error) = frame.error {
             out.draw(|f| {
@@ -60,7 +91,7 @@ pub async fn process(i: Option<RenderFrame>, out: &mut Terminal<CrosstermBackend
                     .constraints(
                         [
                             Constraint::Ratio(7, 10),
-                            Constraint::Max(9),
+                            Constraint::Min(9),
                         ]
                             .as_ref(),
                     )
@@ -89,11 +120,11 @@ pub async fn process(i: Option<RenderFrame>, out: &mut Terminal<CrosstermBackend
 
                 let launch_table = Table::new(vec![
                     Row::new(vec![" ", ""]),
-                    Row::new(vec![" Name", "10 km Flight"]),
-                    Row::new(vec![" Provider", "SpaceX"]),
-                    Row::new(vec![" Vehicle", "Starship Prototype"]),
-                    Row::new(vec![" Pad", "Launch Pad A"]),
-                    Row::new(vec![" Location", "SpaceX Space Launch Facility, TX, USA"]),
+                    Row::new(vec![" Name", "Fetching..."]),
+                    Row::new(vec![" Provider", "Fetching..."]),
+                    Row::new(vec![" Vehicle", "Fetching..."]),
+                    Row::new(vec![" Pad", "Fetching..."]),
+                    Row::new(vec![" Location", "Fetching..."]),
                     Row::new(vec![Text::from(" Status"), tbc.clone()]),
                     Row::new(vec![" ", ""]),
                 ])
@@ -110,16 +141,16 @@ pub async fn process(i: Option<RenderFrame>, out: &mut Terminal<CrosstermBackend
 
                 let weather_table = Table::new(vec![
                     Row::new(vec![" ", ""]),
-                    Row::new(vec![" Description", "[32mPartly Cloudy[0m"]),
-                    Row::new(vec![" Temp (c)", "10.6"]),
-                    Row::new(vec![" Feels Like (c)", " 8.4", weather_icon[0]]),
-                    Row::new(vec![" Wind (KM/H)", "20.2", weather_icon[1]]),
-                    Row::new(vec![" Gusts (KM/H)", "20.2", weather_icon[2]]),
-                    Row::new(vec![" Direction", "North", weather_icon[3]]),
-                    Row::new(vec![" Bearing", "350", weather_icon[4]]),
-                    Row::new(vec![" Humidity", "65%"]),
-                    Row::new(vec![" Cloud Cover", "50%"]),
-                    Row::new(vec![" Visibility (KM)", "16"]),
+                    Row::new(vec![" Description", "Fetching..."]),
+                    Row::new(vec![" Temp (c)", "Fetching..."]),
+                    Row::new(vec![" Feels Like (c)", "Fetching...", weather_icon[0]]),
+                    Row::new(vec![" Wind (KM/H)", "Fetching...", weather_icon[1]]),
+                    Row::new(vec![" Gusts (KM/H)", "Fetching...", weather_icon[2]]),
+                    Row::new(vec![" Direction", "Fetching...", weather_icon[3]]),
+                    Row::new(vec![" Bearing", "Fetching...", weather_icon[4]]),
+                    Row::new(vec![" Humidity", "Fetching..."]),
+                    Row::new(vec![" Cloud Cover", "Fetching..."]),
+                    Row::new(vec![" Visibility (KM)", "Fetching..."]),
                 ])
                     .widths(&[
                         Constraint::Percentage(30),
@@ -134,13 +165,13 @@ pub async fn process(i: Option<RenderFrame>, out: &mut Terminal<CrosstermBackend
 
                 let countdown = Paragraph::new(vec![
                     "",
-                    "#####       #        #####   #####        #####   #####        #   #   #####",
-                    "#   #       #   ##   #   #   #       ##       #       #   ##   #   #       #",
-                    "#   #       #   ##   #   #   #       ##       #       #   ##   #   #       #",
-                    "#   #       #        #   #   #####        #####     ###        #####       #",
-                    "#   #       #   ##   #   #       #   ##   #           #   ##       #       #",
-                    "#   #       #   ##   #   #       #   ##   #           #   ##       #       #",
-                    "#####       #        #####   #####        #####   #####            #       #",
+                    "#####   #####        #####   #####        #####   #####        #####   #####",
+                    "#   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #",
+                    "#   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #",
+                    "#   #   #   #        #   #   #   #        #   #   #   #        #   #   #   #",
+                    "#   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #",
+                    "#   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #",
+                    "#####   #####        #####   #####        #####   #####        #####   #####",
                     "",
                 ].join("\n"))
                     .block(Block::default().title(" Countdown ").borders(Borders::ALL))
@@ -157,7 +188,7 @@ pub async fn process(i: Option<RenderFrame>, out: &mut Terminal<CrosstermBackend
                     [
                         Constraint::Percentage(10),
                         Constraint::Percentage(80),
-                        Constraint::Percentage(10),
+                        Constraint::Min(10),
                     ]
                         .as_ref(),
                 )
