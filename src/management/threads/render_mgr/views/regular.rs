@@ -110,7 +110,7 @@ pub async fn process(i: Option<RenderFrame>, out: &mut Terminal<CrosstermBackend
 
                 let weather_table = Table::new(vec![
                     Row::new(vec![" ", ""]),
-                    Row::new(vec![" Description", "Partly Cloudy"]),
+                    Row::new(vec![" Description", "[32mPartly Cloudy[0m"]),
                     Row::new(vec![" Temp (c)", "10.6"]),
                     Row::new(vec![" Feels Like (c)", " 8.4", weather_icon[0]]),
                     Row::new(vec![" Wind (KM/H)", "20.2", weather_icon[1]]),

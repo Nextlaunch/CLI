@@ -1,5 +1,6 @@
 pub use constants::*;
 use std::process::exit;
+use tokio::time::{sleep, Duration};
 
 
 pub mod management;
@@ -26,7 +27,9 @@ async fn main() {
     }
     println!("\x1b[1;37mWelcome to NextLaunch.\x1b[0m\nA state of the art program, providing advanced access to the world's rocket launches and space news, directly in your terminal");
 
-    exit(0);
+    // exit(0);
+
+    sleep( Duration::from_secs(3)).await;
 
     management::runtime::run(flags).await;
 }
