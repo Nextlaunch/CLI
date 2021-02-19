@@ -220,21 +220,30 @@ Libraries: (Alphabetical)
     } else if f.sixel_preview {
         println!("
 \x1b[1;37mList of VT240 (Sixel) compatible terminal emulators\x1b[0m
-- \x1b[1;35miTerm2\x1b[0m                     \x1b[1;32mTESTED\x1b[0m
-- \x1b[1;35mxTerm\x1b[0m                      \x1b[1;32mTESTED\x1b[0m   (needs flag) - Use the `-ti vt340` flag at startup to enable the feature
-- \x1b[1;35mAlactritty\x1b[0m                 \x1b[1;33mREPORTED\x1b[0m (needs test)
-- \x1b[1;35mMLterm\x1b[0m                     \x1b[1;33mREPORTED\x1b[0m (needs test)
-- \x1b[1;35mWIndows Terminal\x1b[0m           \x1b[1;33mREPORTED\x1b[0m (needs test)
-- \x1b[1;35mMinTTy\x1b[0m                     \x1b[1;33mREPORTED\x1b[0m (needs test)
-- \x1b[1;35mDEC VT series (240+)\x1b[0m       \x1b[1;33mREPORTED\x1b[0m (needs test)
-- \x1b[1;35mDECTerm (dxterm)\x1b[0m           \x1b[1;33mREPORTED\x1b[0m (needs test)
-- \x1b[1;35mKermit\x1b[0m                     \x1b[1;33mREPORTED\x1b[0m (needs test)
-- \x1b[1;35mZSTEM 340\x1b[0m                  \x1b[1;33mREPORTED\x1b[0m (needs test)
-- \x1b[1;35mWRQ Reflection\x1b[0m             \x1b[1;33mREPORTED\x1b[0m (needs test)
-- \x1b[1;35mRLogin (Japanese emulator)\x1b[0m \x1b[1;33mREPORTED\x1b[0m (needs test)
-- \x1b[1;35mrecterm\x1b[0m                    \x1b[1;33mREPORTED\x1b[0m (needs test)
-- \x1b[1;35mcancer\x1b[0m                     \x1b[1;33mREPORTED\x1b[0m (needs test)
-- \x1b[1;35mYaft\x1b[0m                       \x1b[1;33mREPORTED\x1b[0m (needs test)");
+- \x1b[1;32miTerm2\x1b[0m                     \x1b[1;32mTESTED\x1b[0m
+- \x1b[1;32mxTerm\x1b[0m                      \x1b[1;32mTESTED\x1b[0m   (needs flag) - Use the `-ti vt340` flag at startup to enable the feature
+- \x1b[1;33mAlactritty\x1b[0m                 \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;33mMLterm\x1b[0m                     \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;33mWIndows Terminal\x1b[0m           \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;33mMinTTy\x1b[0m                     \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;33mDEC VT series (240+)\x1b[0m       \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;33mDECTerm (dxterm)\x1b[0m           \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;33mKermit\x1b[0m                     \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;33mZSTEM 340\x1b[0m                  \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;33mWRQ Reflection\x1b[0m             \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;33mRLogin (Japanese emulator)\x1b[0m \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;33mrecterm\x1b[0m                    \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;33mcancer\x1b[0m                     \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;33mYaft\x1b[0m                       \x1b[1;33mREPORTED\x1b[0m (needs test)");
+
+        println!("
+\x1b[1;37mList of VT240 (Sixel) incompatible terminal emulators\x1b[0m
+- \x1b[1;31mTerminal.app (MacOS default)\x1b[0m  \x1b[1;31mFAILED\x1b[0m
+- \x1b[1;31mHyper\x1b[0m                         \x1b[1;31mFAILED\x1b[0m
+
+\x1b[1;35mThese lists contain only the terminals which have been tested or queued for testing
+If your terminal of choice isnt listed, please feel free to open an issue on github\x1b[0m
+");
         exit(0);
     }
 }
