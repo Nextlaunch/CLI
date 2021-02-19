@@ -8,6 +8,8 @@ pub async fn check_flags() -> Flags {
     let mut flags = Flags {
         view: 0,
         help: false,
+        sixel: false,
+        sixel_preview: false,
         preview_1: false,
         preview_2: false,
         version: false,
@@ -35,6 +37,12 @@ pub async fn check_flags() -> Flags {
             "--p2" => {
                 flags.preview_2 = true;
             }
+            "--sxl" | "-s" => {
+                flags.sixel = true;
+            }
+            "--sxl-ls" => {
+                flags.sixel_preview = true;
+            }
             _ => {
                 if arg.starts_with("-") {
                     println!(r#"Unknown flag: "{}""#, arg)
@@ -49,6 +57,8 @@ pub async fn check_flags() -> Flags {
 pub struct Flags {
     pub view: usize,
     pub help: bool,
+    pub sixel: bool,
+    pub sixel_preview: bool,
     pub preview_1: bool,
     pub preview_2: bool,
     pub version: bool,
@@ -69,25 +79,35 @@ Author: {}
 Usage: nextlaunch [Flags]
 Flags:
     -h, --help
-        Prints help information
+        Prints help information.
 
     -v, --version
-        Prints version information
+        Prints version information.
 
     -c, --credits
-        Prints the credits of all who helped influence the program
+        Prints the credits of all who helped influence the program.
+
+    -s, --sxl
+        Informs the program to render output using the Sixel format.
+        This standard is not well supported, so please ensure your terminal
+        supports it, lest you get a screen full of garbage output.
+        For a list of compatible terminals, use "-sxl-ls"
+
+        --sxl-ls
+        Prints a list of Sixel compatible terminals to the user, as well as
+        a "test" sixel for them to check against
 
     -o, --offline
-        Forces the program to try and operate from locally cached information
+        Forces the program to try and operate from locally cached information.
 "#, crate::NAME, crate::DESCRIPTION, crate::VERSION, crate::AUTHOR);
-        exit(1);
+        exit(0);
     } else if f.version {
         println!(
             r#"{}
 
 Version {}
 "#, crate::NAME, crate::VERSION);
-        exit(1);
+        exit(0);
     } else if f.credits {
         println!(
             r#"{} - Credits
@@ -116,7 +136,7 @@ Libraries: (Alphabetical)
            Tokio                 <https://github.com/tokio-rs/tokio>
            Websockets            <https://github.com/websockets-rs/rust-websocket>
 "#, crate::NAME);
-        exit(1);
+        exit(0);
     } else if f.preview_1 {
         println!("\
 +======================================================================= NextLaunch ======================================================================+
@@ -156,7 +176,7 @@ Libraries: (Alphabetical)
 |                                                                                                                                                         |
 +=========================================================================================================================================================+
 ", FC_BASE, SLN_BASE, G4L_BASE);
-        exit(1);
+        exit(0);
     } else if f.preview_2 {
         println!("\
 +======================================================================= NextLaunch ======================================================================+
@@ -196,6 +216,25 @@ Libraries: (Alphabetical)
 |                                                                                                                                                         |
 +=========================================================================================================================================================+",
                  FC_BASE, SLN_BASE, G4L_BASE);
-        exit(1);
+        exit(0);
+    } else if f.sixel_preview {
+        println!("
+\x1b[1;37mList of VT240 (Sixel) compatible terminal emulators\x1b[0m
+- \x1b[1;35miTerm2\x1b[0m                     \x1b[1;32mTESTED\x1b[0m
+- \x1b[1;35mxTerm\x1b[0m                      \x1b[1;32mTESTED\x1b[0m   (needs flag) - Use the `-ti vt340` flag at startup to enable the feature
+- \x1b[1;35mAlactritty\x1b[0m                 \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;35mMLterm\x1b[0m                     \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;35mWIndows Terminal\x1b[0m           \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;35mMinTTy\x1b[0m                     \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;35mDEC VT series (240+)\x1b[0m       \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;35mDECTerm (dxterm)\x1b[0m           \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;35mKermit\x1b[0m                     \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;35mZSTEM 340\x1b[0m                  \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;35mWRQ Reflection\x1b[0m             \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;35mRLogin (Japanese emulator)\x1b[0m \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;35mrecterm\x1b[0m                    \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;35mcancer\x1b[0m                     \x1b[1;33mREPORTED\x1b[0m (needs test)
+- \x1b[1;35mYaft\x1b[0m                       \x1b[1;33mREPORTED\x1b[0m (needs test)");
+        exit(0);
     }
 }
