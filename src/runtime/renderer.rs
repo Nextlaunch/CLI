@@ -18,13 +18,18 @@ use tui::style::{Style, Color, Modifier};
 use tui::buffer::Cell;
 use tui::style::Color::Yellow;
 
-use crossterm::terminal::ClearType;
+use crossterm::terminal::{ClearType, Clear};
 use crossterm::ExecutableCommand;
 use crossterm::style::Colorize;
+
 use chrono::{Utc, DateTime, Local};
 
-pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<(DateTime<Local>, String, u8)>) {
+pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<(DateTime<Local>, String, u8)>, has_changed: bool) {
     let mut stdout = std::io::stdout();
+
+    if has_changed {
+        stdout.execute(Clear(ClearType::All));
+    }
 
     let backend = CrosstermBackend::new(stdout);
     let mut out: Terminal<CrosstermBackend<Stdout>> = Terminal::new(backend).unwrap();
@@ -104,7 +109,6 @@ pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<
     }
 
     if launch_present {
-
         let launch = i.clone().unwrap();
 
         let raw_name = launch.name.unwrap_or("Unknown Launch | Unknown Payload".to_string());

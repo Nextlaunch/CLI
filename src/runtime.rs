@@ -14,6 +14,12 @@ pub async fn launch(f: Flags) {
     let client = reqwest::Client::new();
     let mut last = Instant::now();
 
+    let (mut w, mut h) = if let Some((w1, h1)) = term_size::dimensions() {
+        (w1, h1)
+    } else {
+        (0, 0)
+    };
+
     let mut log: Vec<(DateTime<Local>, String, u8)> = vec![];
 
     let mut launch: Option<Launch> = update(&client, &mut log).await;
@@ -32,7 +38,16 @@ pub async fn launch(f: Flags) {
             needs_refresh = false;
         }
 
-        renderer::process(&launch, &news, &mut log).await;
+        let (w2, h2) = if let Some((w1, h1)) = term_size::dimensions() {
+            (w1, h1)
+        } else {
+            (0, 0)
+        };
+
+        renderer::process(&launch, &news, &mut log, (w != w2 || h != h2)).await;
+
+        w = w2;
+        h = h2;
 
         if last.elapsed().as_secs() > 60 * 10 {
             last = Instant::now();
