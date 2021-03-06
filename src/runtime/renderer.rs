@@ -50,17 +50,19 @@ pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<
     let mut parsed_logs = vec![];
 
     for (time, message, level) in log {
+        let (lvl, style) = match level {
+            0 => ("INFO".to_string(), Style::default().fg(Color::Gray)),
+            1 => ("ERROR".to_string(), Style::default().fg(Color::Red)),
+            2 => ("WARN".to_string(), Style::default().fg(Color::Yellow)),
+            _ => ("INFO".to_string(), Style::default().fg(Color::Gray))
+        };
+
         parsed_logs.push(
             Row::new(
                 vec![
-                    time.format(" %Y/%b/%d %H:%M").to_string(),
-                    match level {
-                        0 => "INFO".to_string(),
-                        1 => "ERROR".to_string(),
-                        2 => "WARN".to_string(),
-                        _ => "INFO".to_string()
-                    },
-                    message.clone(),
+                    Span::raw(time.format(" %Y/%b/%d %H:%M").to_string()),
+                    Span::styled(lvl, style),
+                    Span::raw(message.clone()),
                 ]
             )
         )
@@ -69,16 +71,36 @@ pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<
     let articles = news.clone().unwrap_or(vec![]);
 
     let mut processed_articles: Vec<Spans> = vec![];
-
+    let mut artindex = 0;
     for article in articles {
+        let untitle = article.title.unwrap_or("Unkown Title".to_string());
+
+        let raw_title = if untitle.len() > 60 {
+            let (headline, _) = untitle.split_at(57);
+            format!("{}...", headline)
+        } else {
+            untitle
+        };
+
+        let title = if artindex == 0 {
+            Span::styled(
+                format!(" {}\n",
+                        raw_title
+                ),
+                Style::default().fg(Color::LightBlue),
+            )
+        } else {
+            Span::raw(
+                format!(" {}\n",
+                        raw_title
+                )
+            )
+        };
+        artindex += 1;
         processed_articles.push(
             Spans::from(
                 vec![
-                    Span::raw(
-                        format!(" {}\n",
-                                article.title.unwrap_or("Unkown Title".to_string())
-                        )
-                    )
+                    title
                 ]
             )
         );
