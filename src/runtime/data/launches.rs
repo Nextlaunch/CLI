@@ -13,22 +13,32 @@ pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>) -
     return if let Ok(resp) = req {
         let raw_launch: reqwest::Result<structures::LaunchResponse> = resp.json().await;
         if let Ok(launches) = raw_launch {
-            logs.push((Local::now(), "Successfully updated launch cache".to_string(), 0));
+            if launches.results.is_some() {
+                let launch_list = launches.results.unwrap();
 
-            let launch_list = launches.results.unwrap();
+                let mut next = launch_list.first().unwrap().clone();
 
-            let mut next = launch_list.first().unwrap().clone();
+                for launch in launch_list {
+                    let time_remaining = crate::utilities::countdown(launch.net.clone().unwrap_or(Utc::now().to_string()));
 
-            for launch in launch_list {
-                let time_remaining = crate::utilities::countdown(launch.net.clone().unwrap_or(Utc::now().to_string()));
-
-                if time_remaining.seconds > 0 {
-                    next = launch;
-                    break;
+                    if time_remaining.seconds > 0 {
+                        next = launch;
+                        break;
+                    }
                 }
-            }
 
-            Some(next)
+                logs.push((Local::now(), "Successfully updated launch cache".to_string(), 0));
+                Some(next)
+            } else {
+                if launches.detail.is_some() {
+                    logs.push((Local::now(), "Failed to update launch cache".to_string(), 1));
+                    logs.push((Local::now(), " ^--> Request throttled by API".to_string(), 1));
+                } else {
+                    logs.push((Local::now(), "Failed to update launch cache".to_string(), 1));
+                    logs.push((Local::now(), " ^--> Unknown error".to_string(), 1));
+                }
+                None
+            }
         } else {
             logs.push((Local::now(), "Failed to update launch cache".to_string(), 1));
             None
@@ -52,7 +62,6 @@ pub async fn news_update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8
             None
         }
     } else {
-
         logs.push((Local::now(), "Failed to update news cache".to_string(), 1));
         None
     };

@@ -42,48 +42,68 @@ pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<
     let hol = Text::styled("On Hold", Style::default().fg(Color::Gray));
     let fetching = Text::raw("Fetching...");
 
+    let mut parsed_logs = vec![];
+
+    for (time, message, level) in log {
+        parsed_logs.push(
+            Row::new(
+                vec![
+                    time.format(" %Y/%b/%d %H:%M").to_string(),
+                    match level {
+                        0 => "INFO".to_string(),
+                        1 => "ERROR".to_string(),
+                        2 => "WARN".to_string(),
+                        _ => "INFO".to_string()
+                    },
+                    message.clone(),
+                ]
+            )
+        )
+    }
+
+    let articles = news.clone().unwrap_or(vec![]);
+
+    let mut processed_articles: Vec<Spans> = vec![];
+
+    for article in articles {
+        processed_articles.push(
+            Spans::from(
+                vec![
+                    Span::raw(
+                        format!(" {}\n",
+                                article.title.unwrap_or("Unkown Title".to_string())
+                        )
+                    )
+                ]
+            )
+        );
+        processed_articles.push(
+            Spans::from(
+                vec![
+                    Span::styled(
+                        format!("  {}\n",
+                                article.newsSite.unwrap_or("Unkown Publisher".to_string()
+                                )
+                        ),
+                        Style::default().fg(
+                            Color::Magenta
+                        ),
+                    )
+                ]
+            )
+        );
+        processed_articles.push(
+            Spans::from(
+                vec![
+                    Span::raw(
+                        ""
+                    )
+                ]
+            )
+        );
+    }
+
     if launch_present {
-        let articles = news.clone().unwrap_or(vec![]);
-
-        let mut processed_articles: Vec<Spans> = vec![];
-
-        for article in articles {
-            processed_articles.push(
-                Spans::from(
-                    vec![
-                        Span::raw(
-                            format!(" {}\n",
-                                    article.title.unwrap_or("Unkown Title".to_string())
-                            )
-                        )
-                    ]
-                )
-            );
-            processed_articles.push(
-                Spans::from(
-                    vec![
-                        Span::styled(
-                            format!("  {}\n",
-                                    article.newsSite.unwrap_or("Unkown Publisher".to_string()
-                                    )
-                            ),
-                            Style::default().fg(
-                                Color::Magenta
-                            ),
-                        )
-                    ]
-                )
-            );
-            processed_articles.push(
-                Spans::from(
-                    vec![
-                        Span::raw(
-                            ""
-                        )
-                    ]
-                )
-            );
-        }
 
         let launch = i.clone().unwrap();
 
@@ -299,25 +319,6 @@ pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<
             f.render_widget(news, right[1]);
 
 
-            let mut parsed_logs = vec![];
-
-            for (time, message, level) in log {
-                parsed_logs.push(
-                    Row::new(
-                        vec![
-                            time.format(" %Y/%b/%d %H:%M").to_string(),
-                            match level {
-                                0 => "INFO".to_string(),
-                                1 => "ERROR".to_string(),
-                                2 => "WARN".to_string(),
-                                _ => "INFO".to_string()
-                            },
-                            message.clone(),
-                        ]
-                    )
-                )
-            }
-
             let log_list = Table::new(parsed_logs)
                 .widths(&[
                     Constraint::Min(19),
@@ -349,6 +350,7 @@ pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<
                         .as_ref(),
                 )
                 .split(f.size());
+
             let right = Layout::default()
                 .direction(Direction::Horizontal)
                 .constraints(
@@ -360,6 +362,17 @@ pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<
                 )
                 .split(whole[0]);
 
+            // let right_status = Layout::default()
+            //     .direction(Direction::Vertical)
+            //     .constraints(
+            //         [
+            //             Constraint::Percentage(75),
+            //             Constraint::Percentage(25),
+            //         ]
+            //             .as_ref(),
+            //     )
+            //     .split(right[1]);
+
             let left = Layout::default()
                 .direction(Direction::Vertical)
                 .constraints(
@@ -370,6 +383,7 @@ pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<
                         .as_ref(),
                 )
                 .split(right[0]);
+
             let launch_table = Table::new(vec![
                 Row::new(vec![" ", ""]),
                 Row::new(vec![" Name", "Fetching..."]),
@@ -389,31 +403,22 @@ pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<
 
             f.render_widget(launch_table, left[0]);
 
-            let weather_icon = map_weather(1003, true);
-
-            let weather_table = Table::new(vec![
-                Row::new(vec![" ", ""]),
-                Row::new(vec![" Description", "Fetching..."]),
-                Row::new(vec![" Temp (c)", "Fetching..."]),
-                Row::new(vec![" Feels Like (c)", "Fetching...", weather_icon[0]]),
-                Row::new(vec![" Wind (KM/H)", "Fetching...", weather_icon[1]]),
-                Row::new(vec![" Gusts (KM/H)", "Fetching...", weather_icon[2]]),
-                Row::new(vec![" Direction", "Fetching...", weather_icon[3]]),
-                Row::new(vec![" Bearing", "Fetching...", weather_icon[4]]),
-                Row::new(vec![" Humidity", "Fetching..."]),
-                Row::new(vec![" Cloud Cover", "Fetching..."]),
-                Row::new(vec![" Visibility (KM)", "Fetching..."]),
-            ])
-                .widths(&[
-                    Constraint::Percentage(30),
-                    Constraint::Percentage(30),
-                    Constraint::Percentage(30)
-                ])
-                .block(Block::default().title(" Launch Site Weather Info ").borders(Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])));
-
-            f.render_widget(weather_table, left[1]);
-            let news = Block::default().title(" News ").borders(Borders::from_iter(vec![Borders::TOP, Borders::RIGHT]));
+            let news = Paragraph::new(processed_articles)
+                .block(Block::default().title(" News ").borders(Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])));
+            // f.render_widget(news, right_status[0]);
             f.render_widget(news, right[1]);
+
+            let log_list = Table::new(parsed_logs)
+                .widths(&[
+                    Constraint::Min(19),
+                    Constraint::Min(6),
+                    Constraint::Min(30)
+                ])
+                .block(Block::default().title(" Logs ")
+                    .borders(Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])));
+            // f.render_widget(log_list, right_status[1]);
+            f.render_widget(log_list, left[1]);
+
 
             let countdown = Paragraph::new(vec![
                 "",
