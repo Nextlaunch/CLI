@@ -1,14 +1,11 @@
 pub use constants::*;
-use std::process::exit;
-use tokio::time::{sleep, Duration};
 
 
-pub mod management;
-pub mod constants;
+
+
 pub mod utilities;
-
-pub mod sixel;
-
+pub mod constants;
+pub mod runtime;
 
 // TODO: Look further into the Kitty and Sixel graphics rendering protocols
 // Kitty: https://sw.kovidgoyal.net/kitty/graphics-protocol.html?highlight=protocol
@@ -16,20 +13,20 @@ pub mod sixel;
 #[tokio::main]
 async fn main() {
 
-    let flags = management::flags::check_flags().await;
+    let flags = runtime::flags::check_flags().await;
 
-    management::flags::process_flags(&flags).await;
+    runtime::flags::process_flags(&flags).await;
 
-    if flags.sixel {
-        println!("{}", sixel::CONTENT)
-    } else {
-        println!("{}", sixel::TEXT)
-    }
-    println!("\x1b[1;37mWelcome to NextLaunch.\x1b[0m\nA state of the art program, providing advanced access to the world's rocket launches and space news, directly in your terminal");
+    // println!("{}", utilities::digit_map::map_str("00:00:00:00:00:00").join("\n"));
+    // println!("{}", utilities::digit_map::map_str("00:00:00:01:00:00").join("\n"));
+    // println!("{}", utilities::digit_map::map_str("00:00:00:02:00:00").join("\n"));
+    // println!("{}", utilities::digit_map::map_str("00:00:00:03:00:00").join("\n"));
+    // println!("{}", utilities::digit_map::map_str("00:00:00:04:00:00").join("\n"));
+    // println!("{}", utilities::digit_map::map_str("00:00:00:05:00:00").join("\n"));
+    // println!("{}", utilities::digit_map::map_str("00:00:00:06:00:00").join("\n"));
+    // println!("{}", utilities::digit_map::map_str("00:00:00:07:00:00").join("\n"));
+    // println!("{}", utilities::digit_map::map_str("00:00:00:08:00:00").join("\n"));
+    // println!("{}", utilities::digit_map::map_str("00:00:00:09:00:00").join("\n"));
 
-    // exit(0);
-
-    sleep( Duration::from_secs(3)).await;
-
-    management::runtime::run(flags).await;
+    runtime::launch(flags).await;
 }
