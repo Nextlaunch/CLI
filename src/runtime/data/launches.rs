@@ -27,7 +27,6 @@ pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>) -
                     }
                 }
 
-                logs.push((Local::now(), "Successfully updated launch cache".to_string(), 0));
                 Some(next)
             } else {
                 if launches.detail.is_some() {
@@ -55,7 +54,6 @@ pub async fn news_update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8
     return if let Ok(resp) = req {
         let raw_launch: reqwest::Result<Vec<structures::Article>> = resp.json().await;
         if let Ok(launches) = raw_launch {
-            logs.push((Local::now(), "Successfully updated news cache".to_string(), 0));
             Some(launches)
         } else {
             logs.push((Local::now(), "Failed to update news cache".to_string(), 1));

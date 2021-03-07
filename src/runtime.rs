@@ -91,6 +91,13 @@ pub async fn launch(_f: Flags) {
             if temp_news.is_some() {
                 news = temp_news;
             }
+            if launch.is_some() && news.is_some() {
+                log.push((Local::now(), "updated launch and news caches".to_string(), 0));
+            } else if launch.is_some() && news.is_none() {
+                log.push((Local::now(), "updated launch cache".to_string(), 0));
+            } else if launch.is_none() && news.is_some() {
+                log.push((Local::now(), "updated news cache".to_string(), 0));
+            }
             needs_refresh = false;
         }
 
