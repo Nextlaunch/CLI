@@ -10,6 +10,7 @@ pub mod dict;
 
 pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i: &Option<Launch>) {
     if launch_present {
+
         let ln = i.clone().unwrap();
         let rocket = ln.rocket.unwrap_or(Rocket {
             id: None,
