@@ -25,40 +25,41 @@ pub fn wiki() -> Rocket {
                                 abbrev: "LOX".to_string(),
                                 class: "".to_string(),
                                 density_g_ml: "1.141 g/ml".to_string(),
-                                mass_kg_l: "1.141 kg/l".to_string()
+                                mass_kg_l: "1.141 kg/l".to_string(),
                             },
                             Fuel {
                                 name: "Refined Petroleum 1".to_string(),
                                 abbrev: "RP-1".to_string(),
                                 class: "".to_string(),
                                 density_g_ml: "0.81".to_string(),
-                                mass_kg_l: "0.81 kg/l".to_string()
+                                mass_kg_l: "0.81 kg/l".to_string(),
                             }
                         ],
                         specific_impulse: "310 Seconds".to_string(),
-                        gimbal: "".to_string(),
+                        gimbal: "??? Degrees".to_string(),
                         min_throttle: "57%".to_string(),
                         min_throttle_as_newtons: "482 kN".to_string(),
                         min_throttle_sea: "64%".to_string(),
-                        min_throttle_sea_as_newtons: "626 kN".to_string()
+                        min_throttle_sea_as_newtons: "626 kN".to_string(),
                     }
                 ],
-                thrust_weight: "".to_string()
+                thrust_weight_sea: "775, 494 kgf".to_string(),
+                thrust_weight_vac: "900, 315 kgf".to_string(),
             }
         ],
-        reusable: "".to_string(),
+        reusable: "Fully".to_string(),
         entered_service: "".to_string(),
         retired: false,
         retired_date: "".to_string(),
-        human_rated: false,
+        human_rated: true,
         capacity_leo: "".to_string(),
         capacity_gto: "".to_string(),
         capacity_mto: "".to_string(),
         height: "".to_string(),
         diameter: "".to_string(),
-        country: "".to_string(),
-        manufacturer: "".to_string(),
-        family: "".to_string(),
+        country: "USA".to_string(),
+        manufacturer: "SpaceX".to_string(),
+        family: "Falcon".to_string(),
         first_flight: "".to_string(),
     }
 }

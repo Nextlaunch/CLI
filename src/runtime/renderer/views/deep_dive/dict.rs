@@ -22,7 +22,8 @@ pub struct Rocket {
 pub struct Stage {
     pub name: String,
     pub engines: Vec<Engine>,
-    pub thrust_weight: String,
+    pub thrust_weight_sea: String,
+    pub thrust_weight_vac: String,
 }
 
 pub struct Engine {
