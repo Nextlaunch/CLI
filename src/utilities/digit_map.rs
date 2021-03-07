@@ -8,7 +8,7 @@ pub fn map_str(content: &str) -> [String; 9] {
         String::new(),
         String::new(),
         String::new(),
-        "    Years                Weeks                Days                 Hours               Minutes              Seconds   \u{200b}".to_string()
+        String::new()
     ];
 
     let mut x = 0;

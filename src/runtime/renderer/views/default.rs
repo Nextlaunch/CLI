@@ -12,7 +12,7 @@ use tokio::time::{sleep, Duration, Instant};
 use tui::Terminal;
 use tui::backend::CrosstermBackend;
 use tui::layout::{Layout, Direction, Constraint, Alignment};
-use tui::widgets::{Block, Borders, Row, Table, Paragraph, Wrap};
+use tui::widgets::{Block, Borders, Row, Table, Paragraph, Wrap, Clear as Blank};
 use tui::text::{Text, Span, Spans};
 use tui::style::{Style, Color, Modifier};
 use tui::buffer::Cell;
@@ -130,7 +130,27 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
 
         let timespan = crate::utilities::countdown(launch.net.unwrap_or(Utc::now().to_string()));
 
-        let net = crate::utilities::digit_map::map_str(format!("{:02}:{:02}:{:02}:{:02}:{:02}:{:02}", timespan.years, timespan.weeks, timespan.days, timespan.hours, timespan.minutes, timespan.seconds).as_str());
+        let net = if timespan.years > 0 {
+            let mut raw = crate::utilities::digit_map::map_str(format!("{:02}:{:02}:{:02}:{:02}:{:02}:{:02}", timespan.years, timespan.weeks, timespan.days, timespan.hours, timespan.minutes, timespan.seconds).as_str());
+            raw[8] = "    Years                Weeks                Days                 Hours               Minutes              Seconds   \u{200b}".to_string();
+
+            raw
+        } else if timespan.weeks > 0 {
+            let mut raw = crate::utilities::digit_map::map_str(format!("{:02}:{:02}:{:02}:{:02}:{:02}", timespan.weeks, timespan.days, timespan.hours, timespan.minutes, timespan.seconds).as_str());
+            raw[8] = "    Weeks                Days                 Hours               Minutes              Seconds   \u{200b}".to_string();
+
+            raw
+        } else if timespan.days > 0 {
+            let mut raw = crate::utilities::digit_map::map_str(format!("{:02}:{:02}:{:02}:{:02}", timespan.days, timespan.hours, timespan.minutes, timespan.seconds).as_str());
+            raw[8] = "    Days                 Hours               Minutes              Seconds   \u{200b}".to_string();
+
+            raw
+        } else {
+            let mut raw = crate::utilities::digit_map::map_str(format!("{:02}:{:02}:{:02}", timespan.hours, timespan.minutes, timespan.seconds).as_str());
+            raw[8] = "    Hours               Minutes              Seconds   \u{200b}".to_string();
+
+            raw
+        };
 
         let vehicle = launch.rocket.clone().unwrap_or(Rocket {
             id: None,
@@ -330,6 +350,7 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
             let news = Paragraph::new(processed_articles)
                 .block(Block::default().title(" News ").borders(Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])));
             // f.render_widget(news, right_status[0]);
+            f.render_widget(Blank, right[1]);
             f.render_widget(news, right[1]);
 
 
@@ -420,6 +441,7 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
             let news = Paragraph::new(processed_articles)
                 .block(Block::default().title(" News ").borders(Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])));
             // f.render_widget(news, right_status[0]);
+            f.render_widget(Blank, right[1]);
             f.render_widget(news, right[1]);
 
             let log_list = Table::new(parsed_logs)
