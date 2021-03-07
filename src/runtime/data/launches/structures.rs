@@ -184,8 +184,12 @@ pub struct Program {
 pub struct Article {
     pub id: Option<String>,
     pub title: Option<String>,
+    #[serde(rename = "publishedAt")]
+    pub published_at: Option<String>,
     pub url: Option<String>,
-    pub imageUrl: Option<String>,
+    #[serde(rename = "imageUrl")]
+    pub image_url: Option<String>,
     pub summary: Option<String>,
-    pub newsSite: Option<String>,
+    #[serde(rename = "newsSite")]
+    pub news_site: Option<String>,
 }

@@ -11,6 +11,12 @@ pub fn countdown(timestamp: String) -> TimeFrame {
     process_seconds(scheduled.num_seconds())
 }
 
+pub fn countdown_news(timestamp: String) -> TimeFrame {
+    let scheduled_naive = NaiveDateTime::parse_from_str(timestamp.as_str(), "%Y-%m-%dT%H:%M:%S%.3fZ").unwrap();
+    let scheduled = DateTime::<Utc>::from_utc(scheduled_naive, Utc).signed_duration_since(Utc::now());
+    process_seconds(scheduled.num_seconds())
+}
+
 pub fn process_seconds(mut seconds: i64) -> TimeFrame {
     let mut minutes = 0;
     let mut hours = 0;
@@ -44,31 +50,31 @@ pub fn process_seconds(mut seconds: i64) -> TimeFrame {
         seconds -= 60;
     }
 
-    // while seconds < 0 {
-    //     minutes += 1;
-    //
-    //     if minutes >= 60 {
-    //         minutes -= 60;
-    //         hours += 1
-    //     }
-    //
-    //     if hours >= 24 {
-    //         hours -= 24;
-    //         days += 1;
-    //     }
-    //
-    //     if days >= 7 {
-    //         days -= 7;
-    //         weeks += 1;
-    //     }
-    //
-    //     if weeks >= 52 {
-    //         weeks -= 52;
-    //         years += 1;
-    //     }
-    //
-    //     seconds += 60;
-    // }
+    while seconds < 0 {
+        minutes += 1;
+
+        if minutes >= 60 {
+            minutes -= 60;
+            hours += 1
+        }
+
+        if hours >= 24 {
+            hours -= 24;
+            days += 1;
+        }
+
+        if days >= 7 {
+            days -= 7;
+            weeks += 1;
+        }
+
+        if weeks >= 52 {
+            weeks -= 52;
+            years += 1;
+        }
+
+        seconds += 60;
+    }
 
     TimeFrame::new(seconds as u8, minutes, hours, days, weeks, years)
 }

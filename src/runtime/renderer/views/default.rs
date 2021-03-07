@@ -26,7 +26,7 @@ use chrono::{Utc, DateTime, Local};
 
 pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<(DateTime<Local>, String, u8)>) {
     let suc = Text::styled("Launch Successful", Style::default().fg(Color::LightGreen));
-    let tbd = Text::styled("To Be Determined", Style::default().fg(Color::Cyan));
+    let tbd = Text::styled("To Be Determined", Style::default().fg(Color::Yellow));
     let tbc = Text::styled("To Be Confirmed", Style::default().fg(Color::LightYellow));
     let paf = Text::styled("Partial Failure", Style::default().fg(Color::LightYellow));
     let fal = Text::styled("Launch Failure", Style::default().fg(Color::Red));
@@ -92,16 +92,72 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
                 ]
             )
         );
+
+        let timespan = crate::utilities::countdown_news(article.published_at.unwrap_or(Utc::now().to_string()));
+
+        let timestr = if timespan.weeks > 0 {
+            if timespan.weeks > 1 || timespan.weeks == 0 {
+                format!("Published {} weeks ago", timespan.weeks)
+            } else {
+                format!("Published {} week ago", timespan.weeks)
+            }
+        } else if timespan.days > 0 {
+            if timespan.days > 1 || timespan.days == 0 {
+                format!("Published {} days ago", timespan.days)
+            } else {
+                format!("Published {} day ago", timespan.days)
+            }
+        } else if timespan.hours > 0 {
+            if (timespan.hours > 1 || timespan.hours == 0) && (timespan.minutes > 1 || timespan.minutes == 0) {
+                format!("Published {} hours {} minutes ago", timespan.hours, timespan.minutes)
+            } else if timespan.hours > 1 && timespan.minutes == 0 {
+                format!("Published {} hours {} minute ago", timespan.hours, timespan.minutes)
+            } else if timespan.hours == 1 && timespan.minutes > 1 {
+                format!("Published {} hour {} minutes ago", timespan.hours, timespan.minutes)
+            } else {
+                format!("Published {} hour {} minute ago", timespan.hours, timespan.minutes)
+            }
+        } else if timespan.minutes > 0 {
+            if (timespan.minutes > 1 || timespan.minutes == 0) && (timespan.seconds > 1 || timespan.seconds == 0) {
+                format!("Published {} minutes {} minutes ago", timespan.minutes, timespan.seconds)
+            } else if timespan.minutes > 1 && timespan.seconds == 1 {
+                format!("Published {} minutes {} second ago", timespan.minutes, timespan.seconds)
+            } else if timespan.minutes == 1 && timespan.seconds > 1 {
+                format!("Published {} minute {} seconds ago", timespan.minutes, timespan.seconds)
+            } else {
+                format!("Published {} minute {} second ago", timespan.minutes, timespan.seconds)
+            }
+        } else {
+            if timespan.seconds > 1 || timespan.seconds == 0 {
+                format!("Published {} seconds ago", timespan.seconds)
+            } else {
+                format!("Published {} second ago", timespan.seconds)
+            }
+        };
+
         processed_articles.push(
             Spans::from(
                 vec![
                     Span::styled(
-                        format!("  {}\n",
-                                article.newsSite.unwrap_or("Unkown Publisher".to_string()
-                                )
+                        format!("  {}",
+                                article.news_site.unwrap_or("Unkown Publisher".to_string())
                         ),
                         Style::default().fg(
                             Color::Magenta
+                        ),
+                    ),
+                    Span::styled(
+                        format!("  -  "),
+                        Style::default().fg(
+                            Color::Reset
+                        ),
+                    ),
+                    Span::styled(
+                        format!("{}\n",
+                                timestr
+                        ),
+                        Style::default().fg(
+                            Color::DarkGray
                         ),
                     )
                 ]
@@ -231,7 +287,7 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
                         (g4l, Style::default().fg(Color::Green))
                     }
                     2 => {
-                        (tbd, Style::default().fg(Color::Cyan))
+                        (tbd, Style::default().fg(Color::Yellow))
                     }
                     3 => {
                         (suc, Style::default().fg(Color::LightGreen))
@@ -304,7 +360,7 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
                 .split(right[0]);
             let launch_table = Table::new(vec![
                 Row::new(vec![" ", ""]),
-                Row::new(vec![" Name", raw_name.as_str()]),
+                Row::new(vec![Text::from(" Name"), Text::styled(raw_name.as_str(), Style::default().add_modifier(Modifier::UNDERLINED))]),
                 Row::new(vec![" Provider".to_string(), lsp.name.unwrap_or("Unknown Provider".to_string())]),
                 Row::new(vec![" Vehicle".to_string(), vehicle.name.unwrap_or("Unknown Launch Vehicle".to_string())]),
                 Row::new(vec![" Payload", payload]),

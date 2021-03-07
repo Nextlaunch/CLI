@@ -21,9 +21,15 @@ pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<
 
     let launch_present = i.is_some();
 
-    match view {
-        0 => views::default::run(out, launch_present, i, news, log),
-        1 => views::deep_dive::run(out, launch_present, i),
-        _ => views::default::run(out, launch_present, i, news, log),
+    if cfg!(debug_assertions) {
+        match view {
+            0 => views::default::run(out, launch_present, i, news, log),
+            1 => views::deep_dive::run(out, launch_present, i),
+            _ => views::default::run(out, launch_present, i, news, log),
+        }
+    } else {
+        match view {
+            _ => views::default::run(out, launch_present, i, news, log),
+        }
     }
 }
