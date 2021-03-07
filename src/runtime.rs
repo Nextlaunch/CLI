@@ -7,6 +7,8 @@ use tokio::time::{Instant, Duration};
 use crossterm::event::{KeyCode, Event, KeyModifiers, poll, read};
 
 use chrono::{DateTime, Local};
+use std::sync::Arc;
+use tokio::sync::Mutex;
 
 
 pub mod flags;
@@ -43,43 +45,51 @@ pub async fn launch(_f: Flags) {
     }
 
     let mut refresh_cycle: u8 = 0;
-    let mut view_screen: i32 = 0;
+    let mut view_screen = Arc::new(Mutex::new(0));
 
-    let mut should_clear = false;
+    let mut should_clear = Arc::new(Mutex::new(true));
 
-    loop {
-        match poll(Duration::from_millis(250)) {
-            Ok(is_ready) => {
-                if is_ready {
-                    let raw_event = read();
-                    if let Ok(event) = raw_event {
-                        match event {
-                            Event::Key(raw_key) => {
-                                match raw_key.code {
-                                    KeyCode::Char(c) => {
-                                        match c {
-                                            '1' => {
-                                                view_screen = 0;
-                                                should_clear = true;
+    let view_screen2 = view_screen.clone();
+    let should_clear2 = should_clear.clone();
+
+    tokio::spawn(async move {
+        loop {
+            match poll(Duration::from_millis(250)) {
+                Ok(is_ready) => {
+                    if is_ready {
+                        let raw_event = read();
+                        if let Ok(event) = raw_event {
+                            match event {
+                                Event::Key(raw_key) => {
+                                    match raw_key.code {
+                                        KeyCode::Char(c) => {
+                                            match c {
+                                                '1' => {
+                                                    *view_screen2.lock() = 0;
+                                                    *should_clear2.lock() = true;
+                                                }
+                                                '2' => {
+                                                    *view_screen2.lock() = 1;
+                                                    *should_clear2.lock() = true;
+                                                }
+                                                _ => {}
                                             }
-                                            '2' => {
-                                                view_screen = 1;
-                                                should_clear = true;
-                                            }
-                                            _ => {}
                                         }
+                                        _ => {}
                                     }
-                                    _ => {}
                                 }
+                                _ => {}
                             }
-                            _ => {}
                         }
                     }
                 }
+                Err(_) => {}
             }
-            Err(_) => {}
         }
+    });
 
+
+    loop {
         refresh_cycle += 1;
 
         if needs_refresh {
@@ -91,6 +101,7 @@ pub async fn launch(_f: Flags) {
             if temp_news.is_some() {
                 news = temp_news;
             }
+
             if launch.is_some() && news.is_some() {
                 log.push((Local::now(), "updated launch and news caches".to_string(), 0));
             } else if launch.is_some() && news.is_none() {
@@ -109,11 +120,12 @@ pub async fn launch(_f: Flags) {
             } else {
                 (0, 0)
             };
-            renderer::process(&launch, &news, &mut log, w != w2 || h != h2 || should_clear, view_screen).await;
+            renderer::process(&launch, &news, &mut log, w != w2 || h != h2 || *should_clear.lock(), *view_screen.lock()).await;
             w = w2;
             h = h2;
+
             if should_clear {
-                should_clear = false;
+                *should_clear.lock() = false;
             }
         }
 
