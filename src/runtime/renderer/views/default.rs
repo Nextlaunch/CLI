@@ -48,11 +48,11 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
         parsed_logs.push(
             Row::new(
                 vec![
-                    Span::raw(time.format(" %Y/%b/%d %H:%M").to_string()),
+                    Span::styled(time.format(" %Y/%b/%d %H:%M").to_string(), style),
                     Span::styled(lvl, style),
-                    Span::raw(message.clone()),
+                    Span::styled(message.clone(), style),
                 ]
-            )
+            ).style(style)
         )
     }
 
