@@ -7,8 +7,7 @@ use tokio::time::{Instant, Duration};
 use crossterm::event::{KeyCode, Event, KeyModifiers, poll, read};
 
 use chrono::{DateTime, Local};
-use std::sync::Arc;
-use tokio::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
 
 pub mod flags;
@@ -52,7 +51,7 @@ pub async fn launch(_f: Flags) {
     let view_screen2 = view_screen.clone();
     let should_clear2 = should_clear.clone();
 
-    tokio::spawn(async move {
+    std::thread::spawn(move || {
         loop {
             match poll(Duration::from_millis(250)) {
                 Ok(is_ready) => {
@@ -65,12 +64,12 @@ pub async fn launch(_f: Flags) {
                                         KeyCode::Char(c) => {
                                             match c {
                                                 '1' => {
-                                                    *view_screen2.lock() = 0;
-                                                    *should_clear2.lock() = true;
+                                                    *view_screen2.lock().unwrap() = 0;
+                                                    *should_clear2.lock().unwrap() = true;
                                                 }
                                                 '2' => {
-                                                    *view_screen2.lock() = 1;
-                                                    *should_clear2.lock() = true;
+                                                    *view_screen2.lock().unwrap() = 1;
+                                                    *should_clear2.lock().unwrap() = true;
                                                 }
                                                 _ => {}
                                             }
@@ -120,12 +119,12 @@ pub async fn launch(_f: Flags) {
             } else {
                 (0, 0)
             };
-            renderer::process(&launch, &news, &mut log, w != w2 || h != h2 || *should_clear.lock(), *view_screen.lock()).await;
+            renderer::process(&launch, &news, &mut log, w != w2 || h != h2 || *should_clear.lock().unwrap(), *view_screen.lock().unwrap()).await;
             w = w2;
             h = h2;
 
-            if should_clear {
-                *should_clear.lock() = false;
+            if *should_clear.lock().unwrap() {
+                *should_clear.lock().unwrap() = false;
             }
         }
 
