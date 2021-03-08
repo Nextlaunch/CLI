@@ -95,9 +95,13 @@ pub async fn launch(_f: Flags) {
             let temp_launch = update(&client, &mut log).await;
             let temp_news = news_update(&client, &mut log).await;
             if temp_launch.is_some() {
+                *should_clear.lock().unwrap() = true;
+                *should_clear.lock().unwrap() = true;
                 launch = temp_launch;
             }
             if temp_news.is_some() {
+                *should_clear.lock().unwrap() = true;
+                *should_clear.lock().unwrap() = true;
                 news = temp_news;
             }
 

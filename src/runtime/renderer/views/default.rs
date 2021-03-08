@@ -37,7 +37,9 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
 
     let mut parsed_logs = vec![];
 
-    for (time, message, level) in log {
+    let mut unprocessed = log.clone();
+    unprocessed.reverse();
+    for (time, message, level) in unprocessed {
         let (lvl, style) = match level {
             0 => ("INFO".to_string(), Style::default().fg(Color::Gray)),
             1 => ("ERROR".to_string(), Style::default().fg(Color::Red)),
