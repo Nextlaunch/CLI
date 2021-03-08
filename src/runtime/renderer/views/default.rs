@@ -74,14 +74,14 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
 
         let title = if artindex == 0 {
             Span::styled(
-                format!(" {}\n",
+                format!(" {}                                                                                       \u{200b}\n",
                         raw_title
                 ),
                 Style::default().fg(Color::LightBlue),
             )
         } else {
             Span::raw(
-                format!(" {}\n",
+                format!(" {}                                                                                       \u{200b}\n",
                         raw_title
                 )
             )
@@ -121,7 +121,7 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
             }
         } else if timespan.minutes > 0 {
             if (timespan.minutes > 1 || timespan.minutes == 0) && (timespan.seconds > 1 || timespan.seconds == 0) {
-                format!("Published {} minutes {} minutes ago", timespan.minutes, timespan.seconds)
+                format!("Published {} minutes {} seconds ago", timespan.minutes, timespan.seconds)
             } else if timespan.minutes > 1 && timespan.seconds == 1 {
                 format!("Published {} minutes {} second ago", timespan.minutes, timespan.seconds)
             } else if timespan.minutes == 1 && timespan.seconds > 1 {
@@ -155,7 +155,7 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
                         ),
                     ),
                     Span::styled(
-                        format!("{}\n",
+                        format!("{}                                                                                       \u{200b}\n",
                                 timestr
                         ),
                         Style::default().fg(
