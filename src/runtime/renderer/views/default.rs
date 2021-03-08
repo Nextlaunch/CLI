@@ -107,7 +107,7 @@ pub fn run(
             } else if artindex == selected_article && side != 1 {
                 processed_articles.push(
                     Spans::from(vec![
-                        Span::styled(headline, Style::default().fg(Color::Rgb()))
+                        Span::styled(headline, Style::default().fg(Color::Magenta))
                     ])
                 );
             } else {
