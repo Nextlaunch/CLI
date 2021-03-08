@@ -26,7 +26,11 @@ mod metadata {
     pub const TELEMETRY_API: &str = "ws://api.launchdashboard.space";
 
     /// The API where the program will get its news from
+    #[cfg(debug_assertions)]
+    pub const NEWS_API: &str = "https://test.spaceflightnewsapi.net/api/v2/articles";
+    #[cfg(not(debug_assertions))]
     pub const NEWS_API: &str = "https://spaceflightnewsapi.net/api/v2/articles";
+
     // pub const WEATHER_API: &str = "https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=10&stationString=";
     // pub const FC_BASE: &str = "https://flightclub.io/result/2d?id=";
     // pub const SLN_BASE: &str = "https://spacelaunchnow.me/launch/";

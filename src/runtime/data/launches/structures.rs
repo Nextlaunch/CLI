@@ -38,6 +38,7 @@ pub struct Launch {
     pub id: Option<String>,
     pub name: Option<String>,
     pub status: Status,
+    pub updates: Option<Vec<Update>>,
     pub net: Option<String>,
     pub window_end: Option<String>,
     pub window_start: Option<String>,
@@ -62,6 +63,16 @@ pub struct Launch {
     pub location_launch_attempt_count_year: Option<isize>,
     pub pad_launch_attempt_count_year: Option<isize>,
     pub agency_launch_attempt_count_year: Option<isize>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Update {
+    pub id: Option<usize>,
+    pub profile_image: Option<String>,
+    pub comment: Option<String>,
+    pub info_url: Option<String>,
+    pub created_by: Option<String>,
+    pub created_on: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

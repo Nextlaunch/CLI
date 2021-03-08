@@ -8,7 +8,17 @@ use chrono::{DateTime, Local};
 
 pub mod views;
 
-pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<(DateTime<Local>, String, u8)>, has_changed: bool, view: i32) {
+pub async fn process(
+    i: &Option<Launch>,
+    news: &Option<Vec<Article>>,
+    log: &Vec<(DateTime<Local>, String, u8)>,
+    has_changed: bool,
+    view: i32,
+    side: i32,
+    selected_article: i32,
+    selected_update: i32,
+    should_open: bool,
+) {
     let mut stdout = std::io::stdout();
 
     if has_changed {
@@ -23,13 +33,13 @@ pub async fn process(i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<
 
     if cfg!(debug_assertions) {
         match view {
-            0 => views::default::run(out, launch_present, i, news, log),
+            0 => views::default::run(out, launch_present, i, news, log, side, selected_article, selected_update, should_open),
             1 => views::deep_dive::run(out, launch_present, i),
-            _ => views::default::run(out, launch_present, i, news, log),
+            _ => views::default::run(out, launch_present, i, news, log, side, selected_article, selected_update, should_open),
         }
     } else {
         match view {
-            _ => views::default::run(out, launch_present, i, news, log),
+            _ => views::default::run(out, launch_present, i, news, log, side, selected_article, selected_update, should_open),
         }
     }
 }

@@ -24,7 +24,17 @@ use crossterm::style::Colorize;
 
 use chrono::{Utc, DateTime, Local};
 
-pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i: &Option<Launch>, news: &Option<Vec<Article>>, log: &Vec<(DateTime<Local>, String, u8)>) {
+pub fn run(
+    mut out: Terminal<CrosstermBackend<Stdout>>,
+    launch_present: bool,
+    i: &Option<Launch>,
+    news: &Option<Vec<Article>>,
+    log: &Vec<(DateTime<Local>, String, u8)>,
+    side: i32,
+    selected_article: i32,
+    selected_update: i32,
+    mut should_open: bool,
+) {
     let suc = Text::styled("Launch Successful", Style::default().fg(Color::LightGreen));
     let tbd = Text::styled("To Be Determined", Style::default().fg(Color::Yellow));
     let tbc = Text::styled("To Be Confirmed", Style::default().fg(Color::LightYellow));
@@ -50,11 +60,11 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
         parsed_logs.push(
             Row::new(
                 vec![
-                    Span::styled(time.format(" %Y/%b/%d %H:%M").to_string(), style),
-                    Span::styled(lvl, style),
-                    Span::styled(message.clone(), style),
+                    Text::styled(time.format(" %Y/%b/%d %H:%M").to_string(), style),
+                    Text::styled(lvl, style),
+                    Text::styled(message.clone(), style),
                 ]
-            ).style(style)
+            )
         )
     }
 
@@ -65,35 +75,51 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
     for article in articles {
         let untitle = article.title.unwrap_or("Unkown Title".to_string());
 
-        let raw_title = if untitle.len() > 60 {
-            let (headline, _) = untitle.split_at(57);
-            format!("{}...", headline)
-        } else {
-            untitle
-        };
+        let mut headlines: Vec<String> = vec![
+            String::new()
+        ];
+        let mut index = 0;
+        let mut line_total = 0;
+        let words: Vec<&str> = untitle.split(' ').collect();
 
-        let title = if artindex == 0 {
-            Span::styled(
-                format!(" {}                                                                                       \u{200b}\n",
-                        raw_title
-                ),
-                Style::default().fg(Color::LightBlue),
-            )
-        } else {
-            Span::raw(
-                format!(" {}                                                                                       \u{200b}\n",
-                        raw_title
+        for word in words {
+            if line_total + word.len()+1 <= 50 {
+                headlines[index] = format!("{} {}", headlines[index], word);
+                line_total += word.len();
+            } else {
+                index += 1;
+                line_total = word.len()+1;
+                headlines.push(format!(" {}", word));
+            }
+        }
+
+        for headline in headlines {
+            if artindex == selected_article && side == 1 {
+                if should_open {
+                    let _ = webbrowser::open(article.url.clone().unwrap().as_str());
+                    should_open = false;
+                }
+                processed_articles.push(
+                    Spans::from(vec![
+                        Span::styled(headline, Style::default().fg(Color::Cyan))
+                    ])
                 )
-            )
-        };
+            } else if artindex == selected_article && side != 1 {
+                processed_articles.push(
+                    Spans::from(vec![
+                        Span::styled(headline, Style::default().fg(Color::Rgb()))
+                    ])
+                );
+            } else {
+                processed_articles.push(
+                    Spans::from(vec![
+                        Span::raw(headline)
+                    ])
+                )
+            }
+        }
         artindex += 1;
-        processed_articles.push(
-            Spans::from(
-                vec![
-                    title
-                ]
-            )
-        );
+
 
         let timespan = crate::utilities::countdown_news(article.published_at.unwrap_or(Utc::now().to_string()));
 
@@ -188,24 +214,24 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
 
         let timespan = crate::utilities::countdown(launch.net.unwrap_or(Utc::now().to_string()));
 
-        let net = if timespan.years > 0 {
+        let mut net = if timespan.years > 0 {
             let mut raw = crate::utilities::digit_map::map_str(format!("{:02}:{:02}:{:02}:{:02}:{:02}:{:02}", timespan.years, timespan.weeks, timespan.days, timespan.hours, timespan.minutes, timespan.seconds).as_str());
-            raw[8] = "    Years                Weeks                Days                 Hours               Minutes              Seconds   \u{200b}".to_string();
+            raw[8] = "    Years                  Weeks                  Days                   Hours                 Minutes                Seconds   \u{200b}".to_string();
 
             raw
         } else if timespan.weeks > 0 {
             let mut raw = crate::utilities::digit_map::map_str(format!("{:02}:{:02}:{:02}:{:02}:{:02}", timespan.weeks, timespan.days, timespan.hours, timespan.minutes, timespan.seconds).as_str());
-            raw[8] = "    Weeks                Days                 Hours               Minutes              Seconds   \u{200b}".to_string();
+            raw[8] = "    Weeks                  Days                   Hours                 Minutes                Seconds   \u{200b}".to_string();
 
             raw
         } else if timespan.days > 0 {
             let mut raw = crate::utilities::digit_map::map_str(format!("{:02}:{:02}:{:02}:{:02}", timespan.days, timespan.hours, timespan.minutes, timespan.seconds).as_str());
-            raw[8] = "    Days                 Hours               Minutes              Seconds   \u{200b}".to_string();
+            raw[8] = "    Days                   Hours                 Minutes                Seconds   \u{200b}".to_string();
 
             raw
         } else {
             let mut raw = crate::utilities::digit_map::map_str(format!("{:02}:{:02}:{:02}", timespan.hours, timespan.minutes, timespan.seconds).as_str());
-            raw[8] = "    Hours               Minutes              Seconds   \u{200b}".to_string();
+            raw[8] = "    Hours                 Minutes                Seconds   \u{200b}".to_string();
 
             raw
         };
@@ -316,13 +342,13 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
             }
         };
 
-        out.draw(|f| {
+        let _ = out.draw(|f| {
             let whole = Layout::default()
                 .direction(Direction::Vertical)
                 .constraints(
                     [
-                        Constraint::Ratio(7, 10),
-                        Constraint::Min(9),
+                        Constraint::Ratio(8, 12),
+                        Constraint::Min(10),
                     ]
                         .as_ref(),
                 )
@@ -339,48 +365,46 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
                 )
                 .split(whole[0]);
 
-            // let right_status = Layout::default()
-            //     .direction(Direction::Vertical)
-            //     .constraints(
-            //         [
-            //             Constraint::Percentage(75),
-            //             Constraint::Percentage(25),
-            //         ]
-            //             .as_ref(),
-            //     )
-            //     .split(right[1]);
+            let right_status = Layout::default()
+                .direction(Direction::Vertical)
+                .constraints(
+                    [
+                        Constraint::Percentage(75),
+                        Constraint::Percentage(25),
+                    ]
+                        .as_ref(),
+                )
+                .split(right[1]);
 
             let left = Layout::default()
                 .direction(Direction::Vertical)
                 .constraints(
                     [
-                        Constraint::Max(10),
-                        Constraint::Max(12),
+                        Constraint::Percentage(50),
+                        Constraint::Percentage(50),
                     ]
                         .as_ref(),
                 )
                 .split(right[0]);
             let launch_table = Table::new(vec![
-                Row::new(vec![" ", ""]),
                 Row::new(vec![Text::from(" Name"), Text::styled(raw_name.as_str(), Style::default().add_modifier(Modifier::UNDERLINED))]),
                 Row::new(vec![" Provider".to_string(), lsp.name.unwrap_or("Unknown Provider".to_string())]),
                 Row::new(vec![" Vehicle".to_string(), vehicle.name.unwrap_or("Unknown Launch Vehicle".to_string())]),
-                Row::new(vec![" Payload", payload]),
+                Row::new(vec![" Mission", payload]),
                 Row::new(vec![" Pad".to_string(), launchpad.name.unwrap_or("Unkown Launchpad".to_string())]),
                 Row::new(vec![" Location".to_string(), launchpad.location.name.unwrap_or("Unkown Location".to_string())]),
                 Row::new(vec![Text::from(" Status"), status]),
-                Row::new(vec![" ", ""]),
             ])
                 .widths(&[
                     Constraint::Min(10),
                     Constraint::Min(45)
                 ])
-                .block(Block::default().title(" Launch Info ").borders(Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])));
+                .block(Block::default().title(" Launch Info ").borders(Borders::ALL /*Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])*/));
 
 
             f.render_widget(launch_table, left[0]);
 
-            let weather_icon = map_weather(1003, true);
+            // let weather_icon = map_weather(1003, true);
 
             // let weather_table = Table::new(vec![
             //     Row::new(vec![" ", ""]),
@@ -406,11 +430,22 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
 
 
             let news = Paragraph::new(processed_articles)
-                .block(Block::default().title(" News ").borders(Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])));
+                .block(Block::default().title(" News ").borders(Borders::ALL /*Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])*/));
             // f.render_widget(news, right_status[0]);
-            f.render_widget(Blank, right[1]);
-            f.render_widget(news, right[1]);
+            f.render_widget(Blank, right_status[0]);
+            f.render_widget(news, right_status[0]);
 
+
+            let update_list = Table::new(vec![])
+                .widths(&[
+                    Constraint::Min(19),
+                    Constraint::Min(6),
+                    Constraint::Min(30)
+                ])
+                .block(Block::default().title(" Updates ")
+                    .borders(Borders::ALL /*Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])*/));
+            // f.render_widget(log_list, right_status[1]);
+            f.render_widget(update_list, left[1]);
 
             let log_list = Table::new(parsed_logs)
                 .widths(&[
@@ -419,12 +454,17 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
                     Constraint::Min(30)
                 ])
                 .block(Block::default().title(" Logs ")
-                    .borders(Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])));
+                    .borders(Borders::ALL /*Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])*/));
             // f.render_widget(log_list, right_status[1]);
-            f.render_widget(log_list, left[1]);
+            f.render_widget(log_list, right_status[1]);
+
+            net.reverse();
+            let mut raw_clock = net.to_vec();
+            raw_clock.push("".to_string());
+            raw_clock.reverse();
 
             let countdown = Paragraph::new(
-                Text::styled(net.join("\n"), time_highlight)
+                Text::styled(raw_clock.join("\n"), time_highlight)
             )
                 .block(Block::default().title(" Countdown ").borders(Borders::ALL))
                 .alignment(Alignment::Center)
@@ -432,7 +472,7 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
             f.render_widget(countdown, whole[1]);
         });
     } else {
-        out.draw(|f| {
+        let _ = out.draw(|f| {
             let whole = Layout::default()
                 .direction(Direction::Vertical)
                 .constraints(
