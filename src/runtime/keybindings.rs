@@ -1,6 +1,7 @@
-use crossterm::event::{poll, Event, read, KeyCode};
+use crossterm::event::{poll, Event, read, KeyCode, KeyModifiers};
 use std::time::Duration;
 use std::sync::{Arc, Mutex};
+use std::process::exit;
 
 pub fn launch_thread(
     view_screen2: Arc<Mutex<i32>>,
@@ -100,6 +101,18 @@ pub fn launch_thread(
                                                 '?' => {
                                                     if !*render_help2.lock().unwrap() {
                                                         *render_help2.lock().unwrap() = true;
+                                                    }
+                                                }
+                                                'c' => {
+                                                    if raw_key.modifiers.contains(KeyModifiers::CONTROL) {
+                                                        println!("Thank you for using NextLaunch, goodbye.");
+                                                        exit(0);
+                                                    }
+                                                }
+                                                'q' => {
+                                                    if !raw_key.modifiers.contains(KeyModifiers::CONTROL) {
+                                                        println!("Thank you for using NextLaunch, goodbye.");
+                                                        exit(0);
                                                     }
                                                 }
                                                 _ => {}

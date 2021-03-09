@@ -32,4 +32,4 @@ bincode = "1.3.1"
 crossterm = { version = "0.18", features = ["event-stream"] }
 tui = { version = "0.14.0", default-features = false, features = ["crossterm"] }
 term_size = "0.3.2"
-webbrowser = "0.5.5"
+webbrowser = { git = "https://github.com/codota/webbrowser-rs", branch = "feature/add-suppress-output-flag-with-docs" }

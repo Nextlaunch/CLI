@@ -24,7 +24,7 @@ use crossterm::ExecutableCommand;
 use crossterm::style::Colorize;
 
 use chrono::{Utc, DateTime, Local};
-use webbrowser::open;
+use webbrowser::{open, BrowserOptions};
 use crate::languages::LanguagePack;
 
 pub fn run(
@@ -100,7 +100,12 @@ pub fn run(
         for headline in headlines {
             if artindex == selected_article && side == 1 {
                 if should_open {
-                    let _ = webbrowser::open(article.url.clone().unwrap().as_str());
+                    webbrowser::open_browser_with_options(
+                        BrowserOptions {
+                            url: article.url.clone().unwrap(),
+                            suppress_output: Some(true),
+                            browser: Some(webbrowser::Browser::Default),
+                        });
                     should_open = false;
                 }
                 processed_articles.push(
@@ -397,7 +402,12 @@ pub fn run(
 
                 if side == 0 && update_index == selected_update {
                     if should_open && update.info_url.is_some() {
-                        open(update.info_url.unwrap().as_str());
+                        webbrowser::open_browser_with_options(
+                            BrowserOptions {
+                                url: update.info_url.unwrap(),
+                                suppress_output: Some(true),
+                                browser: Some(webbrowser::Browser::Default),
+                            });
                     }
                     updates.push(Spans::from(vec![
                         Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
