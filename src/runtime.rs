@@ -50,6 +50,7 @@ pub async fn launch_main() {
         0,
         0,
         false,
+        true,
     ).await;
 
     let client = reqwest::Client::new();
