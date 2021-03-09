@@ -523,9 +523,21 @@ pub fn run(
             raw_clock.push("".to_string());
             raw_clock.reverse();
 
-            let countdown = Paragraph::new(
-                Text::styled(raw_clock.join("\n"), time_highlight)
-            )
+            let final_piece = raw_clock.pop();
+
+            let mut clock = Vec::<Spans>::new();
+
+            for line in raw_clock {
+                clock.push(Spans::from(vec![
+                    Span::styled(line, time_highlight),
+                ]))
+            }
+            clock.push(Spans::from(vec![
+                Span::styled(final_piece.unwrap(), Style::default().fg(Color::White)),
+            ]));
+
+
+            let countdown = Paragraph::new(clock)
                 .block(Block::default().title(" Countdown ").borders(Borders::ALL))
                 .alignment(Alignment::Center)
                 .wrap(Wrap { trim: false });
@@ -566,14 +578,14 @@ pub fn run(
                 )
                 .split(right[0]);
 
-            let launch_table = Paragraph::new(Text::raw(" Unfortunately, there is not a launch currently available.\nPlease check the logs."))
+            let launch_table = Paragraph::new(Text::raw(" Unfortunately, there is not a launch currently available.\n Please check the logs."))
                 .block(Block::default().title(" Launch Info ").borders(Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])));
 
             f.render_widget(launch_table, left[0]);
 
 
             if processed_articles.is_empty() {
-                let news = Paragraph::new(Text::raw(" Unfortunately, there is no available news articles to share right now"))
+                let news = Paragraph::new(Text::raw(" There is no available news articles to display.\n Please check the logs."))
                     .block(Block::default().title(" News ").borders(Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])));
                 // f.render_widget(news, right_status[0]);
                 f.render_widget(Blank, right[1]);

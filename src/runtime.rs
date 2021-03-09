@@ -22,7 +22,9 @@ pub async fn launch(_f: Flags) {
         &crate::languages::en_gb::PACK,
         &None,
         &None,
-        &mut vec![],
+        &mut vec![
+            (Local::now(), "fetching information, please wait".to_string(), 2)
+        ],
         true,
         0,
         0,

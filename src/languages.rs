@@ -68,5 +68,5 @@ pub fn select_language() {
     for tag in tags {
         println!("tag: {}  range: {}", tag.0.unwrap_or(""), tag.1)
     }
-    exit(1);
+    // exit(1);
 }
