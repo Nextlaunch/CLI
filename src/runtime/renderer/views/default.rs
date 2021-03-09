@@ -12,7 +12,7 @@ use tokio::time::{sleep, Duration, Instant};
 
 use tui::Terminal;
 use tui::backend::CrosstermBackend;
-use tui::layout::{Layout, Direction, Constraint, Alignment};
+use tui::layout::{Layout, Direction, Constraint, Alignment, Rect};
 use tui::widgets::{Block, Borders, Row, Table, Paragraph, Wrap, Clear as Blank};
 use tui::text::{Text, Span, Spans};
 use tui::style::{Style, Color, Modifier};
@@ -26,10 +26,11 @@ use crossterm::style::Colorize;
 use chrono::{Utc, DateTime, Local};
 use webbrowser::{open, BrowserOptions};
 use crate::languages::LanguagePack;
+use crate::runtime::renderer::render_help_menu;
 
 pub fn run(
     language: &LanguagePack,
-    mut out: Terminal<CrosstermBackend<Stdout>>,
+    out: &mut Terminal<CrosstermBackend<Stdout>>,
     launch_present: bool,
     i: &Option<Launch>,
     news: &Option<Vec<Article>>,
@@ -38,6 +39,7 @@ pub fn run(
     selected_article: i32,
     selected_update: i32,
     mut should_open: bool,
+    render_help: bool,
 ) {
     let suc = Text::styled("Launch Successful", Style::default().fg(Color::LightGreen));
     let tbd = Text::styled("To Be Determined", Style::default().fg(Color::Yellow));
@@ -58,6 +60,7 @@ pub fn run(
             0 => ("INFO".to_string(), Style::default().fg(Color::Gray)),
             1 => ("ERROR".to_string(), Style::default().fg(Color::Red)),
             2 => ("WARN".to_string(), Style::default().fg(Color::Yellow)),
+            10 => ("NOTE".to_string(), Style::default().fg(Color::Magenta)),
             _ => ("INFO".to_string(), Style::default().fg(Color::Gray))
         };
 
@@ -511,11 +514,13 @@ pub fn run(
                 let update_list = Paragraph::new(" This launch does not have any updates yet.")
                     .block(Block::default().title(" Updates ")
                         .borders(Borders::ALL));
+                f.render_widget(Blank, left[1]);
                 f.render_widget(update_list, left[1]);
             } else {
                 let update_list = Paragraph::new(updates)
                     .block(Block::default().title(" Updates ")
                         .borders(Borders::ALL));
+                f.render_widget(Blank, left[1]);
                 f.render_widget(update_list, left[1]);
             }
 
@@ -554,6 +559,10 @@ pub fn run(
                 .alignment(Alignment::Center)
                 .wrap(Wrap { trim: false });
             f.render_widget(countdown, whole[1]);
+
+            if render_help {
+                render_help_menu(f);
+            }
         });
     } else {
         let _ = out.draw(|f| {
@@ -638,6 +647,11 @@ pub fn run(
                 .alignment(Alignment::Center)
                 .wrap(Wrap { trim: false });
             f.render_widget(countdown, whole[1]);
+
+            if render_help {
+                render_help_menu(f);
+            }
         });
     }
 }
+

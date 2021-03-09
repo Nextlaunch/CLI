@@ -2,6 +2,8 @@ use crossterm::event::{poll, Event, read, KeyCode, KeyModifiers};
 use std::time::Duration;
 use std::sync::{Arc, Mutex};
 use std::process::exit;
+use crossterm::ExecutableCommand;
+use crossterm::terminal::{Clear, ClearType};
 
 pub fn launch_thread(
     view_screen2: Arc<Mutex<i32>>,
@@ -28,6 +30,7 @@ pub fn launch_thread(
                                         KeyCode::Esc => {
                                             if *render_help2.lock().unwrap() {
                                                 *render_help2.lock().unwrap() = false;
+                                                *should_clear2.lock().unwrap() = true;
                                             }
                                         }
                                         KeyCode::Enter => {
@@ -88,6 +91,17 @@ pub fn launch_thread(
                                             }
                                             *selected_side2.lock().unwrap() = side;
                                         }
+                                        KeyCode::F(no) => {
+                                            match no {
+                                                1 => {
+                                                    if !*render_help2.lock().unwrap() {
+                                                        *should_clear2.lock().unwrap() = true;
+                                                        *render_help2.lock().unwrap() = true;
+                                                    }
+                                                }
+                                                _ => {}
+                                            }
+                                        }
                                         KeyCode::Char(c) => {
                                             match c {
                                                 '1' => {
@@ -100,17 +114,22 @@ pub fn launch_thread(
                                                 }
                                                 '?' => {
                                                     if !*render_help2.lock().unwrap() {
+                                                        *should_clear2.lock().unwrap() = true;
                                                         *render_help2.lock().unwrap() = true;
                                                     }
                                                 }
                                                 'c' => {
                                                     if raw_key.modifiers.contains(KeyModifiers::CONTROL) {
+                                                        let mut stdout = std::io::stdout();
+                                                        stdout.execute(Clear(ClearType::All));
                                                         println!("Thank you for using NextLaunch, goodbye.");
                                                         exit(0);
                                                     }
                                                 }
                                                 'q' => {
                                                     if !raw_key.modifiers.contains(KeyModifiers::CONTROL) {
+                                                        let mut stdout = std::io::stdout();
+                                                        stdout.execute(Clear(ClearType::All));
                                                         println!("Thank you for using NextLaunch, goodbye.");
                                                         exit(0);
                                                     }

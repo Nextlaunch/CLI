@@ -50,7 +50,7 @@ pub async fn launch_main() {
         0,
         0,
         false,
-        true,
+        false,
     ).await;
 
     let client = reqwest::Client::new();
@@ -88,7 +88,7 @@ pub async fn launch_main() {
     let mut selected_update: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
     let mut selected_side: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
     let mut should_clear: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
-    let mut render_help: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
+    let mut render_help: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
 
     let mut launch_update_count: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
     let mut open_selected: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
@@ -161,6 +161,7 @@ pub async fn launch_main() {
 
 
         if refresh_cycle >= 2 {
+            log.push((Local::now(), "Press F1 to open the help menu.".to_string(), 10));
             refresh_cycle = 0;
             let (w2, h2) = if let Some((w1, h1)) = term_size::dimensions() {
                 (w1, h1)
@@ -192,6 +193,8 @@ pub async fn launch_main() {
             if *open_selected.lock().unwrap() {
                 *open_selected.lock().unwrap() = false;
             }
+
+            log.pop();
         }
 
 

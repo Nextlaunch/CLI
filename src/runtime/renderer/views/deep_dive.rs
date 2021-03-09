@@ -5,10 +5,11 @@ use crate::runtime::data::launches::structures::{Launch, Rocket};
 use tui::layout::{Layout, Direction, Constraint, Alignment, Rect};
 use tui::widgets::{Clear, Block, Borders, Paragraph, Table, Row};
 use tui::text::Text;
+use crate::runtime::renderer::{centered_rect, render_help_menu};
 
 pub mod dict;
 
-pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i: &Option<Launch>) {
+pub fn run(out: &mut Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i: &Option<Launch>, render_help: bool) {
     if launch_present {
         let launch = i.clone().unwrap();
         let rocket = launch.rocket.unwrap_or(Rocket {
@@ -107,6 +108,9 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
 
                 f.render_widget(Clear, area); //this clears out the background
                 f.render_widget(error, area);
+                if render_help {
+                    render_help_menu(f);
+                }
             });
         }
     } else {
@@ -136,32 +140,9 @@ pub fn run(mut out: Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i:
 
             f.render_widget(Clear, area); //this clears out the background
             f.render_widget(error, area);
+            if render_help {
+                render_help_menu(f);
+            }
         });
     }
-}
-
-fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
-    let popup_layout = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Percentage((100 - percent_y) / 2),
-                Constraint::Percentage(percent_y),
-                Constraint::Percentage((100 - percent_y) / 2),
-            ]
-                .as_ref(),
-        )
-        .split(r);
-
-    Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints(
-            [
-                Constraint::Percentage((100 - percent_x) / 2),
-                Constraint::Percentage(percent_x),
-                Constraint::Percentage((100 - percent_x) / 2),
-            ]
-                .as_ref(),
-        )
-        .split(popup_layout[1])[1]
 }
