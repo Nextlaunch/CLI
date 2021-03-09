@@ -15,11 +15,11 @@ pub mod flags;
 pub mod data;
 pub mod renderer;
 
-pub mod json_subsystem;
+pub mod keybindings;
+// pub mod json_subsystem;
 
 pub async fn launch(f: Flags) {
     match f.view {
-        0 => launch_main().await,
         // 1 => launch_json().await,
         _ => launch_main().await,
     }
@@ -30,8 +30,11 @@ pub fn print(body: String) {
 }
 
 
-
 pub async fn launch_main() {
+    crossterm::terminal::enable_raw_mode();
+    let mut stdout = std::io::stdout();
+
+
     let mut language = select_language();
 
     renderer::process(
@@ -84,24 +87,21 @@ pub async fn launch_main() {
     let mut selected_update: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
     let mut selected_side: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
     let mut should_clear: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
+    let mut render_help: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
 
-    let mut launch_is_some: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
     let mut launch_update_count: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let mut news_is_some: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
     let mut open_selected: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
     let mut news_article_count: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
 
     if launch.is_some() {
         let tpl = launch.clone().unwrap();
         *should_clear.lock().unwrap() = true;
-        *launch_is_some.lock().unwrap() = true;
         *launch_update_count.lock().unwrap() = tpl.updates.unwrap_or(vec![]).len() as i32;
     }
 
     if news.is_some() {
         let tpn = news.clone().unwrap();
         *should_clear.lock().unwrap() = true;
-        *news_is_some.lock().unwrap() = true;
         *news_article_count.lock().unwrap() = tpn.len() as i32;
     }
 
@@ -111,105 +111,22 @@ pub async fn launch_main() {
     let mut selected_side2: Arc<Mutex<i32>> = selected_side.clone();
     let mut should_clear2: Arc<Mutex<bool>> = should_clear.clone();
     let mut open_selected2: Arc<Mutex<bool>> = open_selected.clone();
+    let mut render_help2: Arc<Mutex<bool>> = render_help.clone();
 
-    let mut launch_is_some2: Arc<Mutex<bool>> = launch_is_some.clone();
     let mut launch_update_count2: Arc<Mutex<i32>> = launch_update_count.clone();
-    let mut news_is_some2: Arc<Mutex<bool>> = news_is_some.clone();
     let mut news_article_count2: Arc<Mutex<i32>> = news_article_count.clone();
 
-    std::thread::spawn(move || {
-        loop {
-            match poll(Duration::from_millis(250)) {
-                Ok(is_ready) => {
-                    if is_ready {
-                        let raw_event = read();
-                        if let Ok(event) = raw_event {
-                            match event {
-                                Event::Key(raw_key) => {
-                                    match raw_key.code {
-                                        KeyCode::Enter => {
-                                            *open_selected2.lock().unwrap() = true;
-                                        }
-                                        KeyCode::Up => {
-                                            if *selected_side2.lock().unwrap() == 0 {
-                                                let limit = *launch_update_count2.lock().unwrap();
-                                                let mut current = *selected_update2.lock().unwrap();
-
-                                                if current - 1 >= 0 {
-                                                    current -= 1;
-                                                } else {
-                                                    current = limit.clone();
-                                                }
-                                                *selected_update2.lock().unwrap() = current;
-                                            } else {
-                                                let limit = *news_article_count2.lock().unwrap();
-                                                let mut current = *selected_article2.lock().unwrap();
-
-                                                if current - 1 >= 0 {
-                                                    current -= 1;
-                                                } else {
-                                                    current = limit.clone();
-                                                }
-                                                *selected_article2.lock().unwrap() = current;
-                                            }
-                                        }
-                                        KeyCode::Down => {
-                                            if *selected_side2.lock().unwrap() == 0 {
-                                                let limit = *launch_update_count2.lock().unwrap();
-                                                let mut current = *selected_update2.lock().unwrap();
-
-                                                if current + 1 < limit {
-                                                    current += 1;
-                                                } else {
-                                                    current = 0;
-                                                }
-                                                *selected_update2.lock().unwrap() = current;
-                                            } else {
-                                                let limit = *news_article_count2.lock().unwrap();
-                                                let mut current = *selected_article2.lock().unwrap();
-
-                                                if current + 1 < limit {
-                                                    current += 1;
-                                                } else {
-                                                    current = 0;
-                                                }
-                                                *selected_article2.lock().unwrap() = current;
-                                            }
-                                        }
-                                        KeyCode::Left | KeyCode::Right => {
-                                            let mut side = *selected_side2.lock().unwrap();
-                                            if side == 0 {
-                                                side = 1;
-                                            } else {
-                                                side = 0;
-                                            }
-                                            *selected_side2.lock().unwrap() = side;
-                                        }
-                                        KeyCode::Char(c) => {
-                                            match c {
-                                                '1' => {
-                                                    *view_screen2.lock().unwrap() = 0;
-                                                    *should_clear2.lock().unwrap() = true;
-                                                }
-                                                '2' => {
-                                                    *view_screen2.lock().unwrap() = 1;
-                                                    *should_clear2.lock().unwrap() = true;
-                                                }
-                                                _ => {}
-                                            }
-                                        }
-                                        _ => {}
-                                    }
-                                }
-                                _ => {}
-                            }
-                        }
-                    }
-                }
-                Err(_) => {}
-            }
-        }
-    });
+    keybindings::launch_thread(
+        view_screen2,
+        selected_article2,
+        selected_update2,
+        selected_side2,
+        should_clear2,
+        open_selected2,
+        render_help2,
+        launch_update_count2,
+        news_article_count2,
+    );
 
 
     loop {
@@ -221,14 +138,12 @@ pub async fn launch_main() {
             if temp_launch.is_some() {
                 let tpl = temp_launch.clone().unwrap();
                 *should_clear.lock().unwrap() = true;
-                *launch_is_some.lock().unwrap() = true;
                 *launch_update_count.lock().unwrap() = tpl.updates.unwrap_or(vec![]).len() as i32;
                 launch = temp_launch;
             }
             if temp_news.is_some() {
                 let tpn = temp_news.clone().unwrap();
                 *should_clear.lock().unwrap() = true;
-                *news_is_some.lock().unwrap() = true;
                 *news_article_count.lock().unwrap() = tpn.len() as i32;
                 news = temp_news;
             }
@@ -244,7 +159,7 @@ pub async fn launch_main() {
         }
 
 
-        if refresh_cycle >= 4 {
+        if refresh_cycle >= 2 {
             refresh_cycle = 0;
             let (w2, h2) = if let Some((w1, h1)) = term_size::dimensions() {
                 (w1, h1)
@@ -263,6 +178,7 @@ pub async fn launch_main() {
                 *selected_article.lock().unwrap(),
                 *selected_update.lock().unwrap(),
                 *open_selected.lock().unwrap(),
+                *render_help.lock().unwrap()
             ).await;
 
             w = w2;
@@ -283,6 +199,6 @@ pub async fn launch_main() {
             needs_refresh = true;
         }
 
-        tokio::time::sleep(Duration::from_millis(250)).await;
+        tokio::time::sleep(Duration::from_millis(100)).await;
     }
 }

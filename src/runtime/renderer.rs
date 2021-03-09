@@ -20,8 +20,10 @@ pub async fn process(
     selected_article: i32,
     selected_update: i32,
     should_open: bool,
+    render_help: bool,
 ) {
     let mut stdout = std::io::stdout();
+
 
     if has_changed {
         stdout.execute(Clear(ClearType::All));
