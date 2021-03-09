@@ -351,79 +351,81 @@ pub fn run(
         let mut update_index = 0;
 
         for update in launch.updates.unwrap_or(vec![]) {
-            let timespan = countdown(update.created_on.unwrap_or(Utc::now().to_string()));
-            let untitle = update.comment.unwrap_or("Comment not found".to_string());
+            if update_index <= 2 {
+                let timespan = countdown(update.created_on.unwrap_or(Utc::now().to_string()));
+                let untitle = update.comment.unwrap_or("Comment not found".to_string());
 
-            let timestr = if timespan.weeks > 0 {
-                if timespan.weeks > 1 || timespan.weeks == 0 {
-                    format!("Updated {} weeks ago", timespan.weeks)
+                let timestr = if timespan.weeks > 0 {
+                    if timespan.weeks > 1 || timespan.weeks == 0 {
+                        format!("Updated {} weeks ago", timespan.weeks)
+                    } else {
+                        format!("Updated {} week ago", timespan.weeks)
+                    }
+                } else if timespan.days > 0 {
+                    if timespan.days > 1 || timespan.days == 0 {
+                        format!("Updated {} days ago", timespan.days)
+                    } else {
+                        format!("Updated {} day ago", timespan.days)
+                    }
+                } else if timespan.hours > 0 {
+                    if (timespan.hours > 1 || timespan.hours == 0) && (timespan.minutes > 1 || timespan.minutes == 0) {
+                        format!("Updated {} hours {} minutes ago", timespan.hours, timespan.minutes)
+                    } else if timespan.hours > 1 && timespan.minutes == 0 {
+                        format!("Updated {} hours {} minute ago", timespan.hours, timespan.minutes)
+                    } else if timespan.hours == 1 && timespan.minutes > 1 {
+                        format!("Updated {} hour {} minutes ago", timespan.hours, timespan.minutes)
+                    } else {
+                        format!("Updated {} hour {} minute ago", timespan.hours, timespan.minutes)
+                    }
+                } else if timespan.minutes > 0 {
+                    if (timespan.minutes > 1 || timespan.minutes == 0) && (timespan.seconds > 1 || timespan.seconds == 0) {
+                        format!("Updated {} minutes {} seconds ago", timespan.minutes, timespan.seconds)
+                    } else if timespan.minutes > 1 && timespan.seconds == 1 {
+                        format!("Updated {} minutes {} second ago", timespan.minutes, timespan.seconds)
+                    } else if timespan.minutes == 1 && timespan.seconds > 1 {
+                        format!("Updated {} minute {} seconds ago", timespan.minutes, timespan.seconds)
+                    } else {
+                        format!("Updated {} minute {} second ago", timespan.minutes, timespan.seconds)
+                    }
                 } else {
-                    format!("Updated {} week ago", timespan.weeks)
-                }
-            } else if timespan.days > 0 {
-                if timespan.days > 1 || timespan.days == 0 {
-                    format!("Updated {} days ago", timespan.days)
-                } else {
-                    format!("Updated {} day ago", timespan.days)
-                }
-            } else if timespan.hours > 0 {
-                if (timespan.hours > 1 || timespan.hours == 0) && (timespan.minutes > 1 || timespan.minutes == 0) {
-                    format!("Updated {} hours {} minutes ago", timespan.hours, timespan.minutes)
-                } else if timespan.hours > 1 && timespan.minutes == 0 {
-                    format!("Updated {} hours {} minute ago", timespan.hours, timespan.minutes)
-                } else if timespan.hours == 1 && timespan.minutes > 1 {
-                    format!("Updated {} hour {} minutes ago", timespan.hours, timespan.minutes)
-                } else {
-                    format!("Updated {} hour {} minute ago", timespan.hours, timespan.minutes)
-                }
-            } else if timespan.minutes > 0 {
-                if (timespan.minutes > 1 || timespan.minutes == 0) && (timespan.seconds > 1 || timespan.seconds == 0) {
-                    format!("Updated {} minutes {} seconds ago", timespan.minutes, timespan.seconds)
-                } else if timespan.minutes > 1 && timespan.seconds == 1 {
-                    format!("Updated {} minutes {} second ago", timespan.minutes, timespan.seconds)
-                } else if timespan.minutes == 1 && timespan.seconds > 1 {
-                    format!("Updated {} minute {} seconds ago", timespan.minutes, timespan.seconds)
-                } else {
-                    format!("Updated {} minute {} second ago", timespan.minutes, timespan.seconds)
-                }
-            } else {
-                if timespan.seconds > 1 || timespan.seconds == 0 {
-                    format!("Updated {} seconds ago", timespan.seconds)
-                } else {
-                    format!("Updated {} second ago", timespan.seconds)
-                }
-            };
+                    if timespan.seconds > 1 || timespan.seconds == 0 {
+                        format!("Updated {} seconds ago", timespan.seconds)
+                    } else {
+                        format!("Updated {} second ago", timespan.seconds)
+                    }
+                };
 
-            if side == 0 && update_index == selected_update {
-                if should_open && update.info_url.is_some() {
-                    open(update.info_url.unwrap().as_str());
+                if side == 0 && update_index == selected_update {
+                    if should_open && update.info_url.is_some() {
+                        open(update.info_url.unwrap().as_str());
+                    }
+                    updates.push(Spans::from(vec![
+                        Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
+                        Span::raw(" - "),
+                        Span::styled(untitle, Style::default().fg(Color::Cyan))
+                    ]));
+                } else if side == 1 && update_index == selected_update {
+                    updates.push(Spans::from(vec![
+                        Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
+                        Span::raw(" - "),
+                        Span::styled(untitle, Style::default().fg(Color::Magenta))
+                    ]));
+                } else {
+                    updates.push(Spans::from(vec![
+                        Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
+                        Span::raw(" - "),
+                        Span::raw(untitle)
+                    ]));
                 }
+                update_index += 1;
                 updates.push(Spans::from(vec![
-                    Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
-                    Span::raw(" - "),
-                    Span::styled(untitle, Style::default().fg(Color::Cyan))
+                    Span::styled(format!(" {}", timestr), Style::default().fg(Color::DarkGray))
                 ]));
-            } else if side == 1 && update_index == selected_update {
+
                 updates.push(Spans::from(vec![
-                    Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
-                    Span::raw(" - "),
-                    Span::styled(untitle, Style::default().fg(Color::Magenta))
-                ]));
-            } else {
-                updates.push(Spans::from(vec![
-                    Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
-                    Span::raw(" - "),
-                    Span::raw(untitle)
+                    Span::raw("")
                 ]));
             }
-            update_index += 1;
-            updates.push(Spans::from(vec![
-                Span::styled(format!(" {}", timestr), Style::default().fg(Color::DarkGray))
-            ]));
-
-            updates.push(Spans::from(vec![
-                Span::raw("")
-            ]));
         }
 
         let _ = out.draw(|f| {
@@ -495,17 +497,17 @@ pub fn run(
             f.render_widget(news, right_status[0]);
 
 
-           if updates.is_empty() {
-               let update_list = Paragraph::new(" This launch does not have any updates yet.")
-                   .block(Block::default().title(" Updates ")
-                       .borders(Borders::ALL));
-               f.render_widget(update_list, left[1]);
-           } else {
-               let update_list = Paragraph::new(updates)
-                   .block(Block::default().title(" Updates ")
-                       .borders(Borders::ALL));
-               f.render_widget(update_list, left[1]);
-           }
+            if updates.is_empty() {
+                let update_list = Paragraph::new(" This launch does not have any updates yet.")
+                    .block(Block::default().title(" Updates ")
+                        .borders(Borders::ALL));
+                f.render_widget(update_list, left[1]);
+            } else {
+                let update_list = Paragraph::new(updates)
+                    .block(Block::default().title(" Updates ")
+                        .borders(Borders::ALL));
+                f.render_widget(update_list, left[1]);
+            }
 
             let log_list = Table::new(parsed_logs)
                 .widths(&[

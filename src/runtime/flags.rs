@@ -7,12 +7,7 @@ pub async fn check_flags() -> Flags {
     let mut flags = Flags {
         view: 0,
         help: false,
-        sixel: false,
-        sixel_preview: false,
-        preview_1: false,
-        preview_2: false,
         version: false,
-        offline: false,
         credits: false,
     };
 
@@ -21,11 +16,11 @@ pub async fn check_flags() -> Flags {
             "--version" | "-v" => {
                 flags.version = true;
             }
+            // "--json" => {
+            //     flags.view = 1;
+            // }
             "--help" | "-h" => {
                 flags.help = true
-            }
-            "--offline" | "-o" => {
-                flags.offline = true;
             }
             "--credits" | "-c" => {
                 flags.credits = true;
@@ -44,12 +39,7 @@ pub async fn check_flags() -> Flags {
 pub struct Flags {
     pub view: usize,
     pub help: bool,
-    pub sixel: bool,
-    pub sixel_preview: bool,
-    pub preview_1: bool,
-    pub preview_2: bool,
     pub version: bool,
-    pub offline: bool,
     pub credits: bool,
 }
 
@@ -73,19 +63,6 @@ Flags:
 
     -c, --credits
         Prints the credits of all who helped influence the program.
-
-    -s, --sxl
-        Informs the program to render output using the Sixel format.
-        This standard is not well supported, so please ensure your terminal
-        supports it, lest you get a screen full of garbage output.
-        For a list of compatible terminals, use "-sxl-ls"
-
-        --sxl-ls
-        Prints a list of Sixel compatible terminals to the user, as well as
-        a "test" sixel for them to check against
-
-    -o, --offline
-        Forces the program to try and operate from locally cached information.
 "#, crate::NAME, crate::DESCRIPTION, crate::VERSION, crate::AUTHOR);
         exit(0);
     } else if f.version {
@@ -96,25 +73,34 @@ Version {}
 "#, crate::NAME, crate::VERSION);
         exit(0);
     } else if f.credits {
+        //Weather:   WeatherAPI            <https://www.weatherapi.com/>
         println!(
-            r#"{} - Credits
+            "{} - Credits
+Without the following people, services, and open-source libraries, NextLaunch would not have been possible.
+Thank you to everyone on this list from the bottom of my heart for helping me make this program,
+and putting up with my constant requests for comments on design and style.
 
-Data Providers:
+\x1b[32mData Providers:\x1b[0m
 News:      Space Flight News API <https://thespacedevs.com/snapi>
 Launches:  Launch Library 2      <https://thespacedevs.com/llapi>
 Telemetry: Launch Dashboard      <https://github.com/shahar603/Launch-Dashboard-API>
-Weather:   WeatherAPI            <https://www.weatherapi.com/>
 
-Developer: AltriusRS             <https://github.com/AltriusRS>
+\x1b[32mDeveloper:\x1b[0m AltriusRS             <https://github.com/AltriusRS>
 
-Language:  Rust                  <https://rust-lang.org>
+\x1b[32mLanguage:\x1b[0m  Rust                  <https://rust-lang.org>
 
-Interface: (Alphabetical)
+\x1b[32mInterface: (Alphabetical)\x1b[0m
            Accusitive            <https://github.com/accusitive>
            Jas777                <https://github.com/jas777>
+           Nosu                  <https://twitter.com/Nosudrum>
+           Starman               <No link specified>
            Zane                  <https://github.com/AnotherZane>
 
-Libraries: (Alphabetical)
+\x1b[32mAlpha Testers: (Alphabetical)\x1b[0m
+           Nosu                  <https://twitter.com/Nosudrum>
+           Starman               <No link specified>
+
+\x1b[32mLibraries: (Alphabetical)\x1b[0m
            Bincode               <https://github.com/servo/bincode>
            Chrono                <https://github.com/chronotope/chrono>
            Reqwest               <https://github.com/seanmonstar/reqwest>
@@ -122,7 +108,7 @@ Libraries: (Alphabetical)
            Terminal Size         <https://github.com/eminence/terminal-size>
            Tokio                 <https://github.com/tokio-rs/tokio>
            Websockets            <https://github.com/websockets-rs/rust-websocket>
-"#, crate::NAME);
+", crate::NAME);
         exit(0);
     }
 }

@@ -15,7 +15,23 @@ pub mod flags;
 pub mod data;
 pub mod renderer;
 
-pub async fn launch(_f: Flags) {
+pub mod json_subsystem;
+
+pub async fn launch(f: Flags) {
+    match f.view {
+        0 => launch_main().await,
+        // 1 => launch_json().await,
+        _ => launch_main().await,
+    }
+}
+
+pub fn print(body: String) {
+    println!("{}", body);
+}
+
+
+
+pub async fn launch_main() {
     let mut language = select_language();
 
     renderer::process(
@@ -30,7 +46,7 @@ pub async fn launch(_f: Flags) {
         0,
         0,
         0,
-        false
+        false,
     ).await;
 
     let client = reqwest::Client::new();
@@ -246,7 +262,7 @@ pub async fn launch(_f: Flags) {
                 *selected_side.lock().unwrap(),
                 *selected_article.lock().unwrap(),
                 *selected_update.lock().unwrap(),
-                *open_selected.lock().unwrap()
+                *open_selected.lock().unwrap(),
             ).await;
 
             w = w2;
@@ -259,7 +275,6 @@ pub async fn launch(_f: Flags) {
             if *open_selected.lock().unwrap() {
                 *open_selected.lock().unwrap() = false;
             }
-
         }
 
 
@@ -268,6 +283,6 @@ pub async fn launch(_f: Flags) {
             needs_refresh = true;
         }
 
-        // tokio::time::sleep(Duration::from_millis(250)).await;
+        tokio::time::sleep(Duration::from_millis(250)).await;
     }
 }
