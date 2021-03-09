@@ -5,10 +5,12 @@ use crossterm::terminal::{ClearType, Clear};
 use crossterm::ExecutableCommand;
 use crate::runtime::data::launches::structures::{Launch, Article};
 use chrono::{DateTime, Local};
+use crate::languages::LanguagePack;
 
 pub mod views;
 
 pub async fn process(
+    language: &LanguagePack,
     i: &Option<Launch>,
     news: &Option<Vec<Article>>,
     log: &Vec<(DateTime<Local>, String, u8)>,
@@ -33,13 +35,13 @@ pub async fn process(
 
     if cfg!(debug_assertions) {
         match view {
-            0 => views::default::run(out, launch_present, i, news, log, side, selected_article, selected_update, should_open),
+            0 => views::default::run(language, out, launch_present, i, news, log, side, selected_article, selected_update, should_open),
             1 => views::deep_dive::run(out, launch_present, i),
-            _ => views::default::run(out, launch_present, i, news, log, side, selected_article, selected_update, should_open),
+            _ => views::default::run(language, out, launch_present, i, news, log, side, selected_article, selected_update, should_open),
         }
     } else {
         match view {
-            _ => views::default::run(out, launch_present, i, news, log, side, selected_article, selected_update, should_open),
+            _ => views::default::run(language, out, launch_present, i, news, log, side, selected_article, selected_update, should_open),
         }
     }
 }

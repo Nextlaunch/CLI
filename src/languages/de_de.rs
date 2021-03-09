@@ -1,0 +1,45 @@
+use crate::languages::{LanguagePack, TimePack, LaunchPack, TitlePack, StatusPack};
+
+pub const PACK: LanguagePack = LanguagePack {
+    name: "Deutsch",
+    time: TimePack {
+        year: "jahr",
+        year_plural: "jahre",
+        week: "woche",
+        week_plural: "wochen",
+        day: "tag",
+        day_plural: "tage",
+        hour: "stunde",
+        hour_plural: "stunden",
+        minute: "minute",
+        minute_plural: "minuten",
+        second: "sekunde",
+        second_plural: "sekunden",
+    },
+    launch: LaunchPack {
+        name: "Name",
+        provider: "Anbieter",
+        vehicle: "Fahrzeug",
+        mission: "Mission",
+        pad: "Pad",
+        location: "Ort",
+        status: StatusPack {
+            success: "Erfolg",
+            to_be_determined: "Bestimmt werden",
+            to_be_confirmed: "Noch zu bestätigen",
+            partial_failure: "teilweiser Ausfall",
+            failure: "Fehler",
+            go_for_liftoff: "gehen für Liftoff",
+            in_flight: "Im Flug",
+            on_hold: "In Wartestellung",
+            fetching: "Holen...",
+        },
+    },
+    titles: TitlePack {
+        launch: "Launch Info",
+        updates: "Aktualisierung",
+        news: "Nachrichten",
+        logs: "Protokolle",
+        countdown: "Countdown",
+    },
+};

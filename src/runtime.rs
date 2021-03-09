@@ -8,6 +8,7 @@ use crossterm::event::{KeyCode, Event, poll, read};
 
 use chrono::{DateTime, Local};
 use std::sync::{Arc, Mutex};
+use crate::languages::select_language;
 
 
 pub mod flags;
@@ -15,6 +16,21 @@ pub mod data;
 pub mod renderer;
 
 pub async fn launch(_f: Flags) {
+    let mut language = select_language();
+
+    renderer::process(
+        &crate::languages::en_gb::PACK,
+        &None,
+        &None,
+        &mut vec![],
+        true,
+        0,
+        0,
+        0,
+        0,
+        false
+    ).await;
+
     let client = reqwest::Client::new();
     let mut last = Instant::now();
 
@@ -219,6 +235,7 @@ pub async fn launch(_f: Flags) {
             };
 
             renderer::process(
+                &crate::languages::en_gb::PACK,
                 &launch,
                 &news,
                 &mut log,

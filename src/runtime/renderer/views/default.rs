@@ -25,8 +25,10 @@ use crossterm::style::Colorize;
 
 use chrono::{Utc, DateTime, Local};
 use webbrowser::open;
+use crate::languages::LanguagePack;
 
 pub fn run(
+    language: &LanguagePack,
     mut out: Terminal<CrosstermBackend<Stdout>>,
     launch_present: bool,
     i: &Option<Launch>,
@@ -564,14 +566,14 @@ pub fn run(
                 )
                 .split(right[0]);
 
-            let launch_table = Paragraph::new(Text::styled("Unfortunately, there is not a launch currently available. Please check the logs.", Style::default().add_modifier(Modifier::UNDERLINED)))
+            let launch_table = Paragraph::new(Text::raw(" Unfortunately, there is not a launch currently available.\nPlease check the logs."))
                 .block(Block::default().title(" Launch Info ").borders(Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])));
 
             f.render_widget(launch_table, left[0]);
 
 
             if processed_articles.is_empty() {
-                let news = Paragraph::new(Text::styled("Unfortunately, there is no available news articles to share right now", Style::default().add_modifier(Modifier::UNDERLINED)))
+                let news = Paragraph::new(Text::raw(" Unfortunately, there is no available news articles to share right now"))
                     .block(Block::default().title(" News ").borders(Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])));
                 // f.render_widget(news, right_status[0]);
                 f.render_widget(Blank, right[1]);
