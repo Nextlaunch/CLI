@@ -29,6 +29,12 @@ Third of all, V2 takes advantage of an updated version of the Launch Library API
 
 Fourth, finally, and most certainly the best reason to swich, V2 offers an actual user interface, thats right a user interface in the terminal. It is powered by your keyboard and is simple to use and easy to remember.
 
+## Screenshots
+### Here it is in action!
+![image](https://user-images.githubusercontent.com/63651404/110542823-76162a00-8121-11eb-8f3b-42021a8da190.png)
+
+
+
 ## Credits
 Without the following people, services, and open-source libraries, NextLaunch would not have been possible.
 Thank you to everyone on this list from the bottom of my heart for helping me make this program,
