@@ -99,15 +99,6 @@ Telemetry: Launch Dashboard      <https://github.com/shahar603/Launch-Dashboard-
 \x1b[32mAlpha Testers: (Alphabetical)\x1b[0m
            Nosu                  <https://twitter.com/Nosudrum>
            Starman               <No link specified>
-
-\x1b[32mLibraries: (Alphabetical)\x1b[0m
-           Bincode               <https://github.com/servo/bincode>
-           Chrono                <https://github.com/chronotope/chrono>
-           Reqwest               <https://github.com/seanmonstar/reqwest>
-           Serde                 <https://github.com/serde-rs/serde>
-           Terminal Size         <https://github.com/eminence/terminal-size>
-           Tokio                 <https://github.com/tokio-rs/tokio>
-           Websockets            <https://github.com/websockets-rs/rust-websocket>
 ", crate::NAME);
         exit(0);
     }
