@@ -1,6 +1,7 @@
 use crate::utilities::map_weather::map_weather;
 use crate::runtime::data::launches::structures::{Launch, LSP, Rocket, RocketConfiguration, LaunchPad, PadLocation, Article};
 use crate::runtime::data::launches::update;
+use crate::utilities::countdown;
 use crate::runtime::flags::Flags;
 
 use std::process::exit;
@@ -23,6 +24,7 @@ use crossterm::ExecutableCommand;
 use crossterm::style::Colorize;
 
 use chrono::{Utc, DateTime, Local};
+use webbrowser::open;
 
 pub fn run(
     mut out: Terminal<CrosstermBackend<Stdout>>,
@@ -83,12 +85,12 @@ pub fn run(
         let words: Vec<&str> = untitle.split(' ').collect();
 
         for word in words {
-            if line_total + word.len()+1 <= 50 {
+            if line_total + word.len() + 1 <= 50 {
                 headlines[index] = format!("{} {}", headlines[index], word);
                 line_total += word.len();
             } else {
                 index += 1;
-                line_total = word.len()+1;
+                line_total = word.len() + 1;
                 headlines.push(format!(" {}", word));
             }
         }
@@ -342,6 +344,86 @@ pub fn run(
             }
         };
 
+        let mut updates: Vec<Spans> = vec![];
+
+        let mut update_index = 0;
+
+        for update in launch.updates.unwrap_or(vec![]) {
+            let timespan = countdown(update.created_on.unwrap_or(Utc::now().to_string()));
+            let untitle = update.comment.unwrap_or("Comment not found".to_string());
+
+            let timestr = if timespan.weeks > 0 {
+                if timespan.weeks > 1 || timespan.weeks == 0 {
+                    format!("Updated {} weeks ago", timespan.weeks)
+                } else {
+                    format!("Updated {} week ago", timespan.weeks)
+                }
+            } else if timespan.days > 0 {
+                if timespan.days > 1 || timespan.days == 0 {
+                    format!("Updated {} days ago", timespan.days)
+                } else {
+                    format!("Updated {} day ago", timespan.days)
+                }
+            } else if timespan.hours > 0 {
+                if (timespan.hours > 1 || timespan.hours == 0) && (timespan.minutes > 1 || timespan.minutes == 0) {
+                    format!("Updated {} hours {} minutes ago", timespan.hours, timespan.minutes)
+                } else if timespan.hours > 1 && timespan.minutes == 0 {
+                    format!("Updated {} hours {} minute ago", timespan.hours, timespan.minutes)
+                } else if timespan.hours == 1 && timespan.minutes > 1 {
+                    format!("Updated {} hour {} minutes ago", timespan.hours, timespan.minutes)
+                } else {
+                    format!("Updated {} hour {} minute ago", timespan.hours, timespan.minutes)
+                }
+            } else if timespan.minutes > 0 {
+                if (timespan.minutes > 1 || timespan.minutes == 0) && (timespan.seconds > 1 || timespan.seconds == 0) {
+                    format!("Updated {} minutes {} seconds ago", timespan.minutes, timespan.seconds)
+                } else if timespan.minutes > 1 && timespan.seconds == 1 {
+                    format!("Updated {} minutes {} second ago", timespan.minutes, timespan.seconds)
+                } else if timespan.minutes == 1 && timespan.seconds > 1 {
+                    format!("Updated {} minute {} seconds ago", timespan.minutes, timespan.seconds)
+                } else {
+                    format!("Updated {} minute {} second ago", timespan.minutes, timespan.seconds)
+                }
+            } else {
+                if timespan.seconds > 1 || timespan.seconds == 0 {
+                    format!("Updated {} seconds ago", timespan.seconds)
+                } else {
+                    format!("Updated {} second ago", timespan.seconds)
+                }
+            };
+
+            if side == 0 && update_index == selected_update {
+                if should_open && update.info_url.is_some() {
+                    open(update.info_url.unwrap().as_str());
+                }
+                updates.push(Spans::from(vec![
+                    Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
+                    Span::raw(" - "),
+                    Span::styled(untitle, Style::default().fg(Color::Cyan))
+                ]));
+            } else if side == 1 && update_index == selected_update {
+                updates.push(Spans::from(vec![
+                    Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
+                    Span::raw(" - "),
+                    Span::styled(untitle, Style::default().fg(Color::Magenta))
+                ]));
+            } else {
+                updates.push(Spans::from(vec![
+                    Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
+                    Span::raw(" - "),
+                    Span::raw(untitle)
+                ]));
+            }
+            update_index += 1;
+            updates.push(Spans::from(vec![
+                Span::styled(format!(" {}", timestr), Style::default().fg(Color::DarkGray))
+            ]));
+
+            updates.push(Spans::from(vec![
+                Span::raw("")
+            ]));
+        }
+
         let _ = out.draw(|f| {
             let whole = Layout::default()
                 .direction(Direction::Vertical)
@@ -399,53 +481,29 @@ pub fn run(
                     Constraint::Min(10),
                     Constraint::Min(45)
                 ])
-                .block(Block::default().title(" Launch Info ").borders(Borders::ALL /*Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])*/));
-
+                .block(Block::default().title(" Launch Info ").borders(Borders::ALL));
 
             f.render_widget(launch_table, left[0]);
 
-            // let weather_icon = map_weather(1003, true);
-
-            // let weather_table = Table::new(vec![
-            //     Row::new(vec![" ", ""]),
-            //     Row::new(vec![" Description", "Fetching..."]),
-            //     Row::new(vec![" Temp (c)", "Fetching..."]),
-            //     Row::new(vec![" Feels Like (c)", "Fetching...", weather_icon[0]]),
-            //     Row::new(vec![" Wind (KM/H)", "Fetching...", weather_icon[1]]),
-            //     Row::new(vec![" Gusts (KM/H)", "Fetching...", weather_icon[2]]),
-            //     Row::new(vec![" Direction", "Fetching...", weather_icon[3]]),
-            //     Row::new(vec![" Bearing", "Fetching...", weather_icon[4]]),
-            //     Row::new(vec![" Humidity", "Fetching..."]),
-            //     Row::new(vec![" Cloud Cover", "Fetching..."]),
-            //     Row::new(vec![" Visibility (KM)", "Fetching..."]),
-            // ])
-            //     .widths(&[
-            //         Constraint::Percentage(30),
-            //         Constraint::Percentage(30),
-            //         Constraint::Percentage(30)
-            //     ])
-            //     .block(Block::default().title(" Launch Site Weather Info ").borders(Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])));
-            //
-            // f.render_widget(weather_table, left[1]);
-
 
             let news = Paragraph::new(processed_articles)
-                .block(Block::default().title(" News ").borders(Borders::ALL /*Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])*/));
+                .block(Block::default().title(" News ").borders(Borders::ALL));
             // f.render_widget(news, right_status[0]);
             f.render_widget(Blank, right_status[0]);
             f.render_widget(news, right_status[0]);
 
 
-            let update_list = Table::new(vec![])
-                .widths(&[
-                    Constraint::Min(19),
-                    Constraint::Min(6),
-                    Constraint::Min(30)
-                ])
-                .block(Block::default().title(" Updates ")
-                    .borders(Borders::ALL /*Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])*/));
-            // f.render_widget(log_list, right_status[1]);
-            f.render_widget(update_list, left[1]);
+           if updates.is_empty() {
+               let update_list = Paragraph::new(" This launch does not have any updates yet.")
+                   .block(Block::default().title(" Updates ")
+                       .borders(Borders::ALL));
+               f.render_widget(update_list, left[1]);
+           } else {
+               let update_list = Paragraph::new(updates)
+                   .block(Block::default().title(" Updates ")
+                       .borders(Borders::ALL));
+               f.render_widget(update_list, left[1]);
+           }
 
             let log_list = Table::new(parsed_logs)
                 .widths(&[
@@ -454,7 +512,7 @@ pub fn run(
                     Constraint::Min(30)
                 ])
                 .block(Block::default().title(" Logs ")
-                    .borders(Borders::ALL /*Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])*/));
+                    .borders(Borders::ALL));
             // f.render_widget(log_list, right_status[1]);
             f.render_widget(log_list, right_status[1]);
 
@@ -495,17 +553,6 @@ pub fn run(
                 )
                 .split(whole[0]);
 
-            // let right_status = Layout::default()
-            //     .direction(Direction::Vertical)
-            //     .constraints(
-            //         [
-            //             Constraint::Percentage(75),
-            //             Constraint::Percentage(25),
-            //         ]
-            //             .as_ref(),
-            //     )
-            //     .split(right[1]);
-
             let left = Layout::default()
                 .direction(Direction::Vertical)
                 .constraints(
@@ -517,30 +564,26 @@ pub fn run(
                 )
                 .split(right[0]);
 
-            let launch_table = Table::new(vec![
-                Row::new(vec![" ", ""]),
-                Row::new(vec![" Name", "Fetching..."]),
-                Row::new(vec![" Provider", "Fetching..."]),
-                Row::new(vec![" Vehicle", "Fetching..."]),
-                Row::new(vec![" Pad", "Fetching..."]),
-                Row::new(vec![" Location", "Fetching..."]),
-                Row::new(vec![Text::from(" Status"), tbc.clone()]),
-                Row::new(vec![" ", ""]),
-            ])
-                .widths(&[
-                    Constraint::Min(10),
-                    Constraint::Min(45)
-                ])
+            let launch_table = Paragraph::new(Text::styled("Unfortunately, there is not a launch currently available. Please check the logs.", Style::default().add_modifier(Modifier::UNDERLINED)))
                 .block(Block::default().title(" Launch Info ").borders(Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])));
-
 
             f.render_widget(launch_table, left[0]);
 
-            let news = Paragraph::new(processed_articles)
-                .block(Block::default().title(" News ").borders(Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])));
-            // f.render_widget(news, right_status[0]);
-            f.render_widget(Blank, right[1]);
-            f.render_widget(news, right[1]);
+
+            if processed_articles.is_empty() {
+                let news = Paragraph::new(Text::styled("Unfortunately, there is no available news articles to share right now", Style::default().add_modifier(Modifier::UNDERLINED)))
+                    .block(Block::default().title(" News ").borders(Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])));
+                // f.render_widget(news, right_status[0]);
+                f.render_widget(Blank, right[1]);
+                f.render_widget(news, right[1]);
+            } else {
+                let news = Paragraph::new(processed_articles)
+                    .block(Block::default().title(" News ").borders(Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])));
+                // f.render_widget(news, right_status[0]);
+                f.render_widget(Blank, right[1]);
+                f.render_widget(news, right[1]);
+            }
+
 
             let log_list = Table::new(parsed_logs)
                 .widths(&[
@@ -556,13 +599,13 @@ pub fn run(
 
             let countdown = Paragraph::new(vec![
                 "",
-                "#####   #####        #####   #####        #####   #####        #####   #####        #####   #####        #####   #####",
-                "#   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #",
-                "#   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #",
-                "#   #   #   #        #   #   #   #        #   #   #   #        #   #   #   #        #   #   #   #        #   #   #   #",
-                "#   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #",
-                "#   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #   ##   #   #   #   #",
-                "#####   #####        #####   #####        #####   #####        #####   #####        #####   #####        #####   #####",
+                "#####   #####        #####   #####        #####   #####",
+                "#   #   #   #   ##   #   #   #   #   ##   #   #   #   #",
+                "#   #   #   #   ##   #   #   #   #   ##   #   #   #   #",
+                "#   #   #   #        #   #   #   #        #   #   #   #",
+                "#   #   #   #   ##   #   #   #   #   ##   #   #   #   #",
+                "#   #   #   #   ##   #   #   #   #   ##   #   #   #   #",
+                "#####   #####        #####   #####        #####   #####",
                 "",
             ].join("\n"))
                 .block(Block::default().title(" Countdown ").borders(Borders::ALL))

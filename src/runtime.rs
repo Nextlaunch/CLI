@@ -60,8 +60,8 @@ pub async fn launch(_f: Flags) {
     if launch.is_some() {
         let tpl = launch.clone().unwrap();
         *should_clear.lock().unwrap() = true;
-        *news_is_some.lock().unwrap() = true;
-        *news_article_count.lock().unwrap() = tpl.updates.unwrap_or(vec![]).len() as i32;
+        *launch_is_some.lock().unwrap() = true;
+        *launch_update_count.lock().unwrap() = tpl.updates.unwrap_or(vec![]).len() as i32;
     }
 
     if news.is_some() {
@@ -211,7 +211,6 @@ pub async fn launch(_f: Flags) {
 
 
         if refresh_cycle >= 4 {
-            log.push((Local::now(), format!("side: {}, art: {}, upd: {}", selected_side.lock().unwrap().clone(), selected_article.lock().unwrap().clone(), selected_update.lock().unwrap().clone()), 0));
             refresh_cycle = 0;
             let (w2, h2) = if let Some((w1, h1)) = term_size::dimensions() {
                 (w1, h1)
@@ -242,7 +241,6 @@ pub async fn launch(_f: Flags) {
                 *open_selected.lock().unwrap() = false;
             }
 
-            log.pop();
         }
 
 
