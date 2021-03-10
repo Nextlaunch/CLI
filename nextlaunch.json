@@ -1,6 +1,31 @@
 {
     "language": "en_GB",
     "logs": true,
+    "news": true,
+    "update_frequency": 600,
+    "updates": true,
+    "show_help_log": true,
+    "modules": {
+        "launch_info": {
+            "enabled": true
+        },
+        "updates": {
+            "enabled": true
+        },
+        "news": {
+            "enabled": true
+        },
+        "logs": {
+            "enabled": true,
+            "show_level": true,
+            "show_time": true,
+            "date_format_id": 1
+        },
+        "countdown": {
+            "enabled": true,
+            "format": "dynamic"
+        }
+    },
     "colors": {
         "status": {
             "suc": {
@@ -193,6 +218,92 @@
                 }
             }
         },
+        "logs": {
+            "info": {
+                "fg": {
+                    "color": "white",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "note": {
+                "fg": {
+                    "color": "magenta",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "warn": {
+                "fg": {
+                    "color": "yellow",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "error": {
+                "fg": {
+                    "color": "red",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            }
+        },
         "updates": {
             "author": {
                 "selected": {
@@ -259,7 +370,139 @@
                     }
                 }
             },
-            "name": {
+            "content": {
+                "selected": {
+                    "fg": {
+                        "color": "cyan",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                },
+                "alt_selected": {
+                    "fg": {
+                        "color": "magenta",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                },
+                "deselected": {
+                    "fg": {
+                        "color": "white",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                }
+            },
+            "timestamp": {
+                "selected": {
+                    "fg": {
+                        "color": "dark-gray",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                },
+                "alt_selected": {
+                    "fg": {
+                        "color": "dark-gray",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                },
+                "deselected": {
+                    "fg": {
+                        "color": "dark-gray",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                }
+            }
+        },
+        "articles": {
+            "author": {
                 "selected": {
                     "fg": {
                         "color": "magenta",
@@ -324,10 +567,10 @@
                     }
                 }
             },
-            "author": {
+            "content": {
                 "selected": {
                     "fg": {
-                        "color": "magenta",
+                        "color": "cyan",
                         "light": false
                     },
                     "bg": {
@@ -369,7 +612,7 @@
                 },
                 "deselected": {
                     "fg": {
-                        "color": "magenta",
+                        "color": "white",
                         "light": false
                     },
                     "bg": {
@@ -387,6 +630,263 @@
                         "hidden": false,
                         "crossed_out": false
                     }
+                }
+            },
+            "timestamp": {
+                "selected": {
+                    "fg": {
+                        "color": "dark-gray",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                },
+                "alt_selected": {
+                    "fg": {
+                        "color": "dark-gray",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                },
+                "deselected": {
+                    "fg": {
+                        "color": "dark-gray",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                }
+            }
+        },
+        "countdown": {
+            "sync_to_status": true,
+            "suc": {
+                "fg": {
+                    "color": "green",
+                    "light": true
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "tbd": {
+                "fg": {
+                    "color": "yellow",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "tbc": {
+                "fg": {
+                    "color": "yellow",
+                    "light": true
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "paf": {
+                "fg": {
+                    "color": "yellow",
+                    "light": true
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "fal": {
+                "fg": {
+                    "color": "red",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "g4l": {
+                "fg": {
+                    "color": "green",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "inf": {
+                "fg": {
+                    "color": "green",
+                    "light": true
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "hol": {
+                "fg": {
+                    "color": "gray",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "fetching": {
+                "fg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
                 }
             }
         }
