@@ -12,8 +12,6 @@ jobs:
         directory: 'languages'
         exclusions: '*.git* /*node_modules/* .editorconfig'
     - run: |
-          mkdir -p binaries/$USE_TOOLCHAIN
-          cp target/$USE_TOOLCHAIN/release/nextlaunch binaries/$USE_TOOLCHAIN/nextlaunch
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add -A
