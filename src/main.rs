@@ -1,6 +1,7 @@
 pub use constants::*;
 
 pub mod utilities;
+pub mod settings;
 pub mod constants;
 pub mod runtime;
 pub mod languages;
