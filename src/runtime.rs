@@ -8,7 +8,7 @@ use crossterm::event::{KeyCode, Event, poll, read};
 
 use chrono::{DateTime, Local};
 use std::sync::{Arc, Mutex};
-use crate::languages::select_language;
+use build_script_build::languages::select_language;
 
 
 pub mod flags;
@@ -38,7 +38,7 @@ pub async fn launch_main() {
     let mut language = select_language();
 
     renderer::process(
-        &crate::languages::en_gb::PACK,
+        &build_script_build::languages::en_gb::PACK,
         &None,
         &None,
         &mut vec![
@@ -170,7 +170,7 @@ pub async fn launch_main() {
             };
 
             renderer::process(
-                &crate::languages::en_gb::PACK,
+                &build_script_build::languages::en_gb::PACK,
                 &launch,
                 &news,
                 &mut log,

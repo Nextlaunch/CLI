@@ -5,7 +5,7 @@ use crossterm::terminal::{ClearType, Clear};
 use crossterm::ExecutableCommand;
 use crate::runtime::data::launches::structures::{Launch, Article};
 use chrono::{DateTime, Local};
-use crate::languages::LanguagePack;
+use build_script_build::languages::LanguagePack;
 use tui::layout::{Rect, Layout, Direction, Constraint};
 use tui::widgets::{Row, Table, Borders, Block, Clear as Blank};
 use tui::style::{Color, Style, Modifier};

@@ -1,6 +1,8 @@
 use locale_config::Locale;
 use std::process::exit;
+use serde::{Serialize, Deserialize};
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LanguagePack {
     pub name: &'static str,
     pub time: TimePack,
@@ -8,6 +10,7 @@ pub struct LanguagePack {
     pub titles: TitlePack,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TimePack {
     pub year: &'static str,
     pub year_plural: &'static str,
@@ -28,6 +31,7 @@ pub struct TimePack {
     pub second_plural: &'static str,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LaunchPack {
     pub name: &'static str,
     pub provider: &'static str,
@@ -38,6 +42,7 @@ pub struct LaunchPack {
     pub status: StatusPack,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TitlePack {
     pub launch: &'static str,
     pub updates: &'static str,
@@ -46,6 +51,7 @@ pub struct TitlePack {
     pub countdown: &'static str,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StatusPack {
     pub success: &'static str,
     pub to_be_determined: &'static str,
@@ -58,15 +64,13 @@ pub struct StatusPack {
     pub fetching: &'static str,
 }
 
-pub mod en_gb;
-pub mod de_de;
 
-
-pub fn select_language() {
-    let locale = Locale::user_default();
-    let tags = locale.tags();
-    for tag in tags {
-        println!("tag: {}  range: {}", tag.0.unwrap_or(""), tag.1)
+pub fn select_language(id: &str) -> LanguagePack {
+    match id {
+        _ => load_language(1)
     }
-    // exit(1);
+}
+
+pub fn load_language(id: usize) -> LanguagePack {
+    let f = dirs_2;
 }

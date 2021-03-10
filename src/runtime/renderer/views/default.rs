@@ -25,7 +25,7 @@ use crossterm::style::Colorize;
 
 use chrono::{Utc, DateTime, Local};
 use webbrowser::{open, BrowserOptions};
-use crate::languages::LanguagePack;
+use build_script_build::languages::LanguagePack;
 use crate::runtime::renderer::render_help_menu;
 
 pub fn run(
