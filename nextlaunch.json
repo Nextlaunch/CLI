@@ -1,0 +1,394 @@
+{
+    "language": "en_GB",
+    "logs": true,
+    "colors": {
+        "status": {
+            "suc": {
+                "fg": {
+                    "color": "green",
+                    "light": true
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "tbd": {
+                "fg": {
+                    "color": "yellow",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "tbc": {
+                "fg": {
+                    "color": "yellow",
+                    "light": true
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "paf": {
+                "fg": {
+                    "color": "yellow",
+                    "light": true
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "fal": {
+                "fg": {
+                    "color": "red",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "g4l": {
+                "fg": {
+                    "color": "green",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "inf": {
+                "fg": {
+                    "color": "green",
+                    "light": true
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "hol": {
+                "fg": {
+                    "color": "gray",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            },
+            "fetching": {
+                "fg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "bg": {
+                    "color": "blank",
+                    "light": false
+                },
+                "modifiers": {
+                    "bold": false,
+                    "dim": false,
+                    "italic": false,
+                    "underlined": false,
+                    "slow_blink": false,
+                    "rapid_blink": false,
+                    "reversed": false,
+                    "hidden": false,
+                    "crossed_out": false
+                }
+            }
+        },
+        "updates": {
+            "author": {
+                "selected": {
+                    "fg": {
+                        "color": "magenta",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                },
+                "alt_selected": {
+                    "fg": {
+                        "color": "magenta",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                },
+                "deselected": {
+                    "fg": {
+                        "color": "magenta",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                }
+            },
+            "name": {
+                "selected": {
+                    "fg": {
+                        "color": "magenta",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                },
+                "alt_selected": {
+                    "fg": {
+                        "color": "magenta",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                },
+                "deselected": {
+                    "fg": {
+                        "color": "magenta",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                }
+            },
+            "author": {
+                "selected": {
+                    "fg": {
+                        "color": "magenta",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                },
+                "alt_selected": {
+                    "fg": {
+                        "color": "magenta",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                },
+                "deselected": {
+                    "fg": {
+                        "color": "magenta",
+                        "light": false
+                    },
+                    "bg": {
+                        "color": "blank",
+                        "light": false
+                    },
+                    "modifiers": {
+                        "bold": false,
+                        "dim": false,
+                        "italic": false,
+                        "underlined": false,
+                        "slow_blink": false,
+                        "rapid_blink": false,
+                        "reversed": false,
+                        "hidden": false,
+                        "crossed_out": false
+                    }
+                }
+            }
+        }
+    }
+}

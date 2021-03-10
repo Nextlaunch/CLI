@@ -29,14 +29,14 @@ reqwest = { version = "0.11.0", features = ["serde_json", "json"] }
 serde = { version = "1.0.123", features = ["derive"] }
 chrono = "0.4.19"
 bincode = "1.3.1"
-#websocket = "0.26.2"
-#serde-xml-rs = "0.4.1"
 crossterm = { version = "0.18", features = ["event-stream"] }
 tui = { version = "0.14.0", default-features = false, features = ["crossterm"] }
 term_size = "0.3.2"
 webbrowser = { git = "https://github.com/codota/webbrowser-rs", branch = "feature/add-suppress-output-flag-with-docs" }
 dirs-2 = "3.0.1"
 
+
 [build-dependencies]
-reqwest = { version = "0.11.0", features = ["serde_json", "json"] }
+serde = { version = "1.0.123", features = ["derive"] }
+reqwest = { version = "0.11.0", features = ["serde_json", "json", "blocking"] }
 dirs-2 = "3.0.1"
