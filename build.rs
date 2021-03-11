@@ -65,7 +65,7 @@ fn main() {
 
                     let mut archive = zip::ZipArchive::new(file).unwrap();
 
-                    if let Err(e) = archive.extract(format!("{}/languages", dp)) {
+                    if let Err(e) = archive.extract(format!("{}/readme", dp)) {
                         println!("cargo:warning=NextLaunch failed to unpack language files");
                         println!("cargo:warning={:#?}", e);
                         exit(1);
