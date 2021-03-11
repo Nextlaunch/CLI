@@ -6,7 +6,7 @@ use std::io::Write;
 
 const LANG_URL: &str = "https://raw.githubusercontent.com/AltriusRS/NextLaunch/next/languages/languages.zip";
 const CONFIG_URL: &str = "https://raw.githubusercontent.com/AltriusRS/NextLaunch/next/nextlaunch.json";
-const README_URL: &str = "https://raw.githubusercontent.com/AltriusRS/NextLaunch/next/documents/readme.zip";
+const README_URL: &str = "https://raw.githubusercontent.com/AltriusRS/NextLaunch/next/documents/readmes.zip";
 
 fn main() {
     let raw_data_dir = dirs_2::data_dir();
@@ -82,7 +82,7 @@ fn main() {
             }
         } else {
             println!("cargo:warning=NextLaunch failed to download language files");
-            println!("cargo:warning={:#?}", pack_response.unwrap_err());
+            println!("cargo:warning={:#?}", readme_response.unwrap_err());
             exit(1);
         }
 
