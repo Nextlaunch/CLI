@@ -122,7 +122,7 @@ pub fn launch_thread(
                                                     if raw_key.modifiers.contains(KeyModifiers::CONTROL) {
                                                         let mut stdout = std::io::stdout();
                                                         stdout.execute(Clear(ClearType::All));
-                                                        println!("Thank you for using NextLaunch, goodbye.");
+                                                        println!(" Thank you for using NextLaunch, goodbye.");
                                                         crossterm::terminal::disable_raw_mode();
                                                         exit(0);
                                                     }
@@ -131,7 +131,7 @@ pub fn launch_thread(
                                                     if !raw_key.modifiers.contains(KeyModifiers::CONTROL) {
                                                         let mut stdout = std::io::stdout();
                                                         stdout.execute(Clear(ClearType::All));
-                                                        println!("Thank you for using NextLaunch, goodbye.");
+                                                        println!(" Thank you for using NextLaunch, goodbye.");
                                                         crossterm::terminal::disable_raw_mode();
                                                         exit(0);
                                                     }

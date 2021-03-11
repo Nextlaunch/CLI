@@ -40,3 +40,4 @@ dirs-2 = "3.0.1"
 serde = { version = "1.0.123", features = ["derive"] }
 reqwest = { version = "0.11.0", features = ["serde_json", "json", "blocking"] }
 dirs-2 = "3.0.1"
+zip = "0.5.11"
