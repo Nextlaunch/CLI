@@ -1,17 +1,52 @@
-pub use constants::*;
+use iced::{slider, Column, Element, ProgressBar, Sandbox, Settings, Slider};
 
-pub mod utilities;
-pub mod settings;
-pub mod constants;
-pub mod runtime;
-pub mod languages;
+mod downloads;
 
-#[tokio::main]
-async fn main() {
+pub fn main() -> iced::Result {
+    Progress::run(Settings::default())
+}
 
-    let flags = runtime::flags::check_flags().await;
+#[derive(Default)]
+struct Progress {
+    value: f32,
+    progress_bar_slider: slider::State,
+}
 
-    runtime::flags::process_flags(&flags).await;
+#[derive(Debug, Clone, Copy)]
+enum Message {
+    SliderChanged(f32),
+}
 
-    runtime::launch(flags).await;
+impl Sandbox for Progress {
+    type Message = Message;
+
+    fn new() -> Self {
+        Self::default()
+    }
+
+    fn title(&self) -> String {
+        String::from("Nextlaunch Installer")
+    }
+
+    fn update(&mut self, message: Message) {
+        match message {
+            Message::SliderChanged(x) => self.value = x,
+        }
+    }
+
+    fn view(&mut self) -> Element<Message> {
+        Column::new()
+            .padding(20)
+            .push(ProgressBar::new(0.0..=100.0, self.value))
+            .push(
+                Slider::new(
+                    &mut self.progress_bar_slider,
+                    0.0..=100.0,
+                    self.value,
+                    Message::SliderChanged,
+                )
+                    .step(0.01),
+            )
+            .into()
+    }
 }
