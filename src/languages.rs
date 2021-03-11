@@ -72,5 +72,49 @@ pub fn select_language(id: &str) -> LanguagePack {
 }
 
 pub fn load_language(id: usize) -> LanguagePack {
-    let f = dirs_2;
+    // let f = dirs_2;
+    
+    LanguagePack {
+        name: "",
+        time: TimePack {
+            year: "",
+            year_plural: "",
+            week: "",
+            week_plural: "",
+            day: "",
+            day_plural: "",
+            hour: "",
+            hour_plural: "",
+            minute: "",
+            minute_plural: "",
+            second: "",
+            second_plural: ""
+        },
+        launch: LaunchPack {
+            name: "",
+            provider: "",
+            vehicle: "",
+            mission: "",
+            pad: "",
+            location: "",
+            status: StatusPack {
+                success: "",
+                to_be_determined: "",
+                to_be_confirmed: "",
+                partial_failure: "",
+                failure: "",
+                go_for_liftoff: "",
+                in_flight: "",
+                on_hold: "",
+                fetching: ""
+            }
+        },
+        titles: TitlePack {
+            launch: "",
+            updates: "",
+            news: "",
+            logs: "",
+            countdown: ""
+        }
+    }
 }

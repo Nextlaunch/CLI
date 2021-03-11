@@ -8,6 +8,7 @@ pub struct Config {
 pub struct SubConfig {
     pub language: String,
     pub api_token: String,
+    pub cache_update_frequency: usize,
     pub modules: ModuleConfig,
     pub colors: ColorConfig,
 }
@@ -20,15 +21,30 @@ pub struct ModuleConfig {
     pub countdown: CountdownModuleConfig,
 }
 
-pub struct LaunchInfoModuleConfig {}
+pub struct LaunchInfoModuleConfig {
+    pub enabled: bool,
+}
 
-pub struct UpdateModuleConfig {}
+pub struct UpdateModuleConfig {
+    pub enabled: bool,
+}
 
-pub struct NewsModuleConfig {}
+pub struct NewsModuleConfig {
+    pub enabled: bool,
+}
 
-pub struct LogModuleConfig {}
+pub struct LogModuleConfig {
+    pub enabled: bool,
+    pub show_help_log: bool,
+    pub show_level: bool,
+    pub show_time: bool,
+    pub date_format_id: u8,
+}
 
-pub struct CountdownModuleConfig {}
+pub struct CountdownModuleConfig {
+    pub enabled: bool,
+    pub formate: String,
+}
 
 pub struct ColorConfig {
     pub launch_info: LaunchInfoColorConfig,

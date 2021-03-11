@@ -25,7 +25,7 @@ use crossterm::style::Colorize;
 
 use chrono::{Utc, DateTime, Local};
 use webbrowser::{open, BrowserOptions};
-use build_script_build::languages::LanguagePack;
+use crate::languages::LanguagePack;
 use crate::runtime::renderer::render_help_menu;
 
 pub fn run(
@@ -135,13 +135,7 @@ pub fn run(
 
         let timespan = crate::utilities::countdown_news(article.published_at.unwrap_or(Utc::now().to_string()));
 
-        let timestr = if timespan.weeks > 0 {
-            if timespan.weeks > 1 || timespan.weeks == 0 {
-                format!("Published {} weeks ago", timespan.weeks)
-            } else {
-                format!("Published {} week ago", timespan.weeks)
-            }
-        } else if timespan.days > 0 {
+        let timestr = if timespan.days > 0 {
             if timespan.days > 1 || timespan.days == 0 {
                 format!("Published {} days ago", timespan.days)
             } else {
@@ -226,17 +220,7 @@ pub fn run(
 
         let timespan = crate::utilities::countdown(launch.net.unwrap_or(Utc::now().to_string()));
 
-        let mut net = if timespan.years > 0 {
-            let mut raw = crate::utilities::digit_map::map_str(format!("{:02}:{:02}:{:02}:{:02}:{:02}:{:02}", timespan.years, timespan.weeks, timespan.days, timespan.hours, timespan.minutes, timespan.seconds).as_str());
-            raw[8] = "    Years                  Weeks                  Days                   Hours                 Minutes                Seconds   \u{200b}".to_string();
-
-            raw
-        } else if timespan.weeks > 0 {
-            let mut raw = crate::utilities::digit_map::map_str(format!("{:02}:{:02}:{:02}:{:02}:{:02}", timespan.weeks, timespan.days, timespan.hours, timespan.minutes, timespan.seconds).as_str());
-            raw[8] = "    Weeks                  Days                   Hours                 Minutes                Seconds   \u{200b}".to_string();
-
-            raw
-        } else if timespan.days > 0 {
+        let mut net = if timespan.days > 0 {
             let mut raw = crate::utilities::digit_map::map_str(format!("{:02}:{:02}:{:02}:{:02}", timespan.days, timespan.hours, timespan.minutes, timespan.seconds).as_str());
             raw[8] = "    Days                   Hours                 Minutes                Seconds   \u{200b}".to_string();
 
@@ -363,13 +347,7 @@ pub fn run(
                 let timespan = countdown(update.created_on.unwrap_or(Utc::now().to_string()));
                 let untitle = update.comment.unwrap_or("Comment not found".to_string());
 
-                let timestr = if timespan.weeks > 0 {
-                    if timespan.weeks > 1 || timespan.weeks == 0 {
-                        format!("Updated {} weeks ago", timespan.weeks)
-                    } else {
-                        format!("Updated {} week ago", timespan.weeks)
-                    }
-                } else if timespan.days > 0 {
+                let timestr = if timespan.days > 0 {
                     if timespan.days > 1 || timespan.days == 0 {
                         format!("Updated {} days ago", timespan.days)
                     } else {
