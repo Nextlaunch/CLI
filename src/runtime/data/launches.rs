@@ -21,7 +21,7 @@ pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>) -
                 for launch in launch_list {
                     let time_remaining = crate::utilities::countdown(launch.net.clone().unwrap_or(Utc::now().to_string()));
 
-                    if time_remaining.seconds > 0 {
+                    if !time_remaining.has_passed {
                         next = launch;
                         break;
                     }

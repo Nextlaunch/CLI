@@ -22,7 +22,7 @@ pub fn process_seconds(s: i64) -> TimeFrame {
     let mut hours = s % (60 * 60 * 24) / (60 * 60);
     let mut minutes = s % (60 * 60) / (60);
     let mut seconds = s % (60);
-    TimeFrame::new(seconds, minutes, hours, days)
+    TimeFrame::new(seconds, minutes, hours, days, s.is_negative())
 }
 
 pub struct TimeFrame {
@@ -30,10 +30,11 @@ pub struct TimeFrame {
     pub minutes: u64,
     pub hours: u64,
     pub days: u64,
+    pub has_passed: bool,
 }
 
 impl TimeFrame {
-    pub fn new(mut s: i64, m: i64, h: i64, d: i64) -> TimeFrame {
+    pub fn new(mut s: i64, m: i64, h: i64, d: i64, has_passed: bool) -> TimeFrame {
         let seconds = if s.is_negative() {
             (s * -1) as u64
         } else {
@@ -64,6 +65,7 @@ impl TimeFrame {
             minutes,
             hours,
             days,
+            has_passed
         }
     }
 }
