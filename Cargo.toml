@@ -1,5 +1,5 @@
 [package]
-name = "nextlaunch"
+name = "nextlaunch-installer"
 version = "2.0.0"
 description = "Watch a countdown until the next rocket launch, live in your terminal!"
 authors = ["AltriusRS <tom.b.2k2@gmail.com>"]
@@ -9,7 +9,6 @@ include = [
     "Cargo.toml",
     "README.md"
 ]
-build = "build.rs"
 
 repository = "https://github.com/AltriusRS/NextLaunch"
 keywords = [
@@ -28,4 +27,4 @@ reqwest = { version = "0.11.0", features = ["serde_json", "json", "blocking"] }
 dirs-2 = "3.0.1"
 zip = "0.5.11"
 toml = "0.5.8"
-
+iced = "0.2.0"

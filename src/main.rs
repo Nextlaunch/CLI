@@ -1,6 +1,6 @@
 use iced::{slider, Column, Element, ProgressBar, Sandbox, Settings, Slider};
 
-mod downloads;
+// mod downloads;
 
 pub fn main() -> iced::Result {
     Progress::run(Settings::default())
