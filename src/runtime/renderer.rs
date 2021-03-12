@@ -10,9 +10,10 @@ use tui::layout::{Rect, Layout, Direction, Constraint};
 use tui::widgets::{Row, Table, Borders, Block, Clear as Blank};
 use tui::style::{Color, Style, Modifier};
 use tui::text::Text;
-use crate::settings::{Config, compute_style};
+use crate::settings::Config;
 use crate::runtime::state::State;
 
+pub mod settings;
 pub mod views;
 
 pub async fn process(
@@ -21,7 +22,7 @@ pub async fn process(
     news: &Option<Vec<Article>>,
     log: &Vec<(DateTime<Local>, String, u8)>,
     has_changed: bool,
-    state: State,
+    mut state: State,
     settings: &mut Config,
 ) {
     let mut stdout = std::io::stdout();
@@ -35,17 +36,22 @@ pub async fn process(
     let mut out: Terminal<CrosstermBackend<Stdout>> = Terminal::new(backend).unwrap();
 
 
-    let launch_present = i.is_some();
-
-    if cfg!(debug_assertions) {
-        match state.view_screen {
-            0 => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
-            1 => views::deep_dive::run(&mut out, launch_present, i, state, settings),
-            _ => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
-        }
+    if state.render_settings {
+        let _ = out.draw(|f| {
+            render_settings_menu(f, settings, &mut state);
+        });
     } else {
-        match state.view_screen {
-            _ => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
+        let launch_present = i.is_some();
+        if cfg!(debug_assertions) {
+            match state.view_screen {
+                0 => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
+                1 => views::deep_dive::run(&mut out, launch_present, i, state, settings),
+                _ => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
+            }
+        } else {
+            match state.view_screen {
+                _ => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
+            }
         }
     }
 }
@@ -111,46 +117,6 @@ pub fn render_help_menu(f: &mut Frame<CrosstermBackend<Stdout>>) {
 }
 
 
-pub fn render_settings_menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &mut Config, _state: &mut State) {
-    let area = centered_rect(80, 80, f.size());
-    f.render_widget(Blank, area);
-
-    let help_menu = Table::new(vec![
-        Row::new(vec![Text::styled(" General Settings", Style::default().fg(Color::Magenta)), Text::raw("")]),
-        Row::new(vec![" Cache Update Frequency".to_string(), format!("{} Seconds", settings.saved.cache_update_frequency)]),
-        Row::new(vec![""]),
-        Row::new(vec![""]),
-        Row::new(vec![Text::styled(" Color Settings", Style::default().fg(Color::Magenta)), Text::raw("")]),
-        Row::new(vec![Text::styled("   Status", Style::default().fg(Color::Magenta)), Text::raw(""), Text::styled("Foreground", Style::default().fg(Color::Magenta)), Text::styled("Background", Style::default().fg(Color::Magenta))]),
-        Row::new(vec![Text::raw("    Success"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.suc)), Text::raw(capitalize(&settings.saved.colors.status.suc.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.suc.bg.color))]),
-        Row::new(vec![Text::raw("    Go For Liftoff"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.g4l)), Text::raw(capitalize(&settings.saved.colors.status.g4l.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.g4l.bg.color))]),
-        Row::new(vec![Text::raw("    To Be Determined"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.tbd)), Text::raw(capitalize(&settings.saved.colors.status.tbd.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.tbd.bg.color))]),
-        Row::new(vec![Text::raw("    To Be Confirmed"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.tbc)), Text::raw(capitalize(&settings.saved.colors.status.tbc.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.tbc.bg.color))]),
-        Row::new(vec![Text::raw("    Partial Failure"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.paf)), Text::raw(capitalize(&settings.saved.colors.status.paf.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.paf.bg.color))]),
-        Row::new(vec![Text::raw("    Failure"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.fal)), Text::raw(capitalize(&settings.saved.colors.status.fal.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.fal.bg.color))]),
-        Row::new(vec![Text::raw("    In Flight"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.inf)), Text::raw(capitalize(&settings.saved.colors.status.inf.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.inf.bg.color))]),
-        Row::new(vec![Text::raw("    Fetching"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.fetching)), Text::raw(capitalize(&settings.saved.colors.status.fetching.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.fetching.bg.color))]),
-    ])
-        .widths(&[
-            Constraint::Percentage(40),
-            Constraint::Percentage(20),
-            Constraint::Percentage(20),
-            Constraint::Percentage(20),
-        ])
-        .header(
-            Row::new(vec![" Name", "Values"])
-                .style(Style::default().add_modifier(Modifier::UNDERLINED))
-        )
-        .block(Block::default().title(" Settings ").borders(Borders::ALL));
-
-    f.render_widget(Blank, area);
-    f.render_widget(help_menu, area);
-}
-
-fn capitalize(s: &str) -> String {
-    let mut c = s.chars();
-    match c.next() {
-        None => String::new(),
-        Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
-    }
+pub fn render_settings_menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &mut Config, state: &mut State) {
+    settings::menu(f, settings, state)
 }

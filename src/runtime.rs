@@ -37,6 +37,12 @@ pub async fn launch_main(mut cfg: Config) {
     let language = select_language(&cfg.saved.language);
     let state: Arc<Mutex<State>> = Arc::new(Mutex::new(State::new()));
 
+    let state2 = state.clone();
+
+    keybindings::launch_thread(
+        state2
+    );
+
     renderer::process(
         &language,
         &None,
@@ -92,12 +98,6 @@ pub async fn launch_main(mut cfg: Config) {
         state.lock().unwrap().should_clear = true;
         state.lock().unwrap().news_article_count = tpn.len() as u8;
     }
-
-    let state2 = state.clone();
-
-    keybindings::launch_thread(
-        state2
-    );
 
 
     loop {

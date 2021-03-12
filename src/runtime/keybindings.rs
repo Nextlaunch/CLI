@@ -31,87 +31,113 @@ pub fn launch_thread(
                                             state.lock().unwrap().open_selected = true;
                                         }
                                         KeyCode::Up => {
-                                            if state.lock().unwrap().selected_side == 0 {
-                                                let limit = &state.lock().unwrap().launch_update_count;
-                                                let mut current = state.lock().unwrap().selected_update.clone();
+                                            if state.lock().unwrap().render_settings {} else {
+                                                if state.lock().unwrap().selected_side == 0 {
+                                                    let limit = &state.lock().unwrap().launch_update_count;
+                                                    let mut current = state.lock().unwrap().selected_update.clone();
 
-                                                if current - 1 > 0 {
-                                                    current -= 1;
+                                                    if current - 1 > 0 {
+                                                        current -= 1;
+                                                    } else {
+                                                        current = limit.clone();
+                                                    }
+                                                    state.lock().unwrap().selected_update = current;
                                                 } else {
-                                                    current = limit.clone();
-                                                }
-                                                state.lock().unwrap().selected_update = current;
-                                            } else {
-                                                let limit = &state.lock().unwrap().news_article_count;
-                                                let mut current = state.lock().unwrap().selected_article.clone();
+                                                    let limit = &state.lock().unwrap().news_article_count;
+                                                    let mut current = state.lock().unwrap().selected_article.clone();
 
-                                                if current - 1 > 0 {
-                                                    current -= 1;
-                                                } else {
-                                                    current = limit.clone();
+                                                    if current - 1 > 0 {
+                                                        current -= 1;
+                                                    } else {
+                                                        current = limit.clone();
+                                                    }
+                                                    state.lock().unwrap().selected_article = current;
                                                 }
-                                                state.lock().unwrap().selected_article = current;
                                             }
                                         }
                                         KeyCode::Down => {
-                                            if state.lock().unwrap().selected_side == 0 {
-                                                let limit = state.lock().unwrap().launch_update_count.clone();
-                                                let mut current = state.lock().unwrap().selected_update.clone();
+                                            if state.lock().unwrap().render_settings {} else {
+                                                if state.lock().unwrap().selected_side == 0 {
+                                                    let limit = state.lock().unwrap().launch_update_count.clone();
+                                                    let mut current = state.lock().unwrap().selected_update.clone();
 
-                                                if current + 1 >= limit {
-                                                    current += 1;
+                                                    if current + 1 >= limit {
+                                                        current += 1;
+                                                    } else {
+                                                        current = limit.clone();
+                                                    }
+                                                    state.lock().unwrap().selected_update = current;
                                                 } else {
-                                                    current = limit.clone();
-                                                }
-                                                state.lock().unwrap().selected_update = current;
-                                            } else {
-                                                let limit = state.lock().unwrap().news_article_count.clone();
-                                                let mut current = state.lock().unwrap().selected_article.clone();
+                                                    let limit = state.lock().unwrap().news_article_count.clone();
+                                                    let mut current = state.lock().unwrap().selected_article.clone();
 
-                                                if current + 1 >= limit {
-                                                    current += 1;
-                                                } else {
-                                                    current = limit.clone();
+                                                    if current + 1 >= limit {
+                                                        current += 1;
+                                                    } else {
+                                                        current = limit.clone();
+                                                    }
+                                                    state.lock().unwrap().selected_article = current;
                                                 }
-                                                state.lock().unwrap().selected_article = current;
                                             }
                                         }
                                         KeyCode::Right => {
-                                            if !&state.lock().unwrap().render_settings {
-                                                let mut side = state.lock().unwrap().selected_side.clone();
-                                                if side == 0 {
-                                                    side = 1;
+                                            if state.lock().unwrap().render_settings {
+                                                let tab = state.lock().unwrap().settings_pane.clone() as i8;
+                                                state.lock().unwrap().should_clear = true;
+
+                                                if tab + 1 >= 5 {
+                                                    state.lock().unwrap().settings_pane = 0;
                                                 } else {
-                                                    side = 0;
+                                                    state.lock().unwrap().settings_pane = (tab + 1) as u8;
                                                 }
-                                                state.lock().unwrap().selected_side = side;
                                             } else {
-                                                let mut side = state.lock().unwrap().settings_pane.clone();
-                                                if side < 5 {
-                                                    side += 1;
+                                                if !&state.lock().unwrap().render_settings {
+                                                    let mut side = state.lock().unwrap().selected_side.clone();
+                                                    if side == 0 {
+                                                        side = 1;
+                                                    } else {
+                                                        side = 0;
+                                                    }
+                                                    state.lock().unwrap().selected_side = side;
                                                 } else {
-                                                    side = 0;
+                                                    let mut side = state.lock().unwrap().settings_pane.clone();
+                                                    if side < 5 {
+                                                        side += 1;
+                                                    } else {
+                                                        side = 0;
+                                                    }
+                                                    state.lock().unwrap().settings_pane = side;
                                                 }
-                                                state.lock().unwrap().settings_pane = side;
                                             }
                                         }
                                         KeyCode::Left => {
-                                            if !&state.lock().unwrap().render_settings {
-                                                let mut side = state.lock().unwrap().selected_side.clone();
-                                                if side == 0 {
-                                                    side = 1;
+                                            if state.lock().unwrap().render_settings {
+                                                let tab = state.lock().unwrap().settings_pane.clone() as i8;
+                                                state.lock().unwrap().should_clear = true;
+
+                                                if tab - 1 >= 0 {
+                                                    state.lock().unwrap().settings_pane = (tab - 1) as u8;
                                                 } else {
-                                                    side = 0;
+                                                    state.lock().unwrap().settings_pane = 4;
                                                 }
-                                                state.lock().unwrap().selected_side = side;
                                             } else {
-                                                let mut side = state.lock().unwrap().settings_pane.clone();
-                                                if side > 0 {
-                                                    side -= 1;
+                                                if !&state.lock().unwrap().render_settings {
+                                                    let mut side = state.lock().unwrap().selected_side.clone();
+                                                    if side == 0 {
+                                                        side = 1;
+                                                    } else {
+                                                        side = 0;
+                                                    }
+                                                    state.lock().unwrap().selected_side = side;
                                                 } else {
-                                                    side = 5;
+                                                    let mut side = state.lock().unwrap().settings_pane.clone();
+                                                    if side > 0 {
+                                                        side -= 1;
+                                                    } else {
+                                                        side = 5;
+                                                    }
+                                                    state.lock().unwrap().settings_pane = side;
                                                 }
-                                                state.lock().unwrap().settings_pane = side;
                                             }
                                         }
                                         KeyCode::F(no) => {
@@ -120,6 +146,7 @@ pub fn launch_thread(
                                                     if !&state.lock().unwrap().render_help {
                                                         state.lock().unwrap().should_clear = true;
                                                         state.lock().unwrap().render_help = true;
+                                                        state.lock().unwrap().render_settings = false;
                                                     }
                                                 }
                                                 _ => {}
@@ -139,6 +166,7 @@ pub fn launch_thread(
                                                     if !&state.lock().unwrap().render_help {
                                                         state.lock().unwrap().should_clear = true;
                                                         state.lock().unwrap().render_help = true;
+                                                        state.lock().unwrap().render_settings = false;
                                                     }
                                                 }
                                                 's' => {

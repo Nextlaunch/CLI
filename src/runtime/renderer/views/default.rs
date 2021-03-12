@@ -528,7 +528,8 @@ pub fn run(
 
             if state.render_help {
                 render_help_menu(f);
-            } else if state.render_settings {
+            }
+            if state.render_settings {
                 render_settings_menu(f, settings, &mut state);
             }
         });
