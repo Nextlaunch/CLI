@@ -11,6 +11,7 @@ use tui::widgets::{Row, Table, Borders, Block, Clear as Blank};
 use tui::style::{Color, Style, Modifier};
 use tui::text::Text;
 use crate::settings::{Config, compute_style};
+use crate::runtime::state::State;
 
 pub mod views;
 
@@ -20,19 +21,13 @@ pub async fn process(
     news: &Option<Vec<Article>>,
     log: &Vec<(DateTime<Local>, String, u8)>,
     has_changed: bool,
-    view: i32,
-    side: i32,
-    selected_article: i32,
-    selected_update: i32,
-    should_open: bool,
-    render_help: bool,
-    render_settings: bool,
+    state: State,
     settings: &mut Config,
 ) {
     let mut stdout = std::io::stdout();
 
 
-    if has_changed {
+    if has_changed || state.should_clear {
         stdout.execute(Clear(ClearType::All));
     }
 
@@ -44,13 +39,13 @@ pub async fn process(
 
     if cfg!(debug_assertions) {
         match view {
-            0 => views::default::run(language, &mut out, launch_present, i, news, log, side, selected_article, selected_update, should_open, render_help, render_settings, settings),
-            1 => views::deep_dive::run(&mut out, launch_present, i, render_help),
-            _ => views::default::run(language, &mut out, launch_present, i, news, log, side, selected_article, selected_update, should_open, render_help, render_settings, settings),
+            0 => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
+            1 => views::deep_dive::run(&mut out, launch_present, i, state, settings),
+            _ => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
         }
     } else {
         match view {
-            _ => views::default::run(language, &mut out, launch_present, i, news, log, side, selected_article, selected_update, should_open, render_help, render_settings, settings),
+            _ => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
         }
     }
 }
@@ -116,7 +111,7 @@ pub fn render_help_menu(f: &mut Frame<CrosstermBackend<Stdout>>) {
 }
 
 
-pub fn render_settings_menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &mut Config) {
+pub fn render_settings_menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &mut Config, state: &State) {
     let area = centered_rect(80, 80, f.size());
     f.render_widget(Blank, area);
 

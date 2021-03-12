@@ -36,12 +36,7 @@ pub fn run(
     i: &Option<Launch>,
     news: &Option<Vec<Article>>,
     log: &Vec<(DateTime<Local>, String, u8)>,
-    side: i32,
-    selected_article: i32,
-    selected_update: i32,
-    mut should_open: bool,
-    render_help: bool,
-    render_settings: bool,
+    state: State,
     settings: &mut Config,
 ) {
     let suc = Text::styled("Launch Successful", Style::default().fg(Color::LightGreen));
@@ -544,7 +539,7 @@ pub fn run(
             if render_help {
                 render_help_menu(f);
             } else if render_settings {
-                render_settings_menu(f, settings);
+                render_settings_menu(f, settings, &state);
             }
         });
     } else {

@@ -4,18 +4,10 @@ use std::sync::{Arc, Mutex};
 use std::process::exit;
 use crossterm::ExecutableCommand;
 use crossterm::terminal::{Clear, ClearType};
+use crate::runtime::state::State;
 
 pub fn launch_thread(
-    view_screen2: Arc<Mutex<i32>>,
-    selected_article2: Arc<Mutex<i32>>,
-    selected_update2: Arc<Mutex<i32>>,
-    selected_side2: Arc<Mutex<i32>>,
-    should_clear2: Arc<Mutex<bool>>,
-    open_selected2: Arc<Mutex<bool>>,
-    render_help2: Arc<Mutex<bool>>,
-    render_settings2: Arc<Mutex<bool>>,
-    launch_update_count2: Arc<Mutex<i32>>,
-    news_article_count2: Arc<Mutex<i32>>,
+    state: Arc<Mutex<State>>
 )
 {
     std::thread::spawn(move || {
@@ -29,76 +21,105 @@ pub fn launch_thread(
                                 Event::Key(raw_key) => {
                                     match raw_key.code {
                                         KeyCode::Esc => {
-                                            if *render_help2.lock().unwrap() {
-                                                *render_help2.lock().unwrap() = false;
-                                                *render_settings2.lock().unwrap() = false;
-                                                *should_clear2.lock().unwrap() = true;
+                                            if *state.lock().unwrap().render_help {
+                                                *state.lock().unwrap().render_help = false;
+                                                *state.lock().unwrap().render_settings = false;
+                                                *state.lock().unwrap().should_clear = true;
                                             }
                                         }
                                         KeyCode::Enter => {
-                                            *open_selected2.lock().unwrap() = true;
+                                            *state.lock().unwrap().open_selected = true;
                                         }
                                         KeyCode::Up => {
-                                            if *selected_side2.lock().unwrap() == 0 {
-                                                let limit = *launch_update_count2.lock().unwrap();
-                                                let mut current = *selected_update2.lock().unwrap();
+                                            if *state.lock().unwrap().selected_side == 0 {
+                                                let limit = *state.lock().unwrap().launch_update_count;
+                                                let mut current = *state.lock().unwrap().selected_update;
 
                                                 if current - 1 >= 0 {
                                                     current -= 1;
                                                 } else {
                                                     current = limit.clone();
                                                 }
-                                                *selected_update2.lock().unwrap() = current;
+                                                *state.lock().unwrap().selected_update = current;
                                             } else {
-                                                let limit = *news_article_count2.lock().unwrap();
-                                                let mut current = *selected_article2.lock().unwrap();
+                                                let limit = *state.lock().unwrap().news_article_count;
+                                                let mut current = *state.lock().unwrap().selected_article;
 
                                                 if current - 1 >= 0 {
                                                     current -= 1;
                                                 } else {
                                                     current = limit.clone();
                                                 }
-                                                *selected_article2.lock().unwrap() = current;
+                                                *state.lock().unwrap().selected_article = current;
                                             }
                                         }
                                         KeyCode::Down => {
-                                            if *selected_side2.lock().unwrap() == 0 {
-                                                let limit = *launch_update_count2.lock().unwrap();
-                                                let mut current = *selected_update2.lock().unwrap();
+                                            if *state.lock().unwrap().selected_side == 0 {
+                                                let limit = *state.lock().unwrap().launch_update_count;
+                                                let mut current = *state.lock().unwrap().selected_update;
 
-                                                if current + 1 < limit {
+                                                if current + 1 >= 0 {
                                                     current += 1;
                                                 } else {
-                                                    current = 0;
+                                                    current = limit.clone();
                                                 }
-                                                *selected_update2.lock().unwrap() = current;
+                                                *state.lock().unwrap().selected_update = current;
                                             } else {
-                                                let limit = *news_article_count2.lock().unwrap();
-                                                let mut current = *selected_article2.lock().unwrap();
+                                                let limit = *state.lock().unwrap().news_article_count;
+                                                let mut current = *state.lock().unwrap().selected_article;
 
-                                                if current + 1 < limit {
+                                                if current + 1 >= 0 {
                                                     current += 1;
                                                 } else {
-                                                    current = 0;
+                                                    current = limit.clone();
                                                 }
-                                                *selected_article2.lock().unwrap() = current;
+                                                *state.lock().unwrap().selected_article = current;
                                             }
                                         }
-                                        KeyCode::Left | KeyCode::Right => {
-                                            let mut side = *selected_side2.lock().unwrap();
-                                            if side == 0 {
-                                                side = 1;
+                                        KeyCode::Right => {
+                                            if !*state.lock().unwrap().render_settings {
+                                                let mut side = *state.lock().unwrap().selected_side;
+                                                if side == 0 {
+                                                    side = 1;
+                                                } else {
+                                                    side = 0;
+                                                }
+                                                *state.lock().unwrap().selected_side = side;
                                             } else {
-                                                side = 0;
+                                                let mut side = *state.lock().unwrap().settings_pane;
+                                                if side < 5 {
+                                                    side += 1;
+                                                } else {
+                                                    side = 0;
+                                                }
+                                                *state.lock().unwrap().settings_pane = side;
                                             }
-                                            *selected_side2.lock().unwrap() = side;
+                                        }
+                                        KeyCode::Left => {
+                                            if !*state.lock().unwrap().render_settings {
+                                                let mut side = *state.lock().unwrap().selected_side;
+                                                if side == 0 {
+                                                    side = 1;
+                                                } else {
+                                                    side = 0;
+                                                }
+                                                *state.lock().unwrap().selected_side = side;
+                                            } else {
+                                                let mut side = *state.lock().unwrap().settings_pane;
+                                                if side > 0 {
+                                                    side -= 1;
+                                                } else {
+                                                    side = 5;
+                                                }
+                                                *state.lock().unwrap().settings_pane = side;
+                                            }
                                         }
                                         KeyCode::F(no) => {
                                             match no {
                                                 1 => {
-                                                    if !*render_help2.lock().unwrap() {
-                                                        *should_clear2.lock().unwrap() = true;
-                                                        *render_help2.lock().unwrap() = true;
+                                                    if !*state.lock().unwrap().render_help {
+                                                        *state.lock().unwrap().should_clear = true;
+                                                        *state.lock().unwrap().render_help = true;
                                                     }
                                                 }
                                                 _ => {}
@@ -107,26 +128,26 @@ pub fn launch_thread(
                                         KeyCode::Char(c) => {
                                             match c {
                                                 '1' => {
-                                                    *view_screen2.lock().unwrap() = 0;
-                                                    *should_clear2.lock().unwrap() = true;
+                                                    *state.lock().unwrap().view_screen = 0;
+                                                    *state.lock().unwrap().should_clear = true;
                                                 }
                                                 '2' => {
-                                                    *view_screen2.lock().unwrap() = 1;
-                                                    *should_clear2.lock().unwrap() = true;
+                                                    *state.lock().unwrap().view_screen = 1;
+                                                    *state.lock().unwrap().should_clear = true;
                                                 }
                                                 '?' => {
-                                                    if !*render_help2.lock().unwrap() {
-                                                        *should_clear2.lock().unwrap() = true;
-                                                        *render_help2.lock().unwrap() = true;
+                                                    if !*state.lock().unwrap().render_help {
+                                                        *state.lock().unwrap().should_clear = true;
+                                                        *state.lock().unwrap().render_help = true;
                                                     }
                                                 }
                                                 's' => {
-                                                    if !*render_settings2.lock().unwrap() {
-                                                        *should_clear2.lock().unwrap() = true;
-                                                        *render_settings2.lock().unwrap() = true;
+                                                    if !*state.lock().unwrap().render_settings {
+                                                        *state.lock().unwrap().should_clear = true;
+                                                        *state.lock().unwrap().render_settings = true;
                                                     } else {
-                                                        *should_clear2.lock().unwrap() = true;
-                                                        *render_settings2.lock().unwrap() = false;
+                                                        *state.lock().unwrap().should_clear = true;
+                                                        *state.lock().unwrap().render_settings = false;
                                                     }
                                                 }
                                                 'c' => {

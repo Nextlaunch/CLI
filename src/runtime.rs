@@ -10,8 +10,9 @@ use chrono::{DateTime, Local};
 use std::sync::{Arc, Mutex};
 use crate::languages::select_language;
 use crate::settings::Config;
+use crate::runtime::state::State;
 
-
+pub mod state;
 pub mod flags;
 pub mod data;
 pub mod renderer;
@@ -36,6 +37,7 @@ pub async fn launch_main(mut cfg: Config) {
 
 
     let mut language = select_language(&cfg.saved.language);
+    let mut state: Arc<Mutex<State>> = Arc::new(Mutex::new(State::new()));
 
     renderer::process(
         &language,
@@ -44,14 +46,8 @@ pub async fn launch_main(mut cfg: Config) {
         &mut vec![
             (Local::now(), "fetching information, please wait".to_string(), 2)
         ],
-        true,
-        0,
-        0,
-        0,
-        0,
-        false,
-        false,
-        false,
+        true
+        *state.lock().unwrap(),
         &mut cfg
     ).await;
 
@@ -85,53 +81,24 @@ pub async fn launch_main(mut cfg: Config) {
 
 
     let mut refresh_cycle: u8 = 0;
-    let mut view_screen: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let mut selected_article: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let mut selected_update: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let mut selected_side: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let mut should_clear: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
-    let mut render_help: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
-    let mut render_settings: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
 
-    let mut launch_update_count: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let mut open_selected: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
-    let mut news_article_count: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
 
     if launch.is_some() {
         let tpl = launch.clone().unwrap();
-        *should_clear.lock().unwrap() = true;
-        *launch_update_count.lock().unwrap() = tpl.updates.unwrap_or(vec![]).len() as i32;
+        *state.lock().unwrap().should_clear = true;
+        *state.lock().unwrap().launch_update_count = tpl.updates.unwrap_or(vec![]).len() as i32;
     }
 
     if news.is_some() {
         let tpn = news.clone().unwrap();
-        *should_clear.lock().unwrap() = true;
-        *news_article_count.lock().unwrap() = tpn.len() as i32;
+        *state.lock().unwrap().should_clear = true;
+        *state.lock().unwrap().news_article_count = tpl.len() as i32;
     }
 
-    let mut view_screen2: Arc<Mutex<i32>> = view_screen.clone();
-    let mut selected_article2: Arc<Mutex<i32>> = selected_article.clone();
-    let mut selected_update2: Arc<Mutex<i32>> = selected_update.clone();
-    let mut selected_side2: Arc<Mutex<i32>> = selected_side.clone();
-    let mut should_clear2: Arc<Mutex<bool>> = should_clear.clone();
-    let mut open_selected2: Arc<Mutex<bool>> = open_selected.clone();
-    let mut render_help2: Arc<Mutex<bool>> = render_help.clone();
-    let mut render_settings2: Arc<Mutex<bool>> = render_settings.clone();
-
-    let mut launch_update_count2: Arc<Mutex<i32>> = launch_update_count.clone();
-    let mut news_article_count2: Arc<Mutex<i32>> = news_article_count.clone();
+    let mut state2 = state.clone();
 
     keybindings::launch_thread(
-        view_screen2,
-        selected_article2,
-        selected_update2,
-        selected_side2,
-        should_clear2,
-        open_selected2,
-        render_help2,
-        render_settings2,
-        launch_update_count2,
-        news_article_count2,
+        state2
     );
 
 
@@ -179,14 +146,8 @@ pub async fn launch_main(mut cfg: Config) {
                 &launch,
                 &news,
                 &mut log,
-                w != w2 || h != h2 || *should_clear.lock().unwrap(),
-                *view_screen.lock().unwrap(),
-                *selected_side.lock().unwrap(),
-                *selected_article.lock().unwrap(),
-                *selected_update.lock().unwrap(),
-                *open_selected.lock().unwrap(),
-                *render_help.lock().unwrap(),
-                *render_settings.lock().unwrap(),
+                w != w2 || h != h2,
+                *state.lock().unwrap(),
                 &mut cfg
             ).await;
 
