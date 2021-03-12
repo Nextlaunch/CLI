@@ -121,18 +121,18 @@ pub fn launch_thread(
                                                 'c' => {
                                                     if raw_key.modifiers.contains(KeyModifiers::CONTROL) {
                                                         let mut stdout = std::io::stdout();
-                                                        stdout.execute(Clear(ClearType::All));
+                                                        let _ = stdout.execute(Clear(ClearType::All));
                                                         println!(" Thank you for using NextLaunch, goodbye.");
-                                                        crossterm::terminal::disable_raw_mode();
+                                                        let _ = crossterm::terminal::disable_raw_mode();
                                                         exit(0);
                                                     }
                                                 }
                                                 'q' => {
                                                     if !raw_key.modifiers.contains(KeyModifiers::CONTROL) {
                                                         let mut stdout = std::io::stdout();
-                                                        stdout.execute(Clear(ClearType::All));
+                                                        let _ = stdout.execute(Clear(ClearType::All));
                                                         println!(" Thank you for using NextLaunch, goodbye.");
-                                                        crossterm::terminal::disable_raw_mode();
+                                                        let _ = crossterm::terminal::disable_raw_mode();
                                                         exit(0);
                                                     }
                                                 }

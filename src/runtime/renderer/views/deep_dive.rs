@@ -2,7 +2,7 @@ use tui::Terminal;
 use tui::backend::CrosstermBackend;
 use std::io::Stdout;
 use crate::runtime::data::launches::structures::{Launch, Rocket};
-use tui::layout::{Layout, Direction, Constraint, Alignment, Rect};
+use tui::layout::{Layout, Direction, Constraint, Alignment};
 use tui::widgets::{Clear, Block, Borders, Paragraph, Table, Row};
 use tui::text::Text;
 use crate::runtime::renderer::{centered_rect, render_help_menu};

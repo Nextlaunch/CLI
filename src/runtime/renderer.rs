@@ -30,7 +30,7 @@ pub async fn process(
 
 
     if has_changed {
-        stdout.execute(Clear(ClearType::All));
+        let _ = stdout.execute(Clear(ClearType::All));
     }
 
     let backend = CrosstermBackend::new(stdout);

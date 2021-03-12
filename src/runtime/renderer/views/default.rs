@@ -1,35 +1,25 @@
-use crate::utilities::map_weather::map_weather;
 use crate::runtime::data::launches::structures::{Launch, LSP, Rocket, RocketConfiguration, LaunchPad, PadLocation, Article};
-use crate::runtime::data::launches::update;
 use crate::utilities::countdown;
-use crate::runtime::flags::Flags;
-
-use std::process::exit;
-use std::io::{Stdout, stdout};
-use std::iter::FromIterator;
-
-use tokio::time::{sleep, Duration, Instant};
-
-use tui::Terminal;
-use tui::backend::CrosstermBackend;
-use tui::layout::{Layout, Direction, Constraint, Alignment, Rect};
-use tui::widgets::{Block, Borders, Row, Table, Paragraph, Wrap, Clear as Blank};
-use tui::text::{Text, Span, Spans};
-use tui::style::{Style, Color, Modifier};
-use tui::buffer::Cell;
-use tui::style::Color::Yellow;
-
-use crossterm::terminal::{ClearType, Clear};
-use crossterm::ExecutableCommand;
-use crossterm::style::Colorize;
-
-use chrono::{Utc, DateTime, Local};
-use webbrowser::{open, BrowserOptions};
 use crate::languages::LanguagePack;
 use crate::runtime::renderer::render_help_menu;
 
+use std::io::Stdout;
+use std::iter::FromIterator;
+
+use tui::Terminal;
+use tui::backend::CrosstermBackend;
+use tui::layout::{Layout, Direction, Constraint, Alignment,};
+use tui::widgets::{Block, Borders, Row, Table, Paragraph, Wrap, Clear as Blank};
+use tui::text::{Text, Span, Spans};
+use tui::style::{Style, Color, Modifier};
+
+use chrono::{Utc, DateTime, Local};
+
+use webbrowser::BrowserOptions;
+
+
 pub fn run(
-    language: &LanguagePack,
+    _language: &LanguagePack,
     out: &mut Terminal<CrosstermBackend<Stdout>>,
     launch_present: bool,
     i: &Option<Launch>,
@@ -103,7 +93,7 @@ pub fn run(
         for headline in headlines {
             if artindex == selected_article && side == 1 {
                 if should_open {
-                    webbrowser::open_browser_with_options(
+                    let _ = webbrowser::open_browser_with_options(
                         BrowserOptions {
                             url: article.url.clone().unwrap(),
                             suppress_output: Some(true),
@@ -215,7 +205,6 @@ pub fn run(
 
         let pieces: Vec<&str> = raw_name.split(" | ").collect();
 
-        let name = *pieces.first().unwrap_or(&"Unknown Launch");
         let payload = *pieces.last().unwrap_or(&"Unknown Payload");
 
         let timespan = crate::utilities::countdown(launch.net.unwrap_or(Utc::now().to_string()));
@@ -383,7 +372,7 @@ pub fn run(
 
                 if side == 0 && update_index == selected_update {
                     if should_open && update.info_url.is_some() {
-                        webbrowser::open_browser_with_options(
+                        let _ = webbrowser::open_browser_with_options(
                             BrowserOptions {
                                 url: update.info_url.unwrap(),
                                 suppress_output: Some(true),

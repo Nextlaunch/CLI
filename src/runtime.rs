@@ -4,8 +4,6 @@ use crate::runtime::flags::Flags;
 
 use tokio::time::{Instant, Duration};
 
-use crossterm::event::{KeyCode, Event, poll, read};
-
 use chrono::{DateTime, Local};
 use std::sync::{Arc, Mutex};
 use crate::languages::select_language;
@@ -31,11 +29,9 @@ pub fn print(body: String) {
 
 
 pub async fn launch_main() {
-    crossterm::terminal::enable_raw_mode();
-    let mut stdout = std::io::stdout();
+    let _ = crossterm::terminal::enable_raw_mode();
 
-
-    let mut language = select_language("en_GB");
+    let language = select_language("en_GB");
 
     renderer::process(
         &language,
@@ -83,16 +79,16 @@ pub async fn launch_main() {
 
 
     let mut refresh_cycle: u8 = 0;
-    let mut view_screen: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let mut selected_article: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let mut selected_update: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let mut selected_side: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let mut should_clear: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
-    let mut render_help: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
+    let view_screen: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
+    let selected_article: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
+    let selected_update: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
+    let selected_side: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
+    let should_clear: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
+    let render_help: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
 
-    let mut launch_update_count: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let mut open_selected: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
-    let mut news_article_count: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
+    let launch_update_count: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
+    let open_selected: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
+    let news_article_count: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
 
     if launch.is_some() {
         let tpl = launch.clone().unwrap();
@@ -106,16 +102,15 @@ pub async fn launch_main() {
         *news_article_count.lock().unwrap() = tpn.len() as i32;
     }
 
-    let mut view_screen2: Arc<Mutex<i32>> = view_screen.clone();
-    let mut selected_article2: Arc<Mutex<i32>> = selected_article.clone();
-    let mut selected_update2: Arc<Mutex<i32>> = selected_update.clone();
-    let mut selected_side2: Arc<Mutex<i32>> = selected_side.clone();
-    let mut should_clear2: Arc<Mutex<bool>> = should_clear.clone();
-    let mut open_selected2: Arc<Mutex<bool>> = open_selected.clone();
-    let mut render_help2: Arc<Mutex<bool>> = render_help.clone();
-
-    let mut launch_update_count2: Arc<Mutex<i32>> = launch_update_count.clone();
-    let mut news_article_count2: Arc<Mutex<i32>> = news_article_count.clone();
+    let view_screen2: Arc<Mutex<i32>> = view_screen.clone();
+    let selected_article2: Arc<Mutex<i32>> = selected_article.clone();
+    let selected_update2: Arc<Mutex<i32>> = selected_update.clone();
+    let selected_side2: Arc<Mutex<i32>> = selected_side.clone();
+    let should_clear2: Arc<Mutex<bool>> = should_clear.clone();
+    let open_selected2: Arc<Mutex<bool>> = open_selected.clone();
+    let render_help2: Arc<Mutex<bool>> = render_help.clone();
+    let launch_update_count2: Arc<Mutex<i32>> = launch_update_count.clone();
+    let news_article_count2: Arc<Mutex<i32>> = news_article_count.clone();
 
     keybindings::launch_thread(
         view_screen2,

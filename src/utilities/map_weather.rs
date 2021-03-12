@@ -21,7 +21,7 @@ pub fn map_weather(code: u32, day: bool) -> [&'static str; 5] {
         1249 | 1252 => LIGHT_SLEET_SHOWERS,
         1114 | 1210 | 1213 => LIGHT_SNOW,
         1153 | 1183 | 1189 => LIGHT_RAIN,
-        1117 | 1219 | 1219 | 1225 => HEAVY_SNOW,
+        1117 | 1219 | 1225 => HEAVY_SNOW,
         1150 | 1180 | 1186 | 1240 => LIGHT_SHOWERS,
         1192 | 1195 | 1243 | 1246 => HEAVY_RAIN,
         _ => UNKNOWN

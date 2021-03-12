@@ -1,5 +1,3 @@
-use locale_config::Locale;
-use std::process::exit;
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -71,7 +69,7 @@ pub fn select_language(id: &str) -> LanguagePack {
     }
 }
 
-pub fn load_language(id: usize) -> LanguagePack {
+pub fn load_language(_id: usize) -> LanguagePack {
     // let f = dirs_2;
     
     LanguagePack {
