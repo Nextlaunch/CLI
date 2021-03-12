@@ -1,42 +1,33 @@
-use crate::utilities::map_weather::map_weather;
 use crate::runtime::data::launches::structures::{Launch, LSP, Rocket, RocketConfiguration, LaunchPad, PadLocation, Article};
-use crate::runtime::data::launches::update;
 use crate::utilities::countdown;
-use crate::runtime::flags::Flags;
-
-use std::process::exit;
-use std::io::{Stdout, stdout};
-use std::iter::FromIterator;
-
-use tokio::time::{sleep, Duration, Instant};
-
-use tui::Terminal;
-use tui::backend::CrosstermBackend;
-use tui::layout::{Layout, Direction, Constraint, Alignment, Rect};
-use tui::widgets::{Block, Borders, Row, Table, Paragraph, Wrap, Clear as Blank};
-use tui::text::{Text, Span, Spans};
-use tui::style::{Style, Color, Modifier};
-use tui::buffer::Cell;
-use tui::style::Color::Yellow;
-
-use crossterm::terminal::{ClearType, Clear};
-use crossterm::ExecutableCommand;
-use crossterm::style::Colorize;
-
-use chrono::{Utc, DateTime, Local};
-use webbrowser::{open, BrowserOptions};
 use crate::languages::LanguagePack;
 use crate::runtime::renderer::{render_help_menu, render_settings_menu};
 use crate::settings::Config;
+use crate::runtime::state::State;
+
+use std::io::Stdout;
+use std::iter::FromIterator;
+
+use tui::Terminal;
+use tui::backend::CrosstermBackend;
+use tui::layout::{Layout, Direction, Constraint, Alignment};
+use tui::widgets::{Block, Borders, Row, Table, Paragraph, Wrap, Clear as Blank};
+use tui::text::{Text, Span, Spans};
+use tui::style::{Style, Color, Modifier};
+
+use chrono::{Utc, DateTime, Local};
+
+use webbrowser::BrowserOptions;
+
 
 pub fn run(
-    language: &LanguagePack,
+    _language: &LanguagePack,
     out: &mut Terminal<CrosstermBackend<Stdout>>,
     launch_present: bool,
     i: &Option<Launch>,
     news: &Option<Vec<Article>>,
     log: &Vec<(DateTime<Local>, String, u8)>,
-    state: State,
+    mut state: State,
     settings: &mut Config,
 ) {
     let suc = Text::styled("Launch Successful", Style::default().fg(Color::LightGreen));
@@ -99,22 +90,22 @@ pub fn run(
         }
 
         for headline in headlines {
-            if artindex == selected_article && side == 1 {
-                if should_open {
-                    webbrowser::open_browser_with_options(
+            if artindex == state.selected_article && state.selected_side == 1 {
+                if state.open_selected {
+                    let _ = webbrowser::open_browser_with_options(
                         BrowserOptions {
                             url: article.url.clone().unwrap(),
                             suppress_output: Some(true),
                             browser: Some(webbrowser::Browser::Default),
                         });
-                    should_open = false;
+                    state.open_selected = false;
                 }
                 processed_articles.push(
                     Spans::from(vec![
                         Span::styled(headline, Style::default().fg(Color::Cyan))
                     ])
                 )
-            } else if artindex == selected_article && side != 1 {
+            } else if artindex == state.selected_article && state.selected_side != 1 {
                 processed_articles.push(
                     Spans::from(vec![
                         Span::styled(headline, Style::default().fg(Color::Magenta))
@@ -213,7 +204,6 @@ pub fn run(
 
         let pieces: Vec<&str> = raw_name.split(" | ").collect();
 
-        let name = *pieces.first().unwrap_or(&"Unknown Launch");
         let payload = *pieces.last().unwrap_or(&"Unknown Payload");
 
         let timespan = crate::utilities::countdown(launch.net.unwrap_or(Utc::now().to_string()));
@@ -379,9 +369,9 @@ pub fn run(
                     }
                 };
 
-                if side == 0 && update_index == selected_update {
-                    if should_open && update.info_url.is_some() {
-                        webbrowser::open_browser_with_options(
+                if state.selected_side == 0 && update_index == state.selected_update {
+                    if state.open_selected && update.info_url.is_some() {
+                        let _ = webbrowser::open_browser_with_options(
                             BrowserOptions {
                                 url: update.info_url.unwrap(),
                                 suppress_output: Some(true),
@@ -393,7 +383,7 @@ pub fn run(
                         Span::raw(" - "),
                         Span::styled(untitle, Style::default().fg(Color::Cyan))
                     ]));
-                } else if side == 1 && update_index == selected_update {
+                } else if state.selected_side == 1 && update_index == state.selected_update {
                     updates.push(Spans::from(vec![
                         Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
                         Span::raw(" - "),
@@ -536,10 +526,10 @@ pub fn run(
                 .wrap(Wrap { trim: false });
             f.render_widget(countdown, whole[1]);
 
-            if render_help {
+            if state.render_help {
                 render_help_menu(f);
-            } else if render_settings {
-                render_settings_menu(f, settings, &state);
+            } else if state.render_settings {
+                render_settings_menu(f, settings, &mut state);
             }
         });
     } else {
@@ -626,8 +616,10 @@ pub fn run(
                 .wrap(Wrap { trim: false });
             f.render_widget(countdown, whole[1]);
 
-            if render_help {
+            if state.render_help {
                 render_help_menu(f);
+            } else if state.render_settings {
+                render_settings_menu(f, settings, &mut state);
             }
         });
     }

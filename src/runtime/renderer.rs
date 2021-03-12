@@ -28,7 +28,7 @@ pub async fn process(
 
 
     if has_changed || state.should_clear {
-        stdout.execute(Clear(ClearType::All));
+        let _ = stdout.execute(Clear(ClearType::All));
     }
 
     let backend = CrosstermBackend::new(stdout);
@@ -38,13 +38,13 @@ pub async fn process(
     let launch_present = i.is_some();
 
     if cfg!(debug_assertions) {
-        match view {
+        match state.view_screen {
             0 => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
             1 => views::deep_dive::run(&mut out, launch_present, i, state, settings),
             _ => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
         }
     } else {
-        match view {
+        match state.view_screen {
             _ => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
         }
     }
@@ -111,7 +111,7 @@ pub fn render_help_menu(f: &mut Frame<CrosstermBackend<Stdout>>) {
 }
 
 
-pub fn render_settings_menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &mut Config, state: &State) {
+pub fn render_settings_menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &mut Config, _state: &mut State) {
     let area = centered_rect(80, 80, f.size());
     f.render_widget(Blank, area);
 

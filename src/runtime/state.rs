@@ -1,4 +1,4 @@
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct State {
     pub view_screen: u8,
     pub selected_article: u8,

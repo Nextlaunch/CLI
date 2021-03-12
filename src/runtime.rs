@@ -4,8 +4,6 @@ use crate::runtime::flags::Flags;
 
 use tokio::time::{Instant, Duration};
 
-use crossterm::event::{KeyCode, Event, poll, read};
-
 use chrono::{DateTime, Local};
 use std::sync::{Arc, Mutex};
 use crate::languages::select_language;
@@ -33,11 +31,11 @@ pub fn print(body: String) {
 
 
 pub async fn launch_main(mut cfg: Config) {
-    crossterm::terminal::enable_raw_mode();
+    let _ = crossterm::terminal::enable_raw_mode();
 
 
-    let mut language = select_language(&cfg.saved.language);
-    let mut state: Arc<Mutex<State>> = Arc::new(Mutex::new(State::new()));
+    let language = select_language(&cfg.saved.language);
+    let state: Arc<Mutex<State>> = Arc::new(Mutex::new(State::new()));
 
     renderer::process(
         &language,
@@ -46,9 +44,9 @@ pub async fn launch_main(mut cfg: Config) {
         &mut vec![
             (Local::now(), "fetching information, please wait".to_string(), 2)
         ],
-        true
+        true,
         *state.lock().unwrap(),
-        &mut cfg
+        &mut cfg,
     ).await;
 
     let client = reqwest::Client::new();
@@ -85,17 +83,17 @@ pub async fn launch_main(mut cfg: Config) {
 
     if launch.is_some() {
         let tpl = launch.clone().unwrap();
-        *state.lock().unwrap().should_clear = true;
-        *state.lock().unwrap().launch_update_count = tpl.updates.unwrap_or(vec![]).len() as i32;
+        state.lock().unwrap().should_clear = true;
+        state.lock().unwrap().launch_update_count = tpl.updates.unwrap_or(vec![]).len() as u8;
     }
 
     if news.is_some() {
         let tpn = news.clone().unwrap();
-        *state.lock().unwrap().should_clear = true;
-        *state.lock().unwrap().news_article_count = tpl.len() as i32;
+        state.lock().unwrap().should_clear = true;
+        state.lock().unwrap().news_article_count = tpn.len() as u8;
     }
 
-    let mut state2 = state.clone();
+    let state2 = state.clone();
 
     keybindings::launch_thread(
         state2
@@ -110,14 +108,14 @@ pub async fn launch_main(mut cfg: Config) {
             let temp_news = news_update(&client, &mut log).await;
             if temp_launch.is_some() {
                 let tpl = temp_launch.clone().unwrap();
-                *should_clear.lock().unwrap() = true;
-                *launch_update_count.lock().unwrap() = tpl.updates.unwrap_or(vec![]).len() as i32;
+                state.lock().unwrap().should_clear = true;
+                state.lock().unwrap().launch_update_count = tpl.updates.unwrap_or(vec![]).len() as u8;
                 launch = temp_launch;
             }
             if temp_news.is_some() {
                 let tpn = temp_news.clone().unwrap();
-                *should_clear.lock().unwrap() = true;
-                *news_article_count.lock().unwrap() = tpn.len() as i32;
+                state.lock().unwrap().should_clear = true;
+                state.lock().unwrap().news_article_count = tpn.len() as u8;
                 news = temp_news;
             }
 
@@ -148,25 +146,25 @@ pub async fn launch_main(mut cfg: Config) {
                 &mut log,
                 w != w2 || h != h2,
                 *state.lock().unwrap(),
-                &mut cfg
+                &mut cfg,
             ).await;
 
             w = w2;
             h = h2;
 
-            if *should_clear.lock().unwrap() {
-                *should_clear.lock().unwrap() = false;
+            if state.lock().unwrap().should_clear {
+                state.lock().unwrap().should_clear = false;
             }
 
-            if *open_selected.lock().unwrap() {
-                *open_selected.lock().unwrap() = false;
+            if state.lock().unwrap().open_selected {
+                state.lock().unwrap().open_selected = false;
             }
 
             log.pop();
         }
 
 
-        if last.elapsed().as_secs() > 60 * 10 {
+        if last.elapsed().as_secs() > cfg.saved.cache_update_frequency.clone() as u64 {
             last = Instant::now();
             needs_refresh = true;
         }

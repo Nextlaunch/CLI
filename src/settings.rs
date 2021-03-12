@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize, Serializer};
+use serde::{Serialize, Deserialize};
 use tui::style::{Style, Color, Modifier};
 
 pub struct Config {

@@ -1,4 +1,3 @@
-use std::fmt::{Display, Formatter, Result};
 use chrono::{DateTime, NaiveDateTime, Utc};
 
 pub mod map_lat_long;
@@ -18,10 +17,10 @@ pub fn countdown_news(timestamp: String) -> TimeFrame {
 }
 
 pub fn process_seconds(s: i64) -> TimeFrame {
-    let mut days = s / (60 * 60 * 24);
-    let mut hours = s % (60 * 60 * 24) / (60 * 60);
-    let mut minutes = s % (60 * 60) / (60);
-    let mut seconds = s % (60);
+    let days = s / (60 * 60 * 24);
+    let hours = s % (60 * 60 * 24) / (60 * 60);
+    let minutes = s % (60 * 60) / (60);
+    let seconds = s % (60);
     TimeFrame::new(seconds, minutes, hours, days, s.is_negative())
 }
 
@@ -34,7 +33,7 @@ pub struct TimeFrame {
 }
 
 impl TimeFrame {
-    pub fn new(mut s: i64, m: i64, h: i64, d: i64, has_passed: bool) -> TimeFrame {
+    pub fn new(s: i64, m: i64, h: i64, d: i64, has_passed: bool) -> TimeFrame {
         let seconds = if s.is_negative() {
             (s * -1) as u64
         } else {

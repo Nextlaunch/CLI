@@ -1,5 +1,4 @@
 pub use constants::*;
-use std::process::exit;
 
 pub mod utilities;
 pub mod settings;
