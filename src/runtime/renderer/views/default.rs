@@ -26,7 +26,8 @@ use crossterm::style::Colorize;
 use chrono::{Utc, DateTime, Local};
 use webbrowser::{open, BrowserOptions};
 use crate::languages::LanguagePack;
-use crate::runtime::renderer::render_help_menu;
+use crate::runtime::renderer::{render_help_menu, render_settings_menu};
+use crate::settings::Config;
 
 pub fn run(
     language: &LanguagePack,
@@ -40,6 +41,8 @@ pub fn run(
     selected_update: i32,
     mut should_open: bool,
     render_help: bool,
+    render_settings: bool,
+    settings: &mut Config,
 ) {
     let suc = Text::styled("Launch Successful", Style::default().fg(Color::LightGreen));
     let tbd = Text::styled("To Be Determined", Style::default().fg(Color::Yellow));
@@ -540,6 +543,8 @@ pub fn run(
 
             if render_help {
                 render_help_menu(f);
+            } else if render_settings {
+                render_settings_menu(f, settings);
             }
         });
     } else {

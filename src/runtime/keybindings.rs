@@ -13,6 +13,7 @@ pub fn launch_thread(
     should_clear2: Arc<Mutex<bool>>,
     open_selected2: Arc<Mutex<bool>>,
     render_help2: Arc<Mutex<bool>>,
+    render_settings2: Arc<Mutex<bool>>,
     launch_update_count2: Arc<Mutex<i32>>,
     news_article_count2: Arc<Mutex<i32>>,
 )
@@ -30,6 +31,7 @@ pub fn launch_thread(
                                         KeyCode::Esc => {
                                             if *render_help2.lock().unwrap() {
                                                 *render_help2.lock().unwrap() = false;
+                                                *render_settings2.lock().unwrap() = false;
                                                 *should_clear2.lock().unwrap() = true;
                                             }
                                         }
@@ -116,6 +118,12 @@ pub fn launch_thread(
                                                     if !*render_help2.lock().unwrap() {
                                                         *should_clear2.lock().unwrap() = true;
                                                         *render_help2.lock().unwrap() = true;
+                                                    }
+                                                }
+                                                's' => {
+                                                    if !*render_settings2.lock().unwrap() {
+                                                        *should_clear2.lock().unwrap() = true;
+                                                        *render_settings2.lock().unwrap() = true;
                                                     }
                                                 }
                                                 'c' => {

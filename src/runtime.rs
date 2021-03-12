@@ -9,6 +9,7 @@ use crossterm::event::{KeyCode, Event, poll, read};
 use chrono::{DateTime, Local};
 use std::sync::{Arc, Mutex};
 use crate::languages::select_language;
+use crate::settings::Config;
 
 
 pub mod flags;
@@ -18,10 +19,10 @@ pub mod renderer;
 pub mod keybindings;
 // pub mod json_subsystem;
 
-pub async fn launch(f: Flags) {
+pub async fn launch(f: Flags, cfg: Config) {
     match f.view {
         // 1 => launch_json().await,
-        _ => launch_main().await,
+        _ => launch_main(cfg).await,
     }
 }
 
@@ -30,12 +31,11 @@ pub fn print(body: String) {
 }
 
 
-pub async fn launch_main() {
+pub async fn launch_main(mut cfg: Config) {
     crossterm::terminal::enable_raw_mode();
-    let mut stdout = std::io::stdout();
 
 
-    let mut language = select_language("en_GB");
+    let mut language = select_language(&cfg.saved.language);
 
     renderer::process(
         &language,
@@ -51,6 +51,8 @@ pub async fn launch_main() {
         0,
         false,
         false,
+        false,
+        &mut cfg
     ).await;
 
     let client = reqwest::Client::new();
@@ -89,6 +91,7 @@ pub async fn launch_main() {
     let mut selected_side: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
     let mut should_clear: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
     let mut render_help: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
+    let mut render_settings: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
 
     let mut launch_update_count: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
     let mut open_selected: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
@@ -113,6 +116,7 @@ pub async fn launch_main() {
     let mut should_clear2: Arc<Mutex<bool>> = should_clear.clone();
     let mut open_selected2: Arc<Mutex<bool>> = open_selected.clone();
     let mut render_help2: Arc<Mutex<bool>> = render_help.clone();
+    let mut render_settings2: Arc<Mutex<bool>> = render_settings.clone();
 
     let mut launch_update_count2: Arc<Mutex<i32>> = launch_update_count.clone();
     let mut news_article_count2: Arc<Mutex<i32>> = news_article_count.clone();
@@ -125,6 +129,7 @@ pub async fn launch_main() {
         should_clear2,
         open_selected2,
         render_help2,
+        render_settings2,
         launch_update_count2,
         news_article_count2,
     );
@@ -181,6 +186,8 @@ pub async fn launch_main() {
                 *selected_update.lock().unwrap(),
                 *open_selected.lock().unwrap(),
                 *render_help.lock().unwrap(),
+                *render_settings.lock().unwrap(),
+                &mut cfg
             ).await;
 
             w = w2;

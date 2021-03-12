@@ -10,6 +10,7 @@ use tui::layout::{Rect, Layout, Direction, Constraint};
 use tui::widgets::{Row, Table, Borders, Block, Clear as Blank};
 use tui::style::{Color, Style, Modifier};
 use tui::text::Text;
+use crate::settings::{Config, compute_style};
 
 pub mod views;
 
@@ -25,6 +26,8 @@ pub async fn process(
     selected_update: i32,
     should_open: bool,
     render_help: bool,
+    render_settings: bool,
+    settings: &mut Config,
 ) {
     let mut stdout = std::io::stdout();
 
@@ -41,13 +44,13 @@ pub async fn process(
 
     if cfg!(debug_assertions) {
         match view {
-            0 => views::default::run(language, &mut out, launch_present, i, news, log, side, selected_article, selected_update, should_open, render_help),
+            0 => views::default::run(language, &mut out, launch_present, i, news, log, side, selected_article, selected_update, should_open, render_help, render_settings, settings),
             1 => views::deep_dive::run(&mut out, launch_present, i, render_help),
-            _ => views::default::run(language, &mut out, launch_present, i, news, log, side, selected_article, selected_update, should_open, render_help),
+            _ => views::default::run(language, &mut out, launch_present, i, news, log, side, selected_article, selected_update, should_open, render_help, render_settings, settings),
         }
     } else {
         match view {
-            _ => views::default::run(language, &mut out, launch_present, i, news, log, side, selected_article, selected_update, should_open, render_help),
+            _ => views::default::run(language, &mut out, launch_present, i, news, log, side, selected_article, selected_update, should_open, render_help, render_settings, settings),
         }
     }
 }
@@ -113,25 +116,30 @@ pub fn render_help_menu(f: &mut Frame<CrosstermBackend<Stdout>>) {
 }
 
 
-pub fn render_settings_menu(f: &mut Frame<CrosstermBackend<Stdout>>) {
-    let area = centered_rect(50, 80, f.size());
+pub fn render_settings_menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &mut Config) {
+    let area = centered_rect(80, 80, f.size());
     f.render_widget(Blank, area);
 
     let help_menu = Table::new(vec![
         Row::new(vec![Text::styled(" General Settings", Style::default().fg(Color::Magenta)), Text::raw("")]),
-        Row::new(vec![" Help", "F1"]),
-
+        Row::new(vec![" Cache Update Frequency".to_string(), format!("{} Seconds", settings.saved.cache_update_frequency)]),
+        Row::new(vec![""]),
+        Row::new(vec![""]),
+        Row::new(vec![Text::styled(" Color Settings", Style::default().fg(Color::Magenta)), Text::raw("")]),
+        Row::new(vec![Text::styled("   Status", Style::default().fg(Color::Magenta)), Text::raw("")]),
+        Row::new(vec![Text::raw("    Go For Liftoff"), Text::raw(""), Text::raw(""), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.g4l))])
     ])
         .widths(&[
-            Constraint::Percentage(50),
-            Constraint::Min(5),
-            Constraint::Min(5)
+            Constraint::Percentage(40),
+            Constraint::Percentage(20),
+            Constraint::Percentage(20),
+            Constraint::Percentage(20),
         ])
         .header(
-            Row::new(vec![" Command", "Key Binding"])
+            Row::new(vec![" Name", "Values"])
                 .style(Style::default().add_modifier(Modifier::UNDERLINED))
         )
-        .block(Block::default().title(" Help ").borders(Borders::ALL));
+        .block(Block::default().title(" Settings ").borders(Borders::ALL));
 
     f.render_widget(Blank, area);
     f.render_widget(help_menu, area);
