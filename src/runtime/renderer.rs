@@ -126,8 +126,15 @@ pub fn render_settings_menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &
         Row::new(vec![""]),
         Row::new(vec![""]),
         Row::new(vec![Text::styled(" Color Settings", Style::default().fg(Color::Magenta)), Text::raw("")]),
-        Row::new(vec![Text::styled("   Status", Style::default().fg(Color::Magenta)), Text::raw("")]),
-        Row::new(vec![Text::raw("    Go For Liftoff"), Text::raw(""), Text::raw(""), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.g4l))])
+        Row::new(vec![Text::styled("   Status", Style::default().fg(Color::Magenta)), Text::raw(""), Text::styled("Foreground", Style::default().fg(Color::Magenta)), Text::styled("Background", Style::default().fg(Color::Magenta))]),
+        Row::new(vec![Text::raw("    Success"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.suc)), Text::raw(capitalize(&settings.saved.colors.status.suc.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.suc.bg.color))]),
+        Row::new(vec![Text::raw("    Go For Liftoff"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.g4l)), Text::raw(capitalize(&settings.saved.colors.status.g4l.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.g4l.bg.color))]),
+        Row::new(vec![Text::raw("    To Be Determined"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.tbd)), Text::raw(capitalize(&settings.saved.colors.status.tbd.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.tbd.bg.color))]),
+        Row::new(vec![Text::raw("    To Be Confirmed"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.tbc)), Text::raw(capitalize(&settings.saved.colors.status.tbc.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.tbc.bg.color))]),
+        Row::new(vec![Text::raw("    Partial Failure"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.paf)), Text::raw(capitalize(&settings.saved.colors.status.paf.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.paf.bg.color))]),
+        Row::new(vec![Text::raw("    Failure"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.fal)), Text::raw(capitalize(&settings.saved.colors.status.fal.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.fal.bg.color))]),
+        Row::new(vec![Text::raw("    In Flight"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.inf)), Text::raw(capitalize(&settings.saved.colors.status.inf.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.inf.bg.color))]),
+        Row::new(vec![Text::raw("    Fetching"), Text::styled("SAMPLE", compute_style(&settings.saved.colors.status.fetching)), Text::raw(capitalize(&settings.saved.colors.status.fetching.fg.color)), Text::raw(capitalize(&settings.saved.colors.status.fetching.bg.color))]),
     ])
         .widths(&[
             Constraint::Percentage(40),
@@ -143,4 +150,12 @@ pub fn render_settings_menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &
 
     f.render_widget(Blank, area);
     f.render_widget(help_menu, area);
+}
+
+fn capitalize(s: &str) -> String {
+    let mut c = s.chars();
+    match c.next() {
+        None => String::new(),
+        Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
+    }
 }

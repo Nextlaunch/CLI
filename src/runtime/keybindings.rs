@@ -124,6 +124,9 @@ pub fn launch_thread(
                                                     if !*render_settings2.lock().unwrap() {
                                                         *should_clear2.lock().unwrap() = true;
                                                         *render_settings2.lock().unwrap() = true;
+                                                    } else {
+                                                        *should_clear2.lock().unwrap() = true;
+                                                        *render_settings2.lock().unwrap() = false;
                                                     }
                                                 }
                                                 'c' => {
