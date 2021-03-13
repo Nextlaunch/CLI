@@ -8,6 +8,7 @@ An advanced terminal app to track upcoming launches from SpaceX, Nasa, Roscosmos
 - Easy to understand
 - Regular feed updates
 - Beautiful, text based user interface
+- Interactive user interface
 - Powered by a community of space nerds!
 
 ## Usage
@@ -21,13 +22,13 @@ To see how to install NextLaunch, please check the [latest release](https://gith
 
 ## Why should I upgrade from V1 to V2?
 Well, firstly, V1 just really sucks. It is slow, inefficient, and prone to crashing or panicking. Those of you who use the program have more than likely seen a panic since installing it.
-V2 doesnt panic, it just doesnt. Everything is coded in a crash resistent way.
+V2 doesnt panic, it just doesnt. Everything is coded in a crash resistant way.
 
 Secondly, V2 is multi-threaded, meaning that it is able to do more, in the same amount of time.
 
 Third of all, V2 takes advantage of an updated version of the Launch Library API which it relies on for launch information, as well as a non-retired version of the Space News API which it relies on for news data.
 
-Fourth, finally, and most certainly the best reason to swich, V2 offers an actual user interface, thats right a user interface in the terminal. It is powered by your keyboard and is simple to use and easy to remember.
+Fourth, finally, and most certainly the best reason to switch, V2 offers an actual user interface, that's right a user interface in the terminal. It is powered by your keyboard and is simple to use and easy to remember.
 
 ## Screenshots
 ### Here it is in action!

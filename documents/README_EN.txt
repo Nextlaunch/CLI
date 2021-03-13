@@ -8,6 +8,7 @@ Features
 - Easy to understand
 - Regular feed updates
 - Beautiful, text based user interface
+- Interactive user interface
 - Powered by a community of space nerds!
 
 Usage
@@ -35,9 +36,9 @@ and putting up with my constant requests for comments on design and style.
 
 Data Providers
 Category    Name                     Link
-News        Space  Flight News API   https://thespacedevs.com/snapi|
-Launches    Launch Library 2         https://thespacedevs.com/llapi|
-Telemetry   Launch Dashboard         https://github.com/shahar603/Launch-Dashboard-API|
+News        Space  Flight News API   https://thespacedevs.com/snapi
+Launches    Launch Library 2         https://thespacedevs.com/llapi
+Telemetry   Launch Dashboard         https://github.com/shahar603/Launch-Dashboard-API
 
 
 Interface (Alphabetical)
