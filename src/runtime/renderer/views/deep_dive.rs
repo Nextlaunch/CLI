@@ -11,7 +11,12 @@ use crate::settings::Config;
 
 pub mod dict;
 
-pub fn run(out: &mut Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i: &Option<Launch>, state: State, _settings: &mut Config) {
+pub fn run(
+    out: &mut Terminal<CrosstermBackend<Stdout>>,
+    launch_present: bool,
+    i: &Option<Launch>,
+    state: State,
+    _settings: &mut Config) {
     if launch_present {
         let launch = i.clone().unwrap();
         let rocket = launch.rocket.unwrap_or(Rocket {

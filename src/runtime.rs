@@ -51,7 +51,7 @@ pub async fn launch_main(mut cfg: Config) {
             (Local::now(), "fetching information, please wait".to_string(), 2)
         ],
         true,
-        *state.lock().unwrap(),
+        &state,
         &mut cfg,
     ).await;
 
@@ -145,7 +145,7 @@ pub async fn launch_main(mut cfg: Config) {
                 &news,
                 &mut log,
                 w != w2 || h != h2,
-                *state.lock().unwrap(),
+                &state,
                 &mut cfg,
             ).await;
 

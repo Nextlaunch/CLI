@@ -1,7 +1,7 @@
 use crate::runtime::data::launches::structures::{Launch, LSP, Rocket, RocketConfiguration, LaunchPad, PadLocation, Article};
 use crate::utilities::countdown;
 use crate::languages::LanguagePack;
-use crate::runtime::renderer::{render_help_menu, render_settings_menu};
+use crate::runtime::renderer::{render_help_menu};
 use crate::settings::Config;
 use crate::runtime::state::State;
 
@@ -28,7 +28,7 @@ pub fn run(
     news: &Option<Vec<Article>>,
     log: &Vec<(DateTime<Local>, String, u8)>,
     mut state: State,
-    settings: &mut Config,
+    _settings: &mut Config,
 ) {
     let suc = Text::styled("Launch Successful", Style::default().fg(Color::LightGreen));
     let tbd = Text::styled("To Be Determined", Style::default().fg(Color::Yellow));

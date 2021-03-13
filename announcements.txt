@@ -1,0 +1,16 @@
+--------------------------- Discord ---------------------------
+__**Nextlaunch V2.0.0 (Phoenix Rising)**__
+Nextlaunch is an advanced terminal program to provide an easy, low power method for you to keep track of what is going on in the rocket launch community!
+
+Features:
+- Power efficient
+- Feature rich
+- Easy to use
+- Easy to understand
+- Regular feed updates
+- Beautiful, interactive text based UI
+- Backed by a community of space nerds!
+
+**Links:**
+- GitHub: https://github.com/AltriusRS/NextLaunch
+- Discord: https://discord.gg/YEHrXbX65m

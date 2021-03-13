@@ -12,6 +12,7 @@ use tui::style::{Color, Style, Modifier};
 use tui::text::Text;
 use crate::settings::Config;
 use crate::runtime::state::State;
+use std::sync::{Mutex, Arc};
 
 pub mod settings;
 pub mod views;
@@ -22,13 +23,13 @@ pub async fn process(
     news: &Option<Vec<Article>>,
     log: &Vec<(DateTime<Local>, String, u8)>,
     has_changed: bool,
-    mut state: State,
+    state: &Arc<Mutex<State>>,
     settings: &mut Config,
 ) {
     let mut stdout = std::io::stdout();
 
 
-    if has_changed || state.should_clear {
+    if has_changed || state.lock().unwrap().should_clear {
         let _ = stdout.execute(Clear(ClearType::All));
     }
 
@@ -36,21 +37,21 @@ pub async fn process(
     let mut out: Terminal<CrosstermBackend<Stdout>> = Terminal::new(backend).unwrap();
 
 
-    if state.render_settings {
+    if state.lock().unwrap().render_settings {
         let _ = out.draw(|f| {
-            render_settings_menu(f, settings, &mut state);
+            render_settings_menu(f, settings, state);
         });
     } else {
         let launch_present = i.is_some();
         if cfg!(debug_assertions) {
-            match state.view_screen {
-                0 => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
-                1 => views::deep_dive::run(&mut out, launch_present, i, state, settings),
-                _ => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
+            match state.lock().unwrap().view_screen {
+                0 => views::default::run(language, &mut out, launch_present, i, news, log, state.lock().unwrap().clone(), settings),
+                1 => views::deep_dive::run(&mut out, launch_present, i, state.lock().unwrap().clone(), settings),
+                _ => views::default::run(language, &mut out, launch_present, i, news, log, state.lock().unwrap().clone(), settings),
             }
         } else {
-            match state.view_screen {
-                _ => views::default::run(language, &mut out, launch_present, i, news, log, state, settings),
+            match state.lock().unwrap().view_screen {
+                _ => views::default::run(language, &mut out, launch_present, i, news, log, state.lock().unwrap().clone(), settings),
             }
         }
     }
@@ -88,19 +89,28 @@ pub fn render_help_menu(f: &mut Frame<CrosstermBackend<Stdout>>) {
 
     let help_menu = Table::new(vec![
         Row::new(vec![Text::styled(" General Commands", Style::default().fg(Color::Magenta)), Text::raw("")]),
-        Row::new(vec![" Help", "F1"]),
-        Row::new(vec![" Help", "?"]),
+        Row::new(vec![" Toggle Help", "F1"]),
+        Row::new(vec![" ", "?"]),
+        Row::new(vec!["", ""]),
+        Row::new(vec![" Toggle Settings", "S"]),
+        Row::new(vec!["", ""]),
         Row::new(vec![" Exit", "Q"]),
-        Row::new(vec![" Exit", "CTRL+C"]),
-        Row::new(vec![" Close Popup", "ESC"]),
+        Row::new(vec![" ", "CTRL+C"]),
+        Row::new(vec!["", ""]),
+        Row::new(vec!["", ""]),
         Row::new(vec!["", ""]),
         Row::new(vec![Text::styled(" Selection Commands", Style::default().fg(Color::Magenta)), Text::raw("")]),
+        Row::new(vec!["", ""]),
         Row::new(vec![" Move Left", "LEFT ARROW"]),
+        Row::new(vec!["", ""]),
         Row::new(vec![" Move Right", "RIGHT ARROW"]),
+        Row::new(vec!["", ""]),
         Row::new(vec![" Move Up", "UP ARROW"]),
+        Row::new(vec!["", ""]),
         Row::new(vec![" Move Down", "DOWN ARROW"]),
+        Row::new(vec!["", ""]),
         Row::new(vec![" Open Selected Article", "ENTER"]),
-        Row::new(vec![" Open Selected Update", "ENTER"]),
+        Row::new(vec![" ", "ENTER"]),
     ])
         .widths(&[
             Constraint::Percentage(50),
@@ -117,6 +127,6 @@ pub fn render_help_menu(f: &mut Frame<CrosstermBackend<Stdout>>) {
 }
 
 
-pub fn render_settings_menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &mut Config, state: &mut State) {
+pub fn render_settings_menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &mut Config, state: &Arc<Mutex<State>>) {
     settings::menu(f, settings, state)
 }

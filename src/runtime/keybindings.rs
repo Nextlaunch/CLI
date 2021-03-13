@@ -25,15 +25,26 @@ pub fn launch_thread(
                                                 state.lock().unwrap().render_help = false;
                                                 state.lock().unwrap().render_settings = false;
                                                 state.lock().unwrap().should_clear = true;
+                                            } else if state.lock().unwrap().editing_settings {
+                                                state.lock().unwrap().editing_settings = false;
+                                                state.lock().unwrap().stored_value = vec![];
                                             }
                                         }
                                         KeyCode::Enter => {
-                                            state.lock().unwrap().open_selected = true;
+                                            if state.lock().unwrap().editing_settings {
+                                                state.lock().unwrap().editing_settings = false;
+                                                state.lock().unwrap().save_stored = true;
+                                                state.lock().unwrap().editing_settings = false
+                                            } else if !state.lock().unwrap().render_help {
+                                                state.lock().unwrap().open_selected = true;
+                                            }
                                         }
                                         KeyCode::Up => {
-                                            if state.lock().unwrap().render_settings {} else {
+                                            if state.lock().unwrap().render_settings {
+                                                state.lock().unwrap().settings_selected += 1;
+                                            } else {
                                                 if state.lock().unwrap().selected_side == 0 {
-                                                    let limit = &state.lock().unwrap().launch_update_count;
+                                                    let limit = state.lock().unwrap().launch_update_count;
                                                     let mut current = state.lock().unwrap().selected_update.clone();
 
                                                     if current - 1 > 0 {
@@ -43,7 +54,7 @@ pub fn launch_thread(
                                                     }
                                                     state.lock().unwrap().selected_update = current;
                                                 } else {
-                                                    let limit = &state.lock().unwrap().news_article_count;
+                                                    let limit = state.lock().unwrap().news_article_count;
                                                     let mut current = state.lock().unwrap().selected_article.clone();
 
                                                     if current - 1 > 0 {
@@ -56,7 +67,9 @@ pub fn launch_thread(
                                             }
                                         }
                                         KeyCode::Down => {
-                                            if state.lock().unwrap().render_settings {} else {
+                                            if state.lock().unwrap().render_settings {
+                                                state.lock().unwrap().settings_selected -= 1;
+                                            } else {
                                                 if state.lock().unwrap().selected_side == 0 {
                                                     let limit = state.lock().unwrap().launch_update_count.clone();
                                                     let mut current = state.lock().unwrap().selected_update.clone();
@@ -90,8 +103,9 @@ pub fn launch_thread(
                                                 } else {
                                                     state.lock().unwrap().settings_pane = (tab + 1) as u8;
                                                 }
+                                                state.lock().unwrap().settings_selected = 0;
                                             } else {
-                                                if !&state.lock().unwrap().render_settings {
+                                                if !state.lock().unwrap().render_settings {
                                                     let mut side = state.lock().unwrap().selected_side.clone();
                                                     if side == 0 {
                                                         side = 1;
@@ -120,8 +134,9 @@ pub fn launch_thread(
                                                 } else {
                                                     state.lock().unwrap().settings_pane = 4;
                                                 }
+                                                state.lock().unwrap().settings_selected = 0;
                                             } else {
-                                                if !&state.lock().unwrap().render_settings {
+                                                if !state.lock().unwrap().render_settings {
                                                     let mut side = state.lock().unwrap().selected_side.clone();
                                                     if side == 0 {
                                                         side = 1;
@@ -143,7 +158,7 @@ pub fn launch_thread(
                                         KeyCode::F(no) => {
                                             match no {
                                                 1 => {
-                                                    if !&state.lock().unwrap().render_help {
+                                                    if !state.lock().unwrap().render_help {
                                                         state.lock().unwrap().should_clear = true;
                                                         state.lock().unwrap().render_help = true;
                                                         state.lock().unwrap().render_settings = false;
@@ -153,50 +168,54 @@ pub fn launch_thread(
                                             }
                                         }
                                         KeyCode::Char(c) => {
-                                            match c {
-                                                '1' => {
-                                                    state.lock().unwrap().view_screen = 0;
-                                                    state.lock().unwrap().should_clear = true;
-                                                }
-                                                '2' => {
-                                                    state.lock().unwrap().view_screen = 1;
-                                                    state.lock().unwrap().should_clear = true;
-                                                }
-                                                '?' => {
-                                                    if !&state.lock().unwrap().render_help {
+                                            if state.lock().unwrap().editing_settings {
+                                                state.lock().unwrap().stored_value.push(c)
+                                            } else {
+                                                match c {
+                                                    '1' => {
+                                                        state.lock().unwrap().view_screen = 0;
                                                         state.lock().unwrap().should_clear = true;
-                                                        state.lock().unwrap().render_help = true;
-                                                        state.lock().unwrap().render_settings = false;
                                                     }
-                                                }
-                                                's' => {
-                                                    if !&state.lock().unwrap().render_settings {
+                                                    '2' => {
+                                                        state.lock().unwrap().view_screen = 1;
                                                         state.lock().unwrap().should_clear = true;
-                                                        state.lock().unwrap().render_settings = true;
-                                                    } else {
-                                                        state.lock().unwrap().should_clear = true;
-                                                        state.lock().unwrap().render_settings = false;
                                                     }
-                                                }
-                                                'c' => {
-                                                    if raw_key.modifiers.contains(KeyModifiers::CONTROL) {
-                                                        let mut stdout = std::io::stdout();
-                                                        let _ = stdout.execute(Clear(ClearType::All));
-                                                        println!(" Thank you for using NextLaunch, goodbye.");
-                                                        let _ = crossterm::terminal::disable_raw_mode();
-                                                        exit(0);
+                                                    '?' => {
+                                                        if !state.lock().unwrap().render_help {
+                                                            state.lock().unwrap().should_clear = true;
+                                                            state.lock().unwrap().render_help = true;
+                                                            state.lock().unwrap().render_settings = false;
+                                                        }
                                                     }
-                                                }
-                                                'q' => {
-                                                    if !raw_key.modifiers.contains(KeyModifiers::CONTROL) {
-                                                        let mut stdout = std::io::stdout();
-                                                        let _ = stdout.execute(Clear(ClearType::All));
-                                                        println!(" Thank you for using NextLaunch, goodbye.");
-                                                        let _ = crossterm::terminal::disable_raw_mode();
-                                                        exit(0);
+                                                    's' => {
+                                                        if !state.lock().unwrap().render_settings {
+                                                            state.lock().unwrap().should_clear = true;
+                                                            state.lock().unwrap().render_settings = true;
+                                                        } else {
+                                                            state.lock().unwrap().should_clear = true;
+                                                            state.lock().unwrap().render_settings = false;
+                                                        }
                                                     }
+                                                    'c' => {
+                                                        if raw_key.modifiers.contains(KeyModifiers::CONTROL) {
+                                                            let mut stdout = std::io::stdout();
+                                                            let _ = stdout.execute(Clear(ClearType::All));
+                                                            println!(" Thank you for using NextLaunch, goodbye.");
+                                                            let _ = crossterm::terminal::disable_raw_mode();
+                                                            exit(0);
+                                                        }
+                                                    }
+                                                    'q' => {
+                                                        if !raw_key.modifiers.contains(KeyModifiers::CONTROL) {
+                                                            let mut stdout = std::io::stdout();
+                                                            let _ = stdout.execute(Clear(ClearType::All));
+                                                            println!(" Thank you for using NextLaunch, goodbye.");
+                                                            let _ = crossterm::terminal::disable_raw_mode();
+                                                            exit(0);
+                                                        }
+                                                    }
+                                                    _ => {}
                                                 }
-                                                _ => {}
                                             }
                                         }
                                         _ => {}
