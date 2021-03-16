@@ -35,6 +35,11 @@ term_size = "0.3.2"
 webbrowser = { git = "https://github.com/codota/webbrowser-rs", branch = "feature/add-suppress-output-flag-with-docs" }
 dirs-2 = "3.0.1"
 
+[target.x86_64-pc-windows-gnu.dependencies]
+reqwest = { version = "0.11.0", default-features = false, features = ["serde_json", "json", "rustls-tls"] }
+
+[target.x86_64-pc-windows-gnu.build-dependencies]
+reqwest = { version = "0.11.0", default-features = false, features = ["serde_json", "json", "rustls-tls"] }
 
 [build-dependencies]
 serde = { version = "1.0.123", features = ["derive"] }
