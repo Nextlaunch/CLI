@@ -36,21 +36,22 @@ pub async fn process(
     let backend = CrosstermBackend::new(stdout);
     let mut out: Terminal<CrosstermBackend<Stdout>> = Terminal::new(backend).unwrap();
 
-
-    if state.lock().unwrap().render_settings {
+    let view = state.lock().unwrap().view_screen.clone();
+    let render_help = state.lock().unwrap().render_settings.clone();
+    if render_help {
         let _ = out.draw(|f| {
             render_settings_menu(f, settings, state);
         });
     } else {
         let launch_present = i.is_some();
         if cfg!(debug_assertions) {
-            match state.lock().unwrap().view_screen {
+            match view {
                 0 => views::default::run(language, &mut out, launch_present, i, news, log, state.lock().unwrap().clone(), settings),
                 1 => views::deep_dive::run(&mut out, launch_present, i, state.lock().unwrap().clone(), settings),
                 _ => views::default::run(language, &mut out, launch_present, i, news, log, state.lock().unwrap().clone(), settings),
             }
         } else {
-            match state.lock().unwrap().view_screen {
+            match view {
                 _ => views::default::run(language, &mut out, launch_present, i, news, log, state.lock().unwrap().clone(), settings),
             }
         }

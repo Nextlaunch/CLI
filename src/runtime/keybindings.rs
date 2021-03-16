@@ -41,7 +41,19 @@ pub fn launch_thread(
                                         }
                                         KeyCode::Up => {
                                             if state.lock().unwrap().render_settings {
-                                                state.lock().unwrap().settings_selected += 1;
+                                                state.lock().unwrap().should_clear = true;
+                                                if state.lock().unwrap().settings_selected == 0 {
+                                                    state.lock().unwrap().should_clear = true;
+                                                    let pane = state.lock().unwrap().settings_pane;
+
+                                                    if pane == 1 {
+                                                        state.lock().unwrap().settings_selected = 0;
+                                                    } else {
+                                                        state.lock().unwrap().settings_selected = 10;
+                                                    }
+                                                } else {
+                                                    state.lock().unwrap().settings_selected -= 1;
+                                                }
                                             } else {
                                                 if state.lock().unwrap().selected_side == 0 {
                                                     let limit = state.lock().unwrap().launch_update_count;
@@ -68,7 +80,25 @@ pub fn launch_thread(
                                         }
                                         KeyCode::Down => {
                                             if state.lock().unwrap().render_settings {
-                                                state.lock().unwrap().settings_selected -= 1;
+                                                state.lock().unwrap().should_clear = true;
+                                                state.lock().unwrap().settings_selected += 1;
+
+                                                let pane = state.lock().unwrap().settings_pane;
+
+                                                match pane {
+                                                    1 => {
+                                                        if state.lock().unwrap().settings_selected + 1 > 0 {
+                                                            state.lock().unwrap().settings_selected = 0
+                                                        }
+                                                    }
+                                                    _ => {
+                                                        {
+                                                            if state.lock().unwrap().settings_selected + 1 > 10 {
+                                                                state.lock().unwrap().settings_selected = 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             } else {
                                                 if state.lock().unwrap().selected_side == 0 {
                                                     let limit = state.lock().unwrap().launch_update_count.clone();

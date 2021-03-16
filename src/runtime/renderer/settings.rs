@@ -80,17 +80,19 @@ pub fn menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &mut Config, stat
                         ])
                         .block(Block::default().borders(Borders::from_iter(vec![Borders::BOTTOM, Borders::LEFT, Borders::RIGHT]))), halves[2]);
 
-    match &state.lock().unwrap().settings_pane {
+    let pane = state.lock().unwrap().settings_pane.clone();
+
+    match pane {
         1 => {
-            f.render_widget(tab_2(settings, state.clone()), halves[1])
+            f.render_widget(tab_2(settings, state), halves[1])
         }
         _ => {
-            f.render_widget(tab_1(settings, state.clone()), halves[1])
+            f.render_widget(tab_1(settings, state), halves[1])
         }
     };
 }
 
-pub fn tab_1(settings: &mut Config, state: Arc<Mutex<State>>) -> Table {
+pub fn tab_1<'a>(settings: &'a mut Config, state: &'a Arc<Mutex<State>>) -> Table<'a> {
     let enabled = Style::default().fg(Color::Green);
     let disabled = Style::default().fg(Color::Red);
     let module_states = if settings.saved.modules.launch_info.enabled {
@@ -147,7 +149,7 @@ pub fn tab_1(settings: &mut Config, state: Arc<Mutex<State>>) -> Table {
         .block(Block::default().borders(Borders::ALL))
 }
 
-pub fn tab_2(settings: &mut Config, _state: Arc<Mutex<State>>) -> Table {
+pub fn tab_2<'a>(settings: &'a mut Config, _state: &'a Arc<Mutex<State>>) -> Table<'a> {
     let enabled = Style::default().fg(Color::Green);
     let disabled = Style::default().fg(Color::Red);
     let module_states = if settings.saved.modules.news.enabled {
