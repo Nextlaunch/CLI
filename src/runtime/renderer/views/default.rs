@@ -8,7 +8,7 @@ use std::iter::FromIterator;
 
 use tui::Terminal;
 use tui::backend::CrosstermBackend;
-use tui::layout::{Layout, Direction, Constraint, Alignment,};
+use tui::layout::{Layout, Direction, Constraint, Alignment};
 use tui::widgets::{Block, Borders, Row, Table, Paragraph, Wrap, Clear as Blank};
 use tui::text::{Text, Span, Spans};
 use tui::style::{Style, Color, Modifier};
@@ -41,46 +41,75 @@ pub fn run(
     let hol = Text::styled("On Hold", Style::default().fg(Color::Gray));
     let fetching = Text::raw("Fetching...");
 
-    let mut parsed_logs = vec![];
+    let mut news_dimensions = (0, 0);
+    let mut update_dimensions = (0, 0);
 
-    let mut unprocessed = log.clone();
-    unprocessed.reverse();
-    for (time, message, level) in unprocessed {
-        let (lvl, style) = match level {
-            0 => ("INFO".to_string(), Style::default().fg(Color::Gray)),
-            1 => ("ERROR".to_string(), Style::default().fg(Color::Red)),
-            2 => ("WARN".to_string(), Style::default().fg(Color::Yellow)),
-            10 => ("NOTE".to_string(), Style::default().fg(Color::Magenta)),
-            _ => ("INFO".to_string(), Style::default().fg(Color::Gray))
-        };
-
-        parsed_logs.push(
-            Row::new(
-                vec![
-                    Text::styled(time.format(" %Y/%b/%d %H:%M").to_string(), style),
-                    Text::styled(lvl, style),
-                    Text::styled(message.clone(), style),
+    let _ = out.draw(|f| {
+        let whole = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints(
+                [
+                    Constraint::Ratio(8, 12),
+                    Constraint::Min(10),
                 ]
+                    .as_ref(),
             )
-        )
-    }
+            .split(f.size());
+
+        let right = Layout::default().direction(Direction::Horizontal)
+            .constraints(
+                [
+                    Constraint::Percentage(50),
+                    Constraint::Percentage(50),
+                ]
+                    .as_ref(),
+            )
+            .split(whole[0]);
+
+        let right_status = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints(
+                [
+                    Constraint::Percentage(75),
+                    Constraint::Percentage(25),
+                ]
+                    .as_ref(),
+            )
+            .split(right[1]);
+
+        let left = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints(
+                [
+                    Constraint::Percentage(50),
+                    Constraint::Percentage(50),
+                ]
+                    .as_ref(),
+            )
+            .split(right[0]);
+
+        news_dimensions = (right_status[0].width, right_status[0].height);
+        update_dimensions = (left[1].width, left[1].height);
+    });
 
     let articles = news.clone().unwrap_or(vec![]);
 
+    // let mut news_lines_used = 0;
     let mut processed_articles: Vec<Spans> = vec![];
     let mut artindex = 0;
     for article in articles {
+        // if news_lines_used < news_dimensions.1 {
         let untitle = article.title.unwrap_or("Unkown Title".to_string());
-
         let mut headlines: Vec<String> = vec![
             String::new()
         ];
-        let mut index = 0;
         let mut line_total = 0;
+        let mut index = 0;
         let words: Vec<&str> = untitle.split(' ').collect();
 
         for word in words {
-            if line_total + word.len() + 1 <= 50 {
+            // println!("{} chars / {} chars", (line_total + word.len())+ 1, news_dimensions.0/2);
+            if (line_total + word.len()) + 1 < (news_dimensions.0 as usize) - 15 {
                 headlines[index] = format!("{} {}", headlines[index], word);
                 line_total += word.len();
             } else {
@@ -89,6 +118,7 @@ pub fn run(
                 headlines.push(format!(" {}", word));
             }
         }
+        // exit(1);
 
         for headline in headlines {
             if artindex == selected_article && side == 1 {
@@ -103,15 +133,15 @@ pub fn run(
                 }
                 processed_articles.push(
                     Spans::from(vec![
-                        Span::styled(headline, Style::default().fg(Color::Cyan))
+                        Span::styled(headline, Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD))
                     ])
                 )
-            } else if artindex == selected_article && side != 1 {
-                processed_articles.push(
-                    Spans::from(vec![
-                        Span::styled(headline, Style::default().fg(Color::Magenta))
-                    ])
-                );
+                // } else if artindex == selected_article && side != 1 {
+                //     processed_articles.push(
+                //         Spans::from(vec![
+                //             Span::styled(headline, Style::default().fg(Color::Magenta).add_modifier(Modifier::ITALIC))
+                //         ])
+                //     );
             } else {
                 processed_articles.push(
                     Spans::from(vec![
@@ -168,7 +198,10 @@ pub fn run(
                         ),
                         Style::default().fg(
                             Color::Magenta
-                        ),
+                        )
+                            .add_modifier(
+                                Modifier::DIM
+                            ),
                     ),
                     Span::styled(
                         format!("  -  "),
@@ -196,6 +229,32 @@ pub fn run(
                 ]
             )
         );
+        // }
+    }
+
+
+    let mut parsed_logs = vec![];
+
+    let mut unprocessed = log.clone();
+    unprocessed.reverse();
+    for (time, message, level) in unprocessed {
+        let (lvl, style) = match level {
+            0 => ("INFO".to_string(), Style::default().fg(Color::Gray)),
+            1 => ("ERROR".to_string(), Style::default().fg(Color::Red)),
+            2 => ("WARN".to_string(), Style::default().fg(Color::Yellow)),
+            10 => ("NOTE".to_string(), Style::default().fg(Color::Magenta)),
+            _ => ("INFO".to_string(), Style::default().fg(Color::Gray))
+        };
+
+        parsed_logs.push(
+            Row::new(
+                vec![
+                    Text::styled(time.format(" %Y/%b/%d %H:%M").to_string(), style),
+                    Text::styled(lvl, style),
+                    Text::styled(message.clone(), style),
+                ]
+            )
+        )
     }
 
     if launch_present {
@@ -330,7 +389,7 @@ pub fn run(
         let mut updates: Vec<Spans> = vec![];
 
         let mut update_index = 0;
-
+        // let mut updates_used_space = 0;
         for update in launch.updates.unwrap_or(vec![]) {
             if update_index <= 2 {
                 let timespan = countdown(update.created_on.unwrap_or(Utc::now().to_string()));
@@ -384,12 +443,12 @@ pub fn run(
                         Span::raw(" - "),
                         Span::styled(untitle, Style::default().fg(Color::Cyan))
                     ]));
-                } else if side == 1 && update_index == selected_update {
-                    updates.push(Spans::from(vec![
-                        Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
-                        Span::raw(" - "),
-                        Span::styled(untitle, Style::default().fg(Color::Magenta))
-                    ]));
+                    // } else if side == 1 && update_index == selected_update {
+                    //     updates.push(Spans::from(vec![
+                    //         Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
+                    //         Span::raw(" - "),
+                    //         Span::styled(untitle, Style::default().fg(Color::Magenta))
+                    //     ]));
                 } else {
                     updates.push(Spans::from(vec![
                         Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
