@@ -19,7 +19,8 @@ pub fn launch_thread(
 {
     std::thread::spawn(move || {
         loop {
-            match poll(Duration::from_millis(250 as u64)) {
+            std::thread::sleep(Duration::from_millis(100));
+            match poll(Duration::from_millis(100 as u64)) {
                 Ok(is_ready) => {
                     if is_ready {
                         let raw_event = read();
@@ -44,7 +45,7 @@ pub fn launch_thread(
                                                 if current - 1 >= 0 {
                                                     current -= 1;
                                                 } else {
-                                                    current = limit.clone();
+                                                    current = limit.clone() - 1;
                                                 }
                                                 *selected_update2.lock().unwrap() = current;
                                             } else {
@@ -54,7 +55,7 @@ pub fn launch_thread(
                                                 if current - 1 >= 0 {
                                                     current -= 1;
                                                 } else {
-                                                    current = limit.clone();
+                                                    current = limit.clone() - 1;
                                                 }
                                                 *selected_article2.lock().unwrap() = current;
                                             }
