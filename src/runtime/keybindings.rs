@@ -6,10 +6,7 @@ use crossterm::ExecutableCommand;
 use crossterm::terminal::{Clear, ClearType};
 use crate::runtime::state::State;
 
-pub fn launch_thread(
-    state: Arc<Mutex<State>>
-)
-{
+pub fn launch_thread(state: Arc<Mutex<State>>) {
     std::thread::spawn(move || {
         loop {
             match poll(Duration::from_millis(250 as u64)) {

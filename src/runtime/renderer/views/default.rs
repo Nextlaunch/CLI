@@ -20,7 +20,7 @@ use chrono::{Utc, DateTime, Local};
 use webbrowser::BrowserOptions;
 
 
-pub fn run(
+pub async fn run(
     _language: &LanguagePack,
     out: &mut Terminal<CrosstermBackend<Stdout>>,
     launch_present: bool,
@@ -30,6 +30,7 @@ pub fn run(
     mut state: State,
     _settings: &mut Config,
 ) {
+    println!("Made it to the renderer (default)");
     let suc = Text::styled("Launch Successful", Style::default().fg(Color::LightGreen));
     let tbd = Text::styled("To Be Determined", Style::default().fg(Color::Yellow));
     let tbc = Text::styled("To Be Confirmed", Style::default().fg(Color::LightYellow));

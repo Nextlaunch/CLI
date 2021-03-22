@@ -25,11 +25,6 @@ pub async fn launch(f: Flags, cfg: Config) {
     }
 }
 
-pub fn print(body: String) {
-    println!("{}", body);
-}
-
-
 pub async fn launch_main(mut cfg: Config) {
     let _ = crossterm::terminal::enable_raw_mode();
 
@@ -42,6 +37,7 @@ pub async fn launch_main(mut cfg: Config) {
     keybindings::launch_thread(
         state2
     );
+    println!("Made it to the runtime");
 
     renderer::process(
         &language,
