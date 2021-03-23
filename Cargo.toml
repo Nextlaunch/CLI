@@ -42,8 +42,8 @@ reqwest = { version = "0.11.0", default-features = false, features = ["serde_jso
 [target.aarch64-linux-android.build-dependencies]
 reqwest = { version = "0.11.0", default-features = false, features = ["serde_json", "json", "rustls-tls"] }
 
-[build-dependencies]
-serde = { version = "1.0.123", features = ["derive"] }
-reqwest = { version = "0.11.0", features = ["serde_json", "json", "blocking"] }
-dirs-2 = "3.0.1"
-zip = "0.5.11"
+#[build-dependencies]
+#serde = { version = "1.0.123", features = ["derive"] }
+#reqwest = { version = "0.11.0", features = ["serde_json", "json", "blocking"] }
+#dirs-2 = "3.0.1"
+#zip = "0.5.11"

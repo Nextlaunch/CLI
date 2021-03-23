@@ -71,7 +71,7 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                                     if current as i8 - 1 == 0 {
                                                         current = 0
                                                     } else {
-                                                        current = limit - 1;
+                                                        current = limit - 2;
                                                     }
                                                 }
                                                 state.lock().unwrap().selected_update = current;
@@ -122,7 +122,7 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                                 let limit = state.lock().unwrap().launch_update_count.clone();
                                                 let mut current = state.lock().unwrap().selected_update.clone();
 
-                                                if current + 1 >= limit {
+                                                if current + 1 >= limit-1 {
                                                     current = 0;
                                                 } else {
                                                     current += 1;
