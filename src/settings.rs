@@ -213,24 +213,26 @@ pub fn compute_style(raw: &RawStyle) -> Style {
 pub mod defaults;
 
 pub fn import() -> Config {
-    let root = dirs_2::data_dir().unwrap();
-    let cfg_path = format!("{}/nextlaunch/config.json", root.to_str().unwrap());
-    println!("Reading config file");
-    println!("{}", cfg_path);
-    let raw_file = std::fs::OpenOptions::new().read(true).open(cfg_path);
 
-    let raw: SubConfig = if let Ok(file) = raw_file {
-        let parsed: serde_json::Result<SubConfig> = serde_json::from_reader(file);
 
-        if let Ok(done) = parsed {
-            done
-        } else {
-            serde_json::from_str(defaults::DEFAULT).unwrap()
-        }
-    } else {
-        println!("Nextlaunch failed to open the configuration file, resorting to defaults");
-        serde_json::from_str(defaults::DEFAULT).unwrap()
-    };
+    // let root = dirs_2::data_dir().unwrap();
+    // let cfg_path = format!("{}/nextlaunch/config.json", root.to_str().unwrap());
+    // println!("Reading config file");
+    // println!("{}", cfg_path);
+    // let raw_file = std::fs::OpenOptions::new().read(true).open(cfg_path);
+    //
+    let raw: SubConfig = //if let Ok(file) = raw_file {
+        //     let parsed: serde_json::Result<SubConfig> = serde_json::from_reader(file);
+        //
+        //     if let Ok(done) = parsed {
+        //         done
+        //     } else {
+        //         serde_json::from_str(defaults::DEFAULT).unwrap()
+        //     }
+        // } else {
+        //     println!("Nextlaunch failed to open the configuration file, resorting to defaults");
+        serde_json::from_str(defaults::DEFAULT).unwrap();
+    // };
 
     Config {
         unsaved: raw.clone(),

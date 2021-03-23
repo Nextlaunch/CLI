@@ -2,7 +2,6 @@ use tui::widgets::{Row, Table, Borders, Block};
 use tui::text::Text;
 use tui::style::{Style, Color};
 use tui::layout::Constraint;
-use std::iter::FromIterator;
 use chrono::{DateTime, Local};
 
 pub fn render(logs: &Vec<(DateTime<Local>, String, u8)>) -> Table<'static> {
@@ -38,5 +37,5 @@ pub fn render(logs: &Vec<(DateTime<Local>, String, u8)>) -> Table<'static> {
             Constraint::Min(30)
         ])
         .block(Block::default().title(" Logs ")
-            .borders(Borders::from_iter(vec![Borders::LEFT, Borders::TOP, Borders::RIGHT])))
+            .borders(Borders::ALL))
 }

@@ -1,5 +1,4 @@
 use tui::widgets::{Borders, Block, Paragraph, Table, Row};
-use std::iter::FromIterator;
 use tui::text::Text;
 use tui::style::{Style, Modifier, Color};
 use tui::layout::Constraint;
@@ -14,15 +13,7 @@ pub fn render_missing() -> Paragraph<'static> {
         .block(
             Block::default()
                 .title(" Launch Info ")
-                .borders(
-                    Borders::from_iter(
-                        vec![
-                            Borders::LEFT,
-                            Borders::TOP,
-                            Borders::RIGHT
-                        ]
-                    )
-                )
+                .borders(Borders::ALL)
         )
 }
 

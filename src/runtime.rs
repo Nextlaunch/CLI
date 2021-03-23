@@ -1,19 +1,23 @@
+use std::sync::{Arc, Mutex};
+
 use crate::runtime::data::launches::structures::{Launch, Article};
 use crate::runtime::data::launches::{update, news_update};
+use crate::runtime::keybindings::keybinder;
+use crate::languages::select_language;
 use crate::runtime::flags::Flags;
+use crate::runtime::state::State;
+use crate::settings::Config;
 
 use tokio::time::{Instant, Duration};
 
 use chrono::{DateTime, Local};
-use std::sync::{Arc, Mutex};
-use crate::languages::select_language;
-use crate::settings::Config;
-use crate::runtime::state::State;
+
 
 pub mod state;
 pub mod flags;
 pub mod data;
 pub mod renderer;
+
 
 pub mod keybindings;
 // pub mod json_subsystem;
@@ -34,9 +38,11 @@ pub async fn launch_main(mut cfg: Config) {
 
     let state2 = state.clone();
 
-    keybindings::launch_thread(
-        state2
-    );
+
+    std::thread::Builder::new().name("Keybinder".to_string()).spawn(move || {
+        keybinder(state2)
+    }).unwrap();
+
     println!("Made it to the runtime");
 
     renderer::process(

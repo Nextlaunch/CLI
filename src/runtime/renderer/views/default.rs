@@ -138,7 +138,7 @@ pub fn run(
             f.render_widget(widgets::countdown::render_dynamic(timespan, launch.clone()), whole[1]);
 
             // Render dynamic news widget ("News")
-            f.render_widget(Clear, right[1]);
+            f.render_widget(Clear, right_status[0]);
             f.render_widget(widgets::news_articles::render(&mut state, news_dimensions, news.clone().unwrap_or(vec![])), right_status[0]);
 
             // Render dynamic launch update widget ("Updates")

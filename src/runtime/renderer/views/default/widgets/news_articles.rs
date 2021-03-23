@@ -3,7 +3,6 @@ use crate::runtime::data::launches::structures::Article;
 use tui::text::{Spans, Span, Text};
 use webbrowser::BrowserOptions;
 use tui::style::{Style, Color, Modifier};
-use std::iter::FromIterator;
 use crate::runtime::state::State;
 use chrono::Utc;
 
@@ -147,9 +146,9 @@ pub fn render(state: &mut State, news_dimensions: (u16, u16), articles: Vec<Arti
 
     return if processed_articles.is_empty() {
         Paragraph::new(Text::raw(" There is no available news articles to display.\n Please check the logs."))
-            .block(Block::default().title(" News ").borders(Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])))
+            .block(Block::default().title(" News ").borders(Borders::ALL))
     } else {
         Paragraph::new(processed_articles)
-            .block(Block::default().title(" News ").borders(Borders::from_iter(vec![Borders::TOP, Borders::RIGHT])))
+            .block(Block::default().title(" News ").borders(Borders::ALL))
     };
 }
