@@ -83,13 +83,13 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                                     if current - 1 >= 0 {
                                                         current -= 1;
                                                     } else {
-                                                        current = limit - 1;
+                                                        current = limit;
                                                     }
                                                 } else {
                                                     if current as i8 - 1 == 0 {
                                                         current = 0
                                                     } else {
-                                                        current = limit - 1;
+                                                        current = limit ;
                                                     }
                                                 }
                                                 state.lock().unwrap().selected_article = current;

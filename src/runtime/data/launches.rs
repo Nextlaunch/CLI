@@ -16,15 +16,42 @@ pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>) -
                 let launch_list = launches.results.unwrap();
 
                 let mut next = launch_list.first().unwrap().clone();
+                let mut previous = crate::utilities::countdown(next.net.clone().unwrap_or(Utc::now().to_string()));
 
                 for launch in launch_list {
                     let time_remaining = crate::utilities::countdown(launch.net.clone().unwrap_or(Utc::now().to_string()));
 
-                    if !time_remaining.has_passed {
-                        next = launch;
+                    if previous.has_passed {
+                        match launch.status.id.clone().unwrap() {
+                            1 => {
+                                if time_remaining.minutes < 30 {
+                                    next = launch;
+                                }
+                            }
+                            _ => {
+                                let id = next.status.id.clone().unwrap();
+                                match id {
+                                    3 | 4 | 6 | 7 => {
+                                        if previous.minutes > 20 && time_remaining.minutes < 30 {
+                                            next = launch;
+                                        } else if previous.minutes > 30 {
+                                            next = launch;
+                                        } else if time_remaining.minutes < 15 {
+                                            next = launch;
+                                        } else {
+                                            continue;
+                                        }
+                                    }
+                                    _ => {
+                                        next = launch;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
                         break;
                     }
-                }
+                };
 
                 Some(next)
             } else {

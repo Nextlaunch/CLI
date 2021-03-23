@@ -92,13 +92,13 @@ pub async fn launch_main(mut cfg: Config) {
     if launch.is_some() {
         let tpl = launch.clone().unwrap();
         state.lock().unwrap().should_clear = true;
-        state.lock().unwrap().launch_update_count = tpl.updates.unwrap_or(vec![]).len() as u8;
+        state.lock().unwrap().launch_update_count = tpl.updates.unwrap_or(vec![]).len() as u8-1;
     }
 
     if news.is_some() {
         let tpn = news.clone().unwrap();
         state.lock().unwrap().should_clear = true;
-        state.lock().unwrap().news_article_count = tpn.len() as u8;
+        state.lock().unwrap().news_article_count = tpn.len() as u8-1;
     }
 
 
