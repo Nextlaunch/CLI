@@ -2,7 +2,7 @@ use crossterm::event::{poll, Event, read, KeyCode, KeyModifiers};
 use std::time::Duration;
 use std::sync::{Arc, Mutex};
 use std::process::exit;
-use crossterm::ExecutableCommand;
+use crossterm::{ExecutableCommand};
 use crossterm::terminal::{Clear, ClearType};
 use crate::runtime::state::State;
 
@@ -32,7 +32,16 @@ pub fn launch_thread(state: Arc<Mutex<State>>) {
                                             if state.lock().unwrap().editing_settings {
                                                 state.lock().unwrap().editing_settings = false;
                                                 state.lock().unwrap().save_stored = true;
-                                                state.lock().unwrap().editing_settings = false
+                                            } else if state.lock().unwrap().render_settings {
+                                                let frame = state.lock().unwrap().settings_pane.clone();
+                                                match frame {
+                                                    0 => {
+
+                                                    },
+                                                    _ => {
+
+                                                    }
+                                                }
                                             } else if !state.lock().unwrap().render_help {
                                                 state.lock().unwrap().open_selected = true;
                                             }
@@ -47,33 +56,33 @@ pub fn launch_thread(state: Arc<Mutex<State>>) {
                                                     if pane == 1 {
                                                         state.lock().unwrap().settings_selected = 0;
                                                     } else {
-                                                        state.lock().unwrap().settings_selected = 10;
+                                                        state.lock().unwrap().settings_selected = 9;
                                                     }
                                                 } else {
                                                     state.lock().unwrap().settings_selected -= 1;
                                                 }
                                             } else {
                                                 if state.lock().unwrap().selected_side == 0 {
-                                                    let limit = state.lock().unwrap().launch_update_count;
+                                                    let limit = state.lock().unwrap().launch_update_count.clone();
                                                     let mut current = state.lock().unwrap().selected_update.clone();
 
                                                     if current - 1 > 0 {
                                                         current -= 1;
                                                     } else {
-                                                        current = limit.clone();
+                                                        current = limit - 1;
                                                     }
                                                     state.lock().unwrap().selected_update = current;
                                                 } else {
-                                                    let limit = state.lock().unwrap().news_article_count;
+                                                    let limit = state.lock().unwrap().news_article_count.clone();
                                                     let mut current = state.lock().unwrap().selected_article.clone();
 
-                                                if current - 1 >= 0 {
-                                                    current -= 1;
-                                                } else {
-                                                    current = limit.clone() - 1;
-
+                                                    if current - 1 > 0 {
+                                                        current -= 1;
+                                                    } else {
+                                                        current = limit - 1;
                                                     }
                                                     state.lock().unwrap().selected_article = current;
+                                                }
                                             }
                                         }
                                         KeyCode::Down => {
@@ -190,6 +199,10 @@ pub fn launch_thread(state: Arc<Mutex<State>>) {
                                                         state.lock().unwrap().should_clear = true;
                                                         state.lock().unwrap().render_help = true;
                                                         state.lock().unwrap().render_settings = false;
+                                                    } else {
+                                                        state.lock().unwrap().should_clear = true;
+                                                        state.lock().unwrap().render_help = false;
+                                                        state.lock().unwrap().render_settings = false;
                                                     }
                                                 }
                                                 _ => {}
@@ -213,14 +226,20 @@ pub fn launch_thread(state: Arc<Mutex<State>>) {
                                                             state.lock().unwrap().should_clear = true;
                                                             state.lock().unwrap().render_help = true;
                                                             state.lock().unwrap().render_settings = false;
+                                                        } else {
+                                                            state.lock().unwrap().should_clear = true;
+                                                            state.lock().unwrap().render_help = false;
+                                                            state.lock().unwrap().render_settings = false;
                                                         }
                                                     }
                                                     's' => {
                                                         if !state.lock().unwrap().render_settings {
                                                             state.lock().unwrap().should_clear = true;
+                                                            state.lock().unwrap().render_help = false;
                                                             state.lock().unwrap().render_settings = true;
                                                         } else {
                                                             state.lock().unwrap().should_clear = true;
+                                                            state.lock().unwrap().render_help = false;
                                                             state.lock().unwrap().render_settings = false;
                                                         }
                                                     }
