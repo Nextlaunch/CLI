@@ -2,6 +2,9 @@ use crate::runtime::data::launches::structures::{Launch, LSP, Rocket, RocketConf
 use crate::utilities::countdown;
 use crate::languages::LanguagePack;
 use crate::runtime::renderer::render_help_menu;
+use crate::languages::LanguagePack;
+use crate::settings::Config;
+use crate::runtime::state::State;
 
 use std::io::Stdout;
 use std::iter::FromIterator;
@@ -18,18 +21,20 @@ use chrono::{Utc, DateTime, Local};
 use webbrowser::BrowserOptions;
 
 
+use webbrowser::BrowserOptions;
+
 pub fn run(
+    _language: &LanguagePack,
+
+pub async fn run(
     _language: &LanguagePack,
     out: &mut Terminal<CrosstermBackend<Stdout>>,
     launch_present: bool,
     i: &Option<Launch>,
     news: &Option<Vec<Article>>,
     log: &Vec<(DateTime<Local>, String, u8)>,
-    side: i32,
-    selected_article: i32,
-    selected_update: i32,
-    mut should_open: bool,
-    render_help: bool,
+    mut state: State,
+    _settings: &mut Config,
 ) {
     let suc = Text::styled("Launch Successful", Style::default().fg(Color::LightGreen));
     let tbd = Text::styled("To Be Determined", Style::default().fg(Color::Yellow));
@@ -40,6 +45,7 @@ pub fn run(
     let inf = Text::styled("In Flight", Style::default().fg(Color::LightGreen));
     let hol = Text::styled("On Hold", Style::default().fg(Color::Gray));
     let fetching = Text::raw("Fetching...");
+
 
     let mut news_dimensions = (0, 0);
     let mut update_dimensions = (0, 0);
@@ -55,7 +61,6 @@ pub fn run(
                     .as_ref(),
             )
             .split(f.size());
-
         let right = Layout::default().direction(Direction::Horizontal)
             .constraints(
                 [
@@ -65,17 +70,12 @@ pub fn run(
                     .as_ref(),
             )
             .split(whole[0]);
-
         let right_status = Layout::default()
             .direction(Direction::Vertical)
             .constraints(
                 [
                     Constraint::Percentage(75),
                     Constraint::Percentage(25),
-                ]
-                    .as_ref(),
-            )
-            .split(right[1]);
 
         let left = Layout::default()
             .direction(Direction::Vertical)
@@ -121,15 +121,15 @@ pub fn run(
         // exit(1);
 
         for headline in headlines {
-            if artindex == selected_article && side == 1 {
-                if should_open {
+            if artindex == state.selected_article && state.selected_side == 1 {
+                if state.open_selected {
                     let _ = webbrowser::open_browser_with_options(
                         BrowserOptions {
                             url: article.url.clone().unwrap(),
                             suppress_output: Some(true),
                             browser: Some(webbrowser::Browser::Default),
                         });
-                    should_open = false;
+                    state.open_selected = false;
                 }
                 processed_articles.push(
                     Spans::from(vec![
@@ -198,10 +198,7 @@ pub fn run(
                         ),
                         Style::default().fg(
                             Color::Magenta
-                        )
-                            .add_modifier(
-                                Modifier::DIM
-                            ),
+                        ),
                     ),
                     Span::styled(
                         format!("  -  "),
@@ -429,8 +426,8 @@ pub fn run(
                     }
                 };
 
-                if side == 0 && update_index == selected_update {
-                    if should_open && update.info_url.is_some() {
+                if state.selected_side == 0 && update_index == state.selected_update {
+                    if state.open_selected && update.info_url.is_some() {
                         let _ = webbrowser::open_browser_with_options(
                             BrowserOptions {
                                 url: update.info_url.unwrap(),
@@ -586,7 +583,7 @@ pub fn run(
                 .wrap(Wrap { trim: false });
             f.render_widget(countdown, whole[1]);
 
-            if render_help {
+            if state.render_help {
                 render_help_menu(f);
             }
         });
@@ -674,7 +671,7 @@ pub fn run(
                 .wrap(Wrap { trim: false });
             f.render_widget(countdown, whole[1]);
 
-            if render_help {
+            if state.render_help {
                 render_help_menu(f);
             }
         });

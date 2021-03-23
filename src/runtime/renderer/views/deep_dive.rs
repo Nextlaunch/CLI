@@ -6,10 +6,17 @@ use tui::layout::{Layout, Direction, Constraint, Alignment};
 use tui::widgets::{Clear, Block, Borders, Paragraph, Table, Row};
 use tui::text::Text;
 use crate::runtime::renderer::{centered_rect, render_help_menu};
+use crate::runtime::state::State;
+use crate::settings::Config;
 
 pub mod dict;
 
-pub fn run(out: &mut Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i: &Option<Launch>, render_help: bool) {
+pub fn run(
+    out: &mut Terminal<CrosstermBackend<Stdout>>,
+    launch_present: bool,
+    i: &Option<Launch>,
+    state: State,
+    _settings: &mut Config) {
     if launch_present {
         let launch = i.clone().unwrap();
         let rocket = launch.rocket.unwrap_or(Rocket {
@@ -108,7 +115,7 @@ pub fn run(out: &mut Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i
 
                 f.render_widget(Clear, area); //this clears out the background
                 f.render_widget(error, area);
-                if render_help {
+                if state.render_help {
                     render_help_menu(f);
                 }
             });
@@ -140,7 +147,7 @@ pub fn run(out: &mut Terminal<CrosstermBackend<Stdout>>, launch_present: bool, i
 
             f.render_widget(Clear, area); //this clears out the background
             f.render_widget(error, area);
-            if render_help {
+            if state.render_help {
                 render_help_menu(f);
             }
         });

@@ -7,8 +7,10 @@ use tokio::time::{Instant, Duration};
 use chrono::{DateTime, Local};
 use std::sync::{Arc, Mutex};
 use crate::languages::select_language;
+use crate::settings::Config;
+use crate::runtime::state::State;
 
-
+pub mod state;
 pub mod flags;
 pub mod data;
 pub mod renderer;
@@ -16,22 +18,26 @@ pub mod renderer;
 pub mod keybindings;
 // pub mod json_subsystem;
 
-pub async fn launch(f: Flags) {
+pub async fn launch(f: Flags, cfg: Config) {
     match f.view {
         // 1 => launch_json().await,
-        _ => launch_main().await,
+        _ => launch_main(cfg).await,
     }
 }
 
-pub fn print(body: String) {
-    println!("{}", body);
-}
-
-
-pub async fn launch_main() {
+pub async fn launch_main(mut cfg: Config) {
     let _ = crossterm::terminal::enable_raw_mode();
 
-    let language = select_language("en_GB");
+
+    let language = select_language(&cfg.saved.language);
+    let state: Arc<Mutex<State>> = Arc::new(Mutex::new(State::new()));
+
+    let state2 = state.clone();
+
+    keybindings::launch_thread(
+        state2
+    );
+    println!("Made it to the runtime");
 
     renderer::process(
         &language,
@@ -41,12 +47,8 @@ pub async fn launch_main() {
             (Local::now(), "fetching information, please wait".to_string(), 2)
         ],
         true,
-        0,
-        0,
-        0,
-        0,
-        false,
-        false,
+        &state,
+        &mut cfg,
     ).await;
 
     let client = reqwest::Client::new();
@@ -79,50 +81,19 @@ pub async fn launch_main() {
 
 
     let mut refresh_cycle: u8 = 0;
-    let view_screen: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let selected_article: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let selected_update: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let selected_side: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let should_clear: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
-    let render_help: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
 
-    let launch_update_count: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
-    let open_selected: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
-    let news_article_count: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
 
     if launch.is_some() {
         let tpl = launch.clone().unwrap();
-        *should_clear.lock().unwrap() = true;
-        *launch_update_count.lock().unwrap() = tpl.updates.unwrap_or(vec![]).len() as i32;
+        state.lock().unwrap().should_clear = true;
+        state.lock().unwrap().launch_update_count = tpl.updates.unwrap_or(vec![]).len() as u8;
     }
 
     if news.is_some() {
         let tpn = news.clone().unwrap();
-        *should_clear.lock().unwrap() = true;
-        *news_article_count.lock().unwrap() = tpn.len() as i32;
+        state.lock().unwrap().should_clear = true;
+        state.lock().unwrap().news_article_count = tpn.len() as u8;
     }
-
-    let view_screen2: Arc<Mutex<i32>> = view_screen.clone();
-    let selected_article2: Arc<Mutex<i32>> = selected_article.clone();
-    let selected_update2: Arc<Mutex<i32>> = selected_update.clone();
-    let selected_side2: Arc<Mutex<i32>> = selected_side.clone();
-    let should_clear2: Arc<Mutex<bool>> = should_clear.clone();
-    let open_selected2: Arc<Mutex<bool>> = open_selected.clone();
-    let render_help2: Arc<Mutex<bool>> = render_help.clone();
-    let launch_update_count2: Arc<Mutex<i32>> = launch_update_count.clone();
-    let news_article_count2: Arc<Mutex<i32>> = news_article_count.clone();
-
-    keybindings::launch_thread(
-        view_screen2,
-        selected_article2,
-        selected_update2,
-        selected_side2,
-        should_clear2,
-        open_selected2,
-        render_help2,
-        launch_update_count2,
-        news_article_count2,
-    );
 
 
     loop {
@@ -133,14 +104,14 @@ pub async fn launch_main() {
             let temp_news = news_update(&client, &mut log).await;
             if temp_launch.is_some() {
                 let tpl = temp_launch.clone().unwrap();
-                *should_clear.lock().unwrap() = true;
-                *launch_update_count.lock().unwrap() = tpl.updates.unwrap_or(vec![]).len() as i32;
+                state.lock().unwrap().should_clear = true;
+                state.lock().unwrap().launch_update_count = tpl.updates.unwrap_or(vec![]).len() as u8;
                 launch = temp_launch;
             }
             if temp_news.is_some() {
                 let tpn = temp_news.clone().unwrap();
-                *should_clear.lock().unwrap() = true;
-                *news_article_count.lock().unwrap() = tpn.len() as i32;
+                state.lock().unwrap().should_clear = true;
+                state.lock().unwrap().news_article_count = tpn.len() as u8;
                 news = temp_news;
             }
 
@@ -169,31 +140,27 @@ pub async fn launch_main() {
                 &launch,
                 &news,
                 &mut log,
-                w != w2 || h != h2 || *should_clear.lock().unwrap(),
-                *view_screen.lock().unwrap(),
-                *selected_side.lock().unwrap(),
-                *selected_article.lock().unwrap(),
-                *selected_update.lock().unwrap(),
-                *open_selected.lock().unwrap(),
-                *render_help.lock().unwrap(),
+                w != w2 || h != h2,
+                &state,
+                &mut cfg,
             ).await;
 
             w = w2;
             h = h2;
 
-            if *should_clear.lock().unwrap() {
-                *should_clear.lock().unwrap() = false;
+            if state.lock().unwrap().should_clear {
+                state.lock().unwrap().should_clear = false;
             }
 
-            if *open_selected.lock().unwrap() {
-                *open_selected.lock().unwrap() = false;
+            if state.lock().unwrap().open_selected {
+                state.lock().unwrap().open_selected = false;
             }
 
             log.pop();
         }
 
 
-        if last.elapsed().as_secs() > 60 * 10 {
+        if last.elapsed().as_secs() > cfg.saved.cache_update_frequency.clone() as u64 {
             last = Instant::now();
             needs_refresh = true;
         }

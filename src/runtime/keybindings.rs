@@ -4,19 +4,9 @@ use std::sync::{Arc, Mutex};
 use std::process::exit;
 use crossterm::ExecutableCommand;
 use crossterm::terminal::{Clear, ClearType};
+use crate::runtime::state::State;
 
-pub fn launch_thread(
-    view_screen2: Arc<Mutex<i32>>,
-    selected_article2: Arc<Mutex<i32>>,
-    selected_update2: Arc<Mutex<i32>>,
-    selected_side2: Arc<Mutex<i32>>,
-    should_clear2: Arc<Mutex<bool>>,
-    open_selected2: Arc<Mutex<bool>>,
-    render_help2: Arc<Mutex<bool>>,
-    launch_update_count2: Arc<Mutex<i32>>,
-    news_article_count2: Arc<Mutex<i32>>,
-)
-{
+pub fn launch_thread(state: Arc<Mutex<State>>) {
     std::thread::spawn(move || {
         loop {
             std::thread::sleep(Duration::from_millis(100));
@@ -29,115 +19,231 @@ pub fn launch_thread(
                                 Event::Key(raw_key) => {
                                     match raw_key.code {
                                         KeyCode::Esc => {
-                                            if *render_help2.lock().unwrap() {
-                                                *render_help2.lock().unwrap() = false;
-                                                *should_clear2.lock().unwrap() = true;
+                                            if state.lock().unwrap().render_help {
+                                                state.lock().unwrap().render_help = false;
+                                                state.lock().unwrap().render_settings = false;
+                                                state.lock().unwrap().should_clear = true;
+                                            } else if state.lock().unwrap().editing_settings {
+                                                state.lock().unwrap().editing_settings = false;
+                                                state.lock().unwrap().stored_value = vec![];
                                             }
                                         }
                                         KeyCode::Enter => {
-                                            *open_selected2.lock().unwrap() = true;
+                                            if state.lock().unwrap().editing_settings {
+                                                state.lock().unwrap().editing_settings = false;
+                                                state.lock().unwrap().save_stored = true;
+                                                state.lock().unwrap().editing_settings = false
+                                            } else if !state.lock().unwrap().render_help {
+                                                state.lock().unwrap().open_selected = true;
+                                            }
                                         }
                                         KeyCode::Up => {
-                                            if *selected_side2.lock().unwrap() == 0 {
-                                                let limit = *launch_update_count2.lock().unwrap();
-                                                let mut current = *selected_update2.lock().unwrap();
+                                            if state.lock().unwrap().render_settings {
+                                                state.lock().unwrap().should_clear = true;
+                                                if state.lock().unwrap().settings_selected == 0 {
+                                                    state.lock().unwrap().should_clear = true;
+                                                    let pane = state.lock().unwrap().settings_pane;
 
-                                                if current - 1 >= 0 {
-                                                    current -= 1;
+                                                    if pane == 1 {
+                                                        state.lock().unwrap().settings_selected = 0;
+                                                    } else {
+                                                        state.lock().unwrap().settings_selected = 10;
+                                                    }
                                                 } else {
-                                                    current = limit.clone() - 1;
+                                                    state.lock().unwrap().settings_selected -= 1;
                                                 }
-                                                *selected_update2.lock().unwrap() = current;
                                             } else {
-                                                let limit = *news_article_count2.lock().unwrap();
-                                                let mut current = *selected_article2.lock().unwrap();
+                                                if state.lock().unwrap().selected_side == 0 {
+                                                    let limit = state.lock().unwrap().launch_update_count;
+                                                    let mut current = state.lock().unwrap().selected_update.clone();
+
+                                                    if current - 1 > 0 {
+                                                        current -= 1;
+                                                    } else {
+                                                        current = limit.clone();
+                                                    }
+                                                    state.lock().unwrap().selected_update = current;
+                                                } else {
+                                                    let limit = state.lock().unwrap().news_article_count;
+                                                    let mut current = state.lock().unwrap().selected_article.clone();
 
                                                 if current - 1 >= 0 {
                                                     current -= 1;
                                                 } else {
                                                     current = limit.clone() - 1;
-                                                }
-                                                *selected_article2.lock().unwrap() = current;
+
+                                                    }
+                                                    state.lock().unwrap().selected_article = current;
                                             }
                                         }
                                         KeyCode::Down => {
-                                            if *selected_side2.lock().unwrap() == 0 {
-                                                let limit = *launch_update_count2.lock().unwrap();
-                                                let mut current = *selected_update2.lock().unwrap();
+                                            if state.lock().unwrap().render_settings {
+                                                state.lock().unwrap().should_clear = true;
+                                                state.lock().unwrap().settings_selected += 1;
 
-                                                if current + 1 < limit {
-                                                    current += 1;
-                                                } else {
-                                                    current = 0;
+                                                let pane = state.lock().unwrap().settings_pane;
+
+                                                match pane {
+                                                    1 => {
+                                                        if state.lock().unwrap().settings_selected + 1 > 0 {
+                                                            state.lock().unwrap().settings_selected = 0
+                                                        }
+                                                    }
+                                                    _ => {
+                                                        {
+                                                            if state.lock().unwrap().settings_selected + 1 > 10 {
+                                                                state.lock().unwrap().settings_selected = 0
+                                                            }
+                                                        }
+                                                    }
                                                 }
-                                                *selected_update2.lock().unwrap() = current;
                                             } else {
-                                                let limit = *news_article_count2.lock().unwrap();
-                                                let mut current = *selected_article2.lock().unwrap();
+                                                if state.lock().unwrap().selected_side == 0 {
+                                                    let limit = state.lock().unwrap().launch_update_count.clone();
+                                                    let mut current = state.lock().unwrap().selected_update.clone();
 
-                                                if current + 1 < limit {
-                                                    current += 1;
+                                                    if current + 1 >= limit {
+                                                        current += 1;
+                                                    } else {
+                                                        current = limit.clone();
+                                                    }
+                                                    state.lock().unwrap().selected_update = current;
                                                 } else {
-                                                    current = 0;
+                                                    let limit = state.lock().unwrap().news_article_count.clone();
+                                                    let mut current = state.lock().unwrap().selected_article.clone();
+
+                                                    if current + 1 >= limit {
+                                                        current += 1;
+                                                    } else {
+                                                        current = limit.clone();
+                                                    }
+                                                    state.lock().unwrap().selected_article = current;
                                                 }
-                                                *selected_article2.lock().unwrap() = current;
                                             }
                                         }
-                                        KeyCode::Left | KeyCode::Right => {
-                                            let mut side = *selected_side2.lock().unwrap();
-                                            if side == 0 {
-                                                side = 1;
+                                        KeyCode::Right => {
+                                            if state.lock().unwrap().render_settings {
+                                                let tab = state.lock().unwrap().settings_pane.clone() as i8;
+                                                state.lock().unwrap().should_clear = true;
+
+                                                if tab + 1 >= 5 {
+                                                    state.lock().unwrap().settings_pane = 0;
+                                                } else {
+                                                    state.lock().unwrap().settings_pane = (tab + 1) as u8;
+                                                }
+                                                state.lock().unwrap().settings_selected = 0;
                                             } else {
-                                                side = 0;
+                                                if !state.lock().unwrap().render_settings {
+                                                    let mut side = state.lock().unwrap().selected_side.clone();
+                                                    if side == 0 {
+                                                        side = 1;
+                                                    } else {
+                                                        side = 0;
+                                                    }
+                                                    state.lock().unwrap().selected_side = side;
+                                                } else {
+                                                    let mut side = state.lock().unwrap().settings_pane.clone();
+                                                    if side < 5 {
+                                                        side += 1;
+                                                    } else {
+                                                        side = 0;
+                                                    }
+                                                    state.lock().unwrap().settings_pane = side;
+                                                }
                                             }
-                                            *selected_side2.lock().unwrap() = side;
+                                        }
+                                        KeyCode::Left => {
+                                            if state.lock().unwrap().render_settings {
+                                                let tab = state.lock().unwrap().settings_pane.clone() as i8;
+                                                state.lock().unwrap().should_clear = true;
+
+                                                if tab - 1 >= 0 {
+                                                    state.lock().unwrap().settings_pane = (tab - 1) as u8;
+                                                } else {
+                                                    state.lock().unwrap().settings_pane = 4;
+                                                }
+                                                state.lock().unwrap().settings_selected = 0;
+                                            } else {
+                                                if !state.lock().unwrap().render_settings {
+                                                    let mut side = state.lock().unwrap().selected_side.clone();
+                                                    if side == 0 {
+                                                        side = 1;
+                                                    } else {
+                                                        side = 0;
+                                                    }
+                                                    state.lock().unwrap().selected_side = side;
+                                                } else {
+                                                    let mut side = state.lock().unwrap().settings_pane.clone();
+                                                    if side > 0 {
+                                                        side -= 1;
+                                                    } else {
+                                                        side = 5;
+                                                    }
+                                                    state.lock().unwrap().settings_pane = side;
+                                                }
+                                            }
                                         }
                                         KeyCode::F(no) => {
                                             match no {
                                                 1 => {
-                                                    if !*render_help2.lock().unwrap() {
-                                                        *should_clear2.lock().unwrap() = true;
-                                                        *render_help2.lock().unwrap() = true;
+                                                    if !state.lock().unwrap().render_help {
+                                                        state.lock().unwrap().should_clear = true;
+                                                        state.lock().unwrap().render_help = true;
+                                                        state.lock().unwrap().render_settings = false;
                                                     }
                                                 }
                                                 _ => {}
                                             }
                                         }
                                         KeyCode::Char(c) => {
-                                            match c {
-                                                '1' => {
-                                                    *view_screen2.lock().unwrap() = 0;
-                                                    *should_clear2.lock().unwrap() = true;
-                                                }
-                                                '2' => {
-                                                    *view_screen2.lock().unwrap() = 1;
-                                                    *should_clear2.lock().unwrap() = true;
-                                                }
-                                                '?' => {
-                                                    if !*render_help2.lock().unwrap() {
-                                                        *should_clear2.lock().unwrap() = true;
-                                                        *render_help2.lock().unwrap() = true;
+                                            if state.lock().unwrap().editing_settings {
+                                                state.lock().unwrap().stored_value.push(c)
+                                            } else {
+                                                match c {
+                                                    '1' => {
+                                                        state.lock().unwrap().view_screen = 0;
+                                                        state.lock().unwrap().should_clear = true;
                                                     }
-                                                }
-                                                'c' => {
-                                                    if raw_key.modifiers.contains(KeyModifiers::CONTROL) {
-                                                        let mut stdout = std::io::stdout();
-                                                        let _ = stdout.execute(Clear(ClearType::All));
-                                                        println!(" Thank you for using NextLaunch, goodbye.");
-                                                        let _ = crossterm::terminal::disable_raw_mode();
-                                                        exit(0);
+                                                    '2' => {
+                                                        state.lock().unwrap().view_screen = 1;
+                                                        state.lock().unwrap().should_clear = true;
                                                     }
-                                                }
-                                                'q' => {
-                                                    if !raw_key.modifiers.contains(KeyModifiers::CONTROL) {
-                                                        let mut stdout = std::io::stdout();
-                                                        let _ = stdout.execute(Clear(ClearType::All));
-                                                        println!(" Thank you for using NextLaunch, goodbye.");
-                                                        let _ = crossterm::terminal::disable_raw_mode();
-                                                        exit(0);
+                                                    '?' => {
+                                                        if !state.lock().unwrap().render_help {
+                                                            state.lock().unwrap().should_clear = true;
+                                                            state.lock().unwrap().render_help = true;
+                                                            state.lock().unwrap().render_settings = false;
+                                                        }
                                                     }
+                                                    's' => {
+                                                        if !state.lock().unwrap().render_settings {
+                                                            state.lock().unwrap().should_clear = true;
+                                                            state.lock().unwrap().render_settings = true;
+                                                        } else {
+                                                            state.lock().unwrap().should_clear = true;
+                                                            state.lock().unwrap().render_settings = false;
+                                                        }
+                                                    }
+                                                    'c' => {
+                                                        if raw_key.modifiers.contains(KeyModifiers::CONTROL) {
+                                                            let mut stdout = std::io::stdout();
+                                                            let _ = stdout.execute(Clear(ClearType::All));
+                                                            println!(" Thank you for using NextLaunch, goodbye.");
+                                                            let _ = crossterm::terminal::disable_raw_mode();
+                                                            exit(0);
+                                                        }
+                                                    }
+                                                    'q' => {
+                                                        if !raw_key.modifiers.contains(KeyModifiers::CONTROL) {
+                                                            let mut stdout = std::io::stdout();
+                                                            let _ = stdout.execute(Clear(ClearType::All));
+                                                            println!(" Thank you for using NextLaunch, goodbye.");
+                                                            let _ = crossterm::terminal::disable_raw_mode();
+                                                            exit(0);
+                                                        }
+                                                    }
+                                                    _ => {}
                                                 }
-                                                _ => {}
                                             }
                                         }
                                         _ => {}
