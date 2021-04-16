@@ -1,0 +1,49 @@
+{
+  "names": [
+    "english",
+    "english (uk)",
+    "en",
+    "en-gb",
+    "en-us"
+  ],
+  "time": {
+    "year": "year",
+    "year_plural": "years",
+    "week": "week",
+    "week_plural": "weeks",
+    "day": "day",
+    "day_plural": "days",
+    "hour": "hour",
+    "hour_plural": "hours",
+    "minute": "minute",
+    "minute_plural": "minutes",
+    "second": "second",
+    "second_plural": "seconds"
+  },
+  "launch": {
+    "name": "Name",
+    "provider": "Provider",
+    "vehicle": "Vehicle",
+    "mission": "Mission",
+    "pad": "Pad",
+    "location": "Location",
+    "status": {
+      "success": "Success",
+      "to_be_determined": "To Be Determined",
+      "to_be_confirmed": "To Be Confirmed",
+      "partial_failure": "Partial Failure",
+      "failure": "Failure",
+      "go_for_liftoff": "Go For Liftoff",
+      "in_flight": "In Flight",
+      "on_hold": "On Hold",
+      "fetching": "Fetching..."
+    }
+  },
+  "titles": {
+    "launch": "Launch Info",
+    "updates": "Updates",
+    "news": "News",
+    "logs": "Logs",
+    "countdown": "Countdown"
+  }
+}
