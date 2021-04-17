@@ -23,7 +23,7 @@ mod metadata {
     pub const LAUNCH_API: &str = "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?format=json&mode=detailed&limit=5";
 
     /// The api route that the program uses to fetch telemetry information
-    pub const TELEMETRY_API: &str = "ws://api.launchdashboard.space";
+    // pub const TELEMETRY_API: &str = "ws://api.launchdashboard.space";
 
     /// The API where the program will get its news from
     #[cfg(debug_assertions)]
