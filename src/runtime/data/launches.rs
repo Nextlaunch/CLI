@@ -28,9 +28,8 @@ pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>) -
                                     next = launch;
                                 }
                             }
-                            _ => {
-                                let id = next.status.id.clone().unwrap();
-                                match id {
+                            x => {
+                                match x {
                                     3 | 4 | 6 | 7 => {
                                         if previous.minutes > 20 && time_remaining.minutes < 30 {
                                             next = launch;
@@ -49,7 +48,7 @@ pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>) -
                             }
                         }
                     } else {
-                        break;
+                        continue;
                     }
                 };
 

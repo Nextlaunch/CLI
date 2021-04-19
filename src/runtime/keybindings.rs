@@ -122,11 +122,15 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                                 let limit = state.lock().unwrap().launch_update_count.clone();
                                                 let mut current = state.lock().unwrap().selected_update.clone();
 
-                                                if current + 1 >= limit-1 {
-                                                    current = 0;
-                                                } else {
-                                                    current += 1;
-                                                }
+                                               if limit >= 1 {
+                                                   if current + 1 >= limit-1 {
+                                                       current = 0;
+                                                   } else {
+                                                       current += 1;
+                                                   }
+                                               } else {
+                                                   current = 0;
+                                               }
                                                 state.lock().unwrap().selected_update = current;
                                             } else {
                                                 let limit = state.lock().unwrap().news_article_count.clone();
