@@ -17,7 +17,7 @@ Simply launch the program from your terminal, or file explorer, and it will work
 For help regarding how to do things within NextLaunch itself, please press F1 when you are using the application, and it will display a helpful popup window.
 
 ## Installation
-To see how to install NextLaunch, please check the [latest release](https://github.com/fatalcenturion/NextLaunch/releases/latest)
+To see how to install NextLaunch, please check the [latest release](https://github.com/Nextlaunch/CLI/releases/latest)
 
 
 ## Why should I upgrade from V1 to V2?
