@@ -1,4 +1,5 @@
-# NextLaunch
+![Nextlaunch Logo](https://raw.githubusercontent.com/Nextlaunch/media-assets/main/Logo-red.png)
+# NextLaunch CLI
 An advanced terminal app to track upcoming launches from SpaceX, Nasa, Roscosmos, ULA, and many other organizations across the globe!
 
 ## Features
