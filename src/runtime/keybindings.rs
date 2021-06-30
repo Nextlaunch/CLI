@@ -89,7 +89,7 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                                     if current as i8 - 1 == 0 {
                                                         current = 0
                                                     } else {
-                                                        current = limit ;
+                                                        current = limit;
                                                     }
                                                 }
                                                 state.lock().unwrap().selected_article = current;
@@ -122,15 +122,15 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                                 let limit = state.lock().unwrap().launch_update_count.clone();
                                                 let mut current = state.lock().unwrap().selected_update.clone();
 
-                                               if limit >= 1 {
-                                                   if current + 1 >= limit-1 {
-                                                       current = 0;
-                                                   } else {
-                                                       current += 1;
-                                                   }
-                                               } else {
-                                                   current = 0;
-                                               }
+                                                if limit >= 1 {
+                                                    if current + 1 >= limit - 1 {
+                                                        current = 0;
+                                                    } else {
+                                                        current += 1;
+                                                    }
+                                                } else {
+                                                    current = 0;
+                                                }
                                                 state.lock().unwrap().selected_update = current;
                                             } else {
                                                 let limit = state.lock().unwrap().news_article_count.clone();
@@ -147,13 +147,13 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                     }
                                     KeyCode::Right => {
                                         if state.lock().unwrap().render_settings {
-                                            let tab = state.lock().unwrap().settings_pane.clone() as i8;
+                                            let tab = state.lock().unwrap().settings_pane.clone();
                                             state.lock().unwrap().should_clear = true;
 
                                             if tab + 1 >= 5 {
                                                 state.lock().unwrap().settings_pane = 0;
                                             } else {
-                                                state.lock().unwrap().settings_pane = (tab + 1) as u8;
+                                                state.lock().unwrap().settings_pane = tab + 1;
                                             }
                                             state.lock().unwrap().settings_selected = 0;
                                         } else {
@@ -178,11 +178,11 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                     }
                                     KeyCode::Left => {
                                         if state.lock().unwrap().render_settings {
-                                            let tab = state.lock().unwrap().settings_pane.clone() as i8;
+                                            let tab = state.lock().unwrap().settings_pane.clone();
                                             state.lock().unwrap().should_clear = true;
 
                                             if tab - 1 >= 0 {
-                                                state.lock().unwrap().settings_pane = (tab - 1) as u8;
+                                                state.lock().unwrap().settings_pane = tab - 1;
                                             } else {
                                                 state.lock().unwrap().settings_pane = 4;
                                             }
@@ -247,17 +247,17 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                                         state.lock().unwrap().render_settings = false;
                                                     }
                                                 }
-                                                // 's' => {
-                                                //     if !state.lock().unwrap().render_settings {
-                                                //         state.lock().unwrap().should_clear = true;
-                                                //         state.lock().unwrap().render_help = false;
-                                                //         state.lock().unwrap().render_settings = true;
-                                                //     } else {
-                                                //         state.lock().unwrap().should_clear = true;
-                                                //         state.lock().unwrap().render_help = false;
-                                                //         state.lock().unwrap().render_settings = false;
-                                                //     }
-                                                // }
+                                                's' => {
+                                                    if !state.lock().unwrap().render_settings {
+                                                        state.lock().unwrap().should_clear = true;
+                                                        state.lock().unwrap().render_help = false;
+                                                        state.lock().unwrap().render_settings = true;
+                                                    } else {
+                                                        state.lock().unwrap().should_clear = true;
+                                                        state.lock().unwrap().render_help = false;
+                                                        state.lock().unwrap().render_settings = false;
+                                                    }
+                                                }
                                                 'c' => {
                                                     if raw_key.modifiers.contains(KeyModifiers::CONTROL) {
                                                         let mut stdout = std::io::stdout();

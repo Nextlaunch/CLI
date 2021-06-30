@@ -17,23 +17,28 @@ pub fn countdown_news(timestamp: String) -> TimeFrame {
 }
 
 pub fn process_seconds(s: i64) -> TimeFrame {
+    dbg!(s);
     let days = s / (60 * 60 * 24);
     let hours = s % (60 * 60 * 24) / (60 * 60);
     let minutes = s % (60 * 60) / (60);
     let seconds = s % (60);
-    TimeFrame::new(seconds, minutes, hours, days, s.is_negative())
+    dbg!(s);
+    TimeFrame::new(seconds, minutes, hours, days, s, s.is_negative())
 }
 
+
+#[derive(Debug, Clone, Copy)]
 pub struct TimeFrame {
     pub seconds: u64,
     pub minutes: u64,
     pub hours: u64,
     pub days: u64,
+    pub total_seconds: u64,
     pub has_passed: bool,
 }
 
 impl TimeFrame {
-    pub fn new(s: i64, m: i64, h: i64, d: i64, has_passed: bool) -> TimeFrame {
+    pub fn new(s: i64, m: i64, h: i64, d: i64, total: i64, has_passed: bool) -> TimeFrame {
         let seconds = if s.is_negative() {
             (s * -1) as u64
         } else {
@@ -59,11 +64,18 @@ impl TimeFrame {
         };
 
 
+        let total_seconds = if total.is_negative() {
+            (total * -1) as u64
+        } else {
+            total as u64
+        };
+
         TimeFrame {
             seconds,
             minutes,
             hours,
             days,
+            total_seconds,
             has_passed,
         }
     }

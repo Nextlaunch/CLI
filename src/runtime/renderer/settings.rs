@@ -25,7 +25,7 @@ pub fn menu(f: &mut Frame<CrosstermBackend<Stdout>>, settings: &mut Config, stat
     ];
 
     for (id, text) in headers.iter_mut().enumerate() {
-        if id as u8 == state.lock().unwrap().settings_pane {
+        if id as i8 == state.lock().unwrap().settings_pane {
             text.patch_style(Style::default().fg(Color::Cyan));
         }
     }
@@ -120,7 +120,7 @@ pub fn tab_1<'a>(settings: &'a mut Config, state: &'a Arc<Mutex<State>>) -> Tabl
 
     let mut rows: Vec<Row> = vec![];
 
-    if state.lock().unwrap().settings_selected > raw_rows.len() as u8 {
+    if state.lock().unwrap().settings_selected > raw_rows.len() as i8 {
         state.lock().unwrap().settings_selected = 0;
     }
 
