@@ -237,7 +237,11 @@ pub fn import() -> Config {
                 let result = handle.write_all(defaults::DEFAULT.as_bytes());
                 if let Ok(_) = result {
                     let flushed = handle.flush();
-                    println!("Successfully wrote default configuration options to file.\n{}", cfg_path);
+                    if let Ok(_) = flushed {
+                        println!("Successfully wrote default configuration options to file.\n{}", cfg_path);
+                    } else {
+                        println!("Unable to write default configuration to file.\n{}", cfg_path);
+                    }
                 } else {
                     println!("Unable to write default configuration to file.\n{}", cfg_path);
                 }
