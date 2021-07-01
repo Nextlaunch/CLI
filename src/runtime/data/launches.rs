@@ -3,6 +3,7 @@ pub use structures::{LaunchAPI, LaunchAPIop, LaunchCache};
 
 use reqwest::Client;
 use chrono::{Utc, DateTime, Local};
+// use std::process::exit;
 
 pub mod structures;
 
@@ -21,41 +22,31 @@ pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>, t
 
                 let mut next = launch_list.first().unwrap().clone();
                 let previous = crate::utilities::countdown(next.net.clone().unwrap_or(Utc::now().to_string()));
-
-                if previous.has_passed {
-                    for launch in launch_list {
-                        let time_remaining = crate::utilities::countdown(launch.net.clone().unwrap_or(Utc::now().to_string()));
-                        if previous.has_passed {
-                            match launch.status.id.clone().unwrap() {
-                                1 => {
-                                    if time_remaining.total_seconds < (30 * 60) {
-                                        next = launch;
-                                    }
-                                }
-                                x => {
-                                    match x {
-                                        3 | 4 | 6 | 7 => {
-                                            if previous.total_seconds < (20 * 60) && time_remaining.total_seconds < (30 * 60) {
-                                                next = launch;
-                                            } else if previous.total_seconds < (30 * 60) {
-                                                next = launch;
-                                            } else if time_remaining.total_seconds < (15 * 60) {
-                                                next = launch;
-                                            } else {
-                                                continue;
-                                            }
-                                        }
-                                        _ => {
-                                            next = launch;
-                                        }
-                                    }
+                for launch in launch_list {
+                    let time_remaining = crate::utilities::countdown(launch.net.clone().unwrap_or(Utc::now().to_string()));
+                    if previous.has_passed {
+                        match launch.status.id.clone().unwrap() {
+                            1 => {
+                                if time_remaining.total_seconds < (30 * 60) {
+                                    next = launch;
                                 }
                             }
-                        } else {
-                            continue;
+                            2 | 5 | 6 | 8 => {
+                                if (previous.total_seconds > (20 * 60) && previous.has_passed) && (time_remaining.total_seconds < (30 * 60) && !time_remaining.has_passed) {
+                                    next = launch;
+                                } else if previous.total_seconds < (30 * 60) && previous.has_passed {
+                                    next = launch;
+                                } else if time_remaining.total_seconds < (15 * 60) && !time_remaining.has_passed {
+                                    next = launch;
+                                }
+                            }
+                            _ => {}
                         }
-                    };
-                }
+                    }
+                };
+                let time_remaining = crate::utilities::countdown(next.net.clone().unwrap_or(Utc::now().to_string()));
+                println!("Selecting launch - {} in {} sec (passed: {})", next.name.clone().unwrap(), time_remaining.total_seconds, time_remaining.has_passed);
+                // exit(0);
 
                 Some(next)
             } else {
