@@ -3,7 +3,7 @@ pub use metadata::*;
 // metadata
 mod metadata {
     /// The version of the application (should be in sync with `Cargo.toml`)
-    pub const VERSION: &str = "2.0.1 (Phoenix Rising)";
+    pub const VERSION: &str = "2.1.0";
 
     /// The name of the program
     pub const NAME: &str = "Nextlaunch";
