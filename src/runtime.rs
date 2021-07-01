@@ -26,8 +26,9 @@ pub async fn launch(f: Flags, cfg: Config) {
     match f.view {
         // 1 => launch_json().await,
         _ => {
-            if cfg.token.len() > 0 {
-                launch_main(cfg, cfg.token.clone()).await
+            if cfg.saved.api_token.len() > 0 {
+                let token = cfg.saved.api_token.clone();
+                launch_main(cfg, token).await
             } else {
                 launch_main(cfg, f.token).await
             }
@@ -170,9 +171,16 @@ pub async fn launch_main(mut cfg: Config, token: String) {
         }
 
 
-        if last.elapsed().as_secs() > cfg.saved.cache_update_frequency.clone() as u64 {
-            last = Instant::now();
-            needs_refresh = true;
+        if token.len() > 0 {
+            if last.elapsed().as_secs() > cfg.saved.cache_update_frequency.clone() as u64 {
+                last = Instant::now();
+                needs_refresh = true;
+            }
+        } else {
+            if last.elapsed().as_secs() > 600 as u64 {
+                last = Instant::now();
+                needs_refresh = true;
+            }
         }
 
         tokio::time::sleep(Duration::from_millis(100)).await;
