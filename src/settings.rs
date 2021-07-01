@@ -1,5 +1,6 @@
 use serde::{Serialize, Deserialize};
 use tui::style::{Style, Color, Modifier};
+use std::io::Write;
 
 pub struct Config {
     pub unsaved: SubConfig,
@@ -213,26 +214,41 @@ pub fn compute_style(raw: &RawStyle) -> Style {
 pub mod defaults;
 
 pub fn import() -> Config {
+    let root = dirs_2::data_dir().unwrap();
+    let cfg_folder = format!("{}/nextlaunch", root.to_str().unwrap());
+    let cfg_path = format!("{}/config.json", cfg_folder);
+    println!("Reading config file");
+    println!("{}", cfg_path);
+    let raw_file = std::fs::OpenOptions::new().read(true).open(cfg_path.clone());
+    let raw: SubConfig = if let Ok(file) = raw_file {
+        let parsed: serde_json::Result<SubConfig> = serde_json::from_reader(file);
 
-
-    // let root = dirs_2::data_dir().unwrap();
-    // let cfg_path = format!("{}/nextlaunch/config.json", root.to_str().unwrap());
-    // println!("Reading config file");
-    // println!("{}", cfg_path);
-    // let raw_file = std::fs::OpenOptions::new().read(true).open(cfg_path);
-    //
-    let raw: SubConfig = //if let Ok(file) = raw_file {
-        //     let parsed: serde_json::Result<SubConfig> = serde_json::from_reader(file);
-        //
-        //     if let Ok(done) = parsed {
-        //         done
-        //     } else {
-        //         serde_json::from_str(defaults::DEFAULT).unwrap()
-        //     }
-        // } else {
-        //     println!("Nextlaunch failed to open the configuration file, resorting to defaults");
-        serde_json::from_str(defaults::DEFAULT).unwrap();
-    // };
+        if let Ok(done) = parsed {
+            done
+        } else {
+            serde_json::from_str(defaults::DEFAULT).unwrap()
+        }
+    } else {
+        println!("Nextlaunch failed to open the configuration file, resorting to defaults and writing new config file");
+        let directory = std::fs::create_dir_all(cfg_folder);
+        if let Ok(_) = directory {
+            let file_handle = std::fs::OpenOptions::new().write(true).create(true).read(false).open(cfg_path.clone());
+            if let Ok(mut handle) = file_handle {
+                let result = handle.write_all(defaults::DEFAULT.as_bytes());
+                if let Ok(_) = result {
+                    let flushed = handle.flush();
+                    println!("Successfully wrote default configuration options to file.\n{}", cfg_path);
+                } else {
+                    println!("Unable to write default configuration to file.\n{}", cfg_path);
+                }
+            } else {
+                println!("Unable to obtain handle on configuration file.");
+            }
+        } else {
+            println!("Unable to write default configuration to file.\n{}", cfg_path);
+        }
+        serde_json::from_str(defaults::DEFAULT).unwrap()
+    };
 
     Config {
         unsaved: raw.clone(),
