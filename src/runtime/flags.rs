@@ -9,25 +9,35 @@ pub async fn check_flags() -> Flags {
         help: false,
         version: false,
         credits: false,
+        token: "".to_string(),
     };
 
+
+    let mut watching_token: bool = false;
     for arg in args {
-        match arg.to_lowercase().as_str() {
-            "--version" | "-v" => {
-                flags.version = true;
-            }
-            // "--json" => {
-            //     flags.view = 1;
-            // }
-            "--help" | "-h" => {
-                flags.help = true
-            }
-            "--credits" | "-c" => {
-                flags.credits = true;
-            }
-            _ => {
-                if arg.starts_with("-") {
-                    println!(r#"Unknown flag: "{}""#, arg)
+        if watching_token {
+            flags.token = arg.clone();
+        } else {
+            match arg.to_lowercase().as_str() {
+                "--version" | "-v" => {
+                    flags.version = true;
+                }
+                // "--json" => {
+                //     flags.view = 1;
+                // }
+                "--help" | "-h" => {
+                    flags.help = true
+                }
+                "--credits" | "-c" => {
+                    flags.credits = true;
+                }
+                "--token" | "-t" => {
+                    watching_token = true;
+                }
+                _ => {
+                    if arg.starts_with("-") {
+                        println!(r#"Unknown flag: "{}""#, arg)
+                    }
                 }
             }
         }
@@ -41,6 +51,7 @@ pub struct Flags {
     pub help: bool,
     pub version: bool,
     pub credits: bool,
+    pub token: String,
 }
 
 

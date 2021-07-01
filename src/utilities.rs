@@ -17,12 +17,10 @@ pub fn countdown_news(timestamp: String) -> TimeFrame {
 }
 
 pub fn process_seconds(s: i64) -> TimeFrame {
-    dbg!(s);
     let days = s / (60 * 60 * 24);
     let hours = s % (60 * 60 * 24) / (60 * 60);
     let minutes = s % (60 * 60) / (60);
     let seconds = s % (60);
-    dbg!(s);
     TimeFrame::new(seconds, minutes, hours, days, s, s.is_negative())
 }
 

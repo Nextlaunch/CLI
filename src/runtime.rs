@@ -25,11 +25,11 @@ pub mod keybindings;
 pub async fn launch(f: Flags, cfg: Config) {
     match f.view {
         // 1 => launch_json().await,
-        _ => launch_main(cfg).await,
+        _ => launch_main(cfg, f.token).await,
     }
 }
 
-pub async fn launch_main(mut cfg: Config) {
+pub async fn launch_main(mut cfg: Config, token: String) {
     let _ = crossterm::terminal::enable_raw_mode();
 
 
@@ -42,8 +42,6 @@ pub async fn launch_main(mut cfg: Config) {
     std::thread::Builder::new().name("Keybinder".to_string()).spawn(move || {
         keybinder(state2)
     }).unwrap();
-
-    println!("Made it to the runtime");
 
     renderer::process(
         &language,
@@ -68,7 +66,7 @@ pub async fn launch_main(mut cfg: Config) {
 
     let mut log: Vec<(DateTime<Local>, String, u8)> = vec![];
 
-    let mut launch: Option<Launch> = update(&client, &mut log).await;
+    let mut launch: Option<Launch> = update(&client, &mut log, token.clone()).await;
     let mut news: Option<Vec<Article>> = news_update(&client, &mut log).await;
 
     if launch.is_some() && news.is_some() {
@@ -81,7 +79,7 @@ pub async fn launch_main(mut cfg: Config) {
 
     let mut needs_refresh = false;
 
-    for _ in 0..50 {
+    for _ in 0..h {
         println!();
     }
 
@@ -106,7 +104,7 @@ pub async fn launch_main(mut cfg: Config) {
         refresh_cycle += 1;
 
         if needs_refresh {
-            let temp_launch = update(&client, &mut log).await;
+            let temp_launch = update(&client, &mut log, token.clone()).await;
             let temp_news = news_update(&client, &mut log).await;
             if temp_launch.is_some() {
                 let tpl = temp_launch.clone().unwrap();
@@ -166,9 +164,16 @@ pub async fn launch_main(mut cfg: Config) {
         }
 
 
-        if last.elapsed().as_secs() > cfg.saved.cache_update_frequency.clone() as u64 {
-            last = Instant::now();
-            needs_refresh = true;
+        if token.len() > 0 {
+            if last.elapsed().as_secs() > 300 as u64 {
+                last = Instant::now();
+                needs_refresh = true;
+            }
+        } else {
+            if last.elapsed().as_secs() > cfg.saved.cache_update_frequency.clone() as u64 {
+                last = Instant::now();
+                needs_refresh = true;
+            }
         }
 
         tokio::time::sleep(Duration::from_millis(100)).await;

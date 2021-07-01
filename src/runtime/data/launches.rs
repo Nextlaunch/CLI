@@ -6,8 +6,12 @@ use chrono::{Utc, DateTime, Local};
 
 pub mod structures;
 
-pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>) -> Option<structures::Launch> {
-    let req = c.get(crate::constants::LAUNCH_API).send().await;
+pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>, token: String) -> Option<structures::Launch> {
+    let req = if token.len() == 0 {
+        c.get(crate::constants::LAUNCH_API).send().await
+    } else {
+        c.get(crate::constants::LAUNCH_API).header("Authorization", format!("Token {}", token)).send().await
+    };
 
     return if let Ok(resp) = req {
         let raw_launch: reqwest::Result<structures::LaunchResponse> = resp.json().await;
@@ -18,38 +22,40 @@ pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>) -
                 let mut next = launch_list.first().unwrap().clone();
                 let previous = crate::utilities::countdown(next.net.clone().unwrap_or(Utc::now().to_string()));
 
-                for launch in launch_list {
-                    let time_remaining = crate::utilities::countdown(launch.net.clone().unwrap_or(Utc::now().to_string()));
-                    if previous.has_passed {
-                        match launch.status.id.clone().unwrap() {
-                            1 => {
-                                if time_remaining.total_seconds < 30 * 60 {
-                                    next = launch;
-                                }
-                            }
-                            x => {
-                                match x {
-                                    3 | 4 | 6 | 7 => {
-                                        if previous.minutes > 20 && time_remaining.total_seconds < 30 * 60 {
-                                            next = launch;
-                                        } else if previous.minutes > 30 {
-                                            next = launch;
-                                        } else if time_remaining.total_seconds < 15 * 60 {
-                                            next = launch;
-                                        } else {
-                                            continue;
-                                        }
-                                    }
-                                    _ => {
+                if previous.has_passed {
+                    for launch in launch_list {
+                        let time_remaining = crate::utilities::countdown(launch.net.clone().unwrap_or(Utc::now().to_string()));
+                        if previous.has_passed {
+                            match launch.status.id.clone().unwrap() {
+                                1 => {
+                                    if time_remaining.total_seconds < (30 * 60) {
                                         next = launch;
                                     }
                                 }
+                                x => {
+                                    match x {
+                                        3 | 4 | 6 | 7 => {
+                                            if previous.total_seconds < (20 * 60) && time_remaining.total_seconds < (30 * 60) {
+                                                next = launch;
+                                            } else if previous.total_seconds < (30 * 60) {
+                                                next = launch;
+                                            } else if time_remaining.total_seconds < (15 * 60) {
+                                                next = launch;
+                                            } else {
+                                                continue;
+                                            }
+                                        }
+                                        _ => {
+                                            next = launch;
+                                        }
+                                    }
+                                }
                             }
+                        } else {
+                            continue;
                         }
-                    } else {
-                        continue;
-                    }
-                };
+                    };
+                }
 
                 Some(next)
             } else {

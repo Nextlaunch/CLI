@@ -18,7 +18,7 @@ mod metadata {
     // data
     /// The api route that the program uses to fetch launch data
     #[cfg(debug_assertions)]
-    pub const LAUNCH_API: &str = "https://lldev.thespacedevs.com/2.2.0/launch/upcoming/?format=json&mode=detailed&limit=5&no_recent_previous=true";
+    pub const LAUNCH_API: &str = "https://lldev.thespacedevs.com/2.2.0/launch/upcoming/?format=json&mode=detailed&limit=5";
     #[cfg(not(debug_assertions))]
     pub const LAUNCH_API: &str = "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?format=json&mode=detailed&limit=5";
 
