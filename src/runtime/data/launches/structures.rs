@@ -193,7 +193,7 @@ pub struct Program {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Article {
-    pub id: Option<String>,
+    pub id: Option<usize>,
     pub title: Option<String>,
     #[serde(rename = "publishedAt")]
     pub published_at: Option<String>,
