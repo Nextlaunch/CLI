@@ -85,13 +85,27 @@ pub fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
 }
 
 pub fn render_help_menu(f: &mut Frame<CrosstermBackend<Stdout>>) {
-    let area = centered_rect(50, 80, f.size());
+    let area = centered_rect(75, 100, f.size());
     f.render_widget(Blank, area);
 
     let help_menu = Table::new(vec![
+        Row::new(vec![Text::styled(" Debug Information", Style::default().fg(Color::Magenta)), Text::raw("")]),
+        Row::new(vec![" Version".to_string(), format!("{}", crate::VERSION)]),
+        Row::new(vec![" Author".to_string(), format!("{}", crate::AUTHOR)]),
+        Row::new(vec!["", ""]),
+        Row::new(vec![Text::styled(" Data Providers", Style::default().fg(Color::Magenta)), Text::raw("")]),
+        Row::new(vec![" Launches", "The Space Devs"]),
+        Row::new(vec![" ", "<thespacedevs.com>"]),
+        Row::new(vec![" News", "Spaceflight News API (SNAPI)"]),
+        Row::new(vec!["", "<spaceflightnewsapi.net>"]),
+        Row::new(vec!["", ""]),
+        Row::new(vec![" Toggle Help", "F1"]),
+        Row::new(vec![" Toggle Help", "F1"]),
         Row::new(vec![Text::styled(" General Commands", Style::default().fg(Color::Magenta)), Text::raw("")]),
         Row::new(vec![" Toggle Help", "F1"]),
         Row::new(vec![" Toggle Help", "?"]),
+        Row::new(vec![" Update Cache", "F5"]),
+        Row::new(vec![" Toggle Settings", "S"]),
         Row::new(vec![" Exit", "Q"]),
         Row::new(vec![" Exit", "CTRL+C"]),
         Row::new(vec!["", ""]),
@@ -105,7 +119,7 @@ pub fn render_help_menu(f: &mut Frame<CrosstermBackend<Stdout>>) {
     ])
         .widths(&[
             Constraint::Percentage(50),
-            Constraint::Percentage(50)
+            Constraint::Percentage(80)
         ])
         .header(
             Row::new(vec![" Command", "Key Binding"])

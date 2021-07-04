@@ -44,7 +44,7 @@ pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>, t
                         }
                     }
                 };
-                let time_remaining = crate::utilities::countdown(next.net.clone().unwrap_or(Utc::now().to_string()));
+                // let time_remaining = crate::utilities::countdown(next.net.clone().unwrap_or(Utc::now().to_string()));
                 // println!("Selecting launch - {} in {} sec (passed: {})", next.name.clone().unwrap(), time_remaining.total_seconds, time_remaining.has_passed);
                 // exit(0);
 
