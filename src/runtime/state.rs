@@ -15,6 +15,7 @@ pub struct State {
     pub editing_settings: bool,
     pub stored_value: Vec<char>,
     pub save_stored: bool,
+    pub needs_update: bool,
 }
 
 impl State {
@@ -34,7 +35,8 @@ impl State {
             news_article_count: 0,
             editing_settings: false,
             stored_value: vec![],
-            save_stored: false
+            save_stored: false,
+            needs_update: false,
         }
     }
 }

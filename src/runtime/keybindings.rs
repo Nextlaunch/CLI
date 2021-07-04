@@ -220,6 +220,7 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                                     state.lock().unwrap().render_settings = false;
                                                 }
                                             }
+                                            5 => state.lock().unwrap().needs_update = true,
                                             _ => {}
                                         }
                                     }

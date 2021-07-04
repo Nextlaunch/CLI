@@ -110,7 +110,8 @@ pub async fn launch_main(mut cfg: Config, token: String) {
     loop {
         refresh_cycle += 1;
 
-        if needs_refresh {
+        if needs_refresh || state.lock().unwrap().needs_update {
+            state.lock().unwrap().needs_update = false;
             let temp_launch = update(&client, &mut log, token.clone()).await;
             let temp_news = news_update(&client, &mut log).await;
             if temp_launch.is_some() {
@@ -170,13 +171,13 @@ pub async fn launch_main(mut cfg: Config, token: String) {
             log.pop();
         }
 
-
         if token.len() > 0 {
             if last.elapsed().as_secs() > cfg.saved.cache_update_frequency.clone() as u64 {
                 last = Instant::now();
                 needs_refresh = true;
             }
         } else {
+            state.lock().unwrap().needs_update = false;
             if last.elapsed().as_secs() > 600 as u64 {
                 last = Instant::now();
                 needs_refresh = true;
