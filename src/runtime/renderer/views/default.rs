@@ -143,7 +143,13 @@ pub fn run(
 
             // Render dynamic launch update widget ("Updates")
             f.render_widget(Clear, left[1]);
-            f.render_widget(widgets::launch_updates::render_list(&mut state, launch.clone()), left[1]);
+            if state.show_stats { 
+                f.render_widget(Clear, left[1]);
+                f.render_widget(widgets::lsp_stats::render_list(&mut state, launch.clone()), left[1]);
+            } else {
+                f.render_widget(Clear, left[1]);
+                f.render_widget(widgets::launch_updates::render_list(&mut state, launch.clone()), left[1]);
+            }
 
             if state.render_help {
                 render_help_menu(f);

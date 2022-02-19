@@ -177,12 +177,11 @@ pub fn tab_2<'a>(settings: &'a mut Config, _state: &'a Arc<Mutex<State>>) -> Tab
         ])
         .block(Block::default().borders(Borders::ALL))
 }
-//
-//
-// fn capitalize(s: &str) -> String {
-//     let mut c = s.chars();
-//     match c.next() {
-//         None => String::new(),
-//         Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
-//     }
-// }
+
+fn capitalize(s: &str) -> String {
+    let mut c = s.chars();
+    match c.next() {
+        None => String::new(),
+        Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
+    }
+}

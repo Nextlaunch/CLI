@@ -15,7 +15,7 @@ pub fn render_list(state: &mut State, launch: Launch) -> Paragraph<'static> {
     for update in launch.updates.unwrap_or(vec![]) {
         if update_index <= 2 {
             let timespan = countdown(update.created_on.unwrap_or(Utc::now().to_string()));
-            let untitle = update.comment.unwrap_or("Comment not found".to_string());
+            let untitled = update.comment.unwrap_or("Comment not found".to_string());
 
             let timestr = if timespan.days > 0 {
                 if timespan.days > 1 || timespan.days == 0 {
@@ -63,19 +63,19 @@ pub fn render_list(state: &mut State, launch: Launch) -> Paragraph<'static> {
                 updates.push(Spans::from(vec![
                     Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
                     Span::raw(" - "),
-                    Span::styled(untitle, Style::default().fg(Color::Cyan))
+                    Span::styled(untitled, Style::default().fg(Color::Cyan))
                 ]));
                 // } else if side == 1 && update_index == selected_update {
                 //     updates.push(Spans::from(vec![
                 //         Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
                 //         Span::raw(" - "),
-                //         Span::styled(untitle, Style::default().fg(Color::Magenta))
+                //         Span::styled(untitled, Style::default().fg(Color::Magenta))
                 //     ]));
             } else {
                 updates.push(Spans::from(vec![
                     Span::styled(format!(" {}", update.created_by.unwrap_or("Unknown author".to_string())), Style::default().fg(Color::Magenta)),
                     Span::raw(" - "),
-                    Span::raw(untitle)
+                    Span::raw(untitled)
                 ]));
             }
             update_index += 1;
