@@ -4,3 +4,4 @@ pub mod lsp_stats;
 pub mod system_logs;
 pub mod countdown;
 pub mod news_articles;
+pub mod logo;

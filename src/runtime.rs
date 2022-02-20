@@ -1,4 +1,5 @@
 use std::sync::{Arc, Mutex};
+use std::io::{Write, Read};
 
 use crate::runtime::data::launches::structures::{Launch, Article};
 use crate::runtime::data::launches::{update, news_update};
@@ -72,10 +73,9 @@ pub async fn launch_main(mut cfg: Config, token: String) {
     };
 
     let mut log: Vec<(DateTime<Local>, String, u8)> = vec![];
-
+    let mut image_path = String::new();
     let mut launch: Option<Launch> = update(&client, &mut log, token.clone()).await;
     let mut news: Option<Vec<Article>> = news_update(&client, &mut log).await;
-
     if launch.is_some() && news.is_some() {
         log.push((Local::now(), "updated launch and news caches".to_string(), 0));
     } else if launch.is_some() && news.is_none() {
@@ -95,9 +95,27 @@ pub async fn launch_main(mut cfg: Config, token: String) {
 
 
     if launch.is_some() {
-        let tpl = launch.clone().unwrap();
+        let mut tpl = launch.clone().unwrap();
         state.lock().unwrap().should_clear = true;
-        state.lock().unwrap().launch_update_count = tpl.updates.unwrap_or(vec![]).len() as i8;
+        state.lock().unwrap().launch_update_count = tpl.updates.clone().unwrap_or(vec![]).len() as i8;
+        image_path = renderer::views::parse_path(launch.clone());
+        let raw = client.get(renderer::views::agency_logo(tpl.launch_service_provider.clone().unwrap().id.unwrap())).send().await;
+        let raw_image = if let Ok(resp) = raw {
+            resp.bytes().await.unwrap()
+        } else {
+            bytes::Bytes::new()
+        };
+        if std::fs::File::open(image_path.as_str()).is_err() {
+            let mut file = std::fs::File::create(image_path.as_str()).unwrap();
+            file.write(raw_image.as_ref()).unwrap();
+        } else {
+            std::fs::remove_file(image_path.as_str()).unwrap();
+            let mut file = std::fs::File::create(image_path.as_str()).unwrap();
+            file.write(raw_image.as_ref()).unwrap();
+        }
+        let img = renderer::views::process_image(image_path.as_str(), tpl.clone());
+        tpl.set_logo(img); 
+        launch = Some(tpl);
     }
 
     if news.is_some() {
@@ -115,10 +133,27 @@ pub async fn launch_main(mut cfg: Config, token: String) {
             let temp_launch = update(&client, &mut log, token.clone()).await;
             let temp_news = news_update(&client, &mut log).await;
             if temp_launch.is_some() {
-                let tpl = temp_launch.clone().unwrap();
+                let mut tpl = temp_launch.clone().unwrap();
                 state.lock().unwrap().should_clear = true;
-                state.lock().unwrap().launch_update_count = tpl.updates.unwrap_or(vec![]).len() as i8;
-                launch = temp_launch;
+                state.lock().unwrap().launch_update_count = tpl.updates.clone().unwrap_or(vec![]).len() as i8;
+                image_path = renderer::views::parse_path(launch.clone());
+                let raw = client.get(renderer::views::agency_logo(tpl.launch_service_provider.clone().unwrap().id.unwrap())).send().await;
+                let raw_image = if let Ok(resp) = raw {
+                    resp.bytes().await.unwrap()
+                } else {
+                    bytes::Bytes::new()
+                };
+                if std::fs::File::open(image_path.as_str()).is_err() {
+                    let mut file = std::fs::File::create(image_path.as_str()).unwrap();
+                    file.write(raw_image.as_ref()).unwrap();
+                } else {
+                    std::fs::remove_file(image_path.as_str()).unwrap();
+                    let mut file = std::fs::File::create(image_path.as_str()).unwrap();
+                    file.write(raw_image.as_ref()).unwrap();
+                }
+                let img = renderer::views::process_image(image_path.as_str(), tpl.clone());
+                tpl.set_logo(img); 
+                launch = Some(tpl);
             }
             if temp_news.is_some() {
                 let tpn = temp_news.clone().unwrap();

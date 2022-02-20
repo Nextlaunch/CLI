@@ -227,7 +227,7 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                             }
                                             3 => {
                                                 let x = state.lock().unwrap().show_logo.clone();
-                                                state.lock().unwrap().should_clear = !x;
+                                                state.lock().unwrap().show_logo = !x;
                                                 state.lock().unwrap().should_clear = true;
                                             }
                                             5 => state.lock().unwrap().needs_update = true,
