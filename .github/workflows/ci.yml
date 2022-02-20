@@ -1,4 +1,4 @@
-name: Rust
+name: CI
 
 env:
   CARGO_TERM_COLOR: always
