@@ -35,15 +35,5 @@ tui = { version = "0.14.0", default-features = false, features = ["crossterm"] }
 term_size = "0.3.2"
 webbrowser = { git = "https://github.com/codota/webbrowser-rs", branch = "feature/add-suppress-output-flag-with-docs" }
 dirs-2 = "3.0.1"
-
-[target.aarch64-linux-android.dependencies]
-reqwest = { version = "0.11.0", default-features = false, features = ["serde_json", "json", "rustls-tls"] }
-
-[target.aarch64-linux-android.build-dependencies]
-reqwest = { version = "0.11.0", default-features = false, features = ["serde_json", "json", "rustls-tls"] }
-
-#[build-dependencies]
-#serde = { version = "1.0.123", features = ["derive"] }
-#reqwest = { version = "0.11.0", features = ["serde_json", "json", "blocking"] }
-#dirs-2 = "3.0.1"
-#zip = "0.5.11"
+image = "0.14.0"
+bytes = "1.1.0"

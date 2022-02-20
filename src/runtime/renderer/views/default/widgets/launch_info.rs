@@ -85,6 +85,7 @@ pub fn render_dynamic(launch: Launch) -> Table<'static> {
         successful_landings: None,
         failed_landings: None,
         attempted_landings: None,
+        logo: None
     });
 
     let launchpad = launch.pad.unwrap_or(LaunchPad {

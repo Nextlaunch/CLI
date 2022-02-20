@@ -17,6 +17,7 @@ pub struct State {
     pub stored_value: Vec<char>,
     pub save_stored: bool,
     pub needs_update: bool,
+    pub show_logo: bool
 }
 
 impl State {
@@ -39,6 +40,7 @@ impl State {
             stored_value: vec![],
             save_stored: false,
             needs_update: false,
+            show_logo: false,
         }
     }
 }

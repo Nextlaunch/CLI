@@ -139,15 +139,18 @@ pub fn run(
 
             // Render dynamic news widget ("News")
             f.render_widget(Clear, right_status[0]);
-            f.render_widget(widgets::news_articles::render(&mut state, news_dimensions, news.clone().unwrap_or(vec![])), right_status[0]);
+            if state.show_logo {
+                f.render_widget(widgets::logo::render(&mut state, news_dimensions, launch.clone()), right_status[0]);
+            } else {
+                f.render_widget(widgets::news_articles::render(&mut state, news_dimensions, news.clone().unwrap_or(vec![])), right_status[0]);
+            
+            }
 
             // Render dynamic launch update widget ("Updates")
             f.render_widget(Clear, left[1]);
             if state.show_stats { 
-                f.render_widget(Clear, left[1]);
                 f.render_widget(widgets::lsp_stats::render_list(&mut state, launch.clone()), left[1]);
             } else {
-                f.render_widget(Clear, left[1]);
                 f.render_widget(widgets::launch_updates::render_list(&mut state, launch.clone()), left[1]);
             }
 

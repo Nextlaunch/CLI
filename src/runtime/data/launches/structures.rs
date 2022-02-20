@@ -44,6 +44,7 @@ pub struct Launch {
     pub window_start: Option<String>,
     pub inhold: Option<bool>,
     pub tbdtime: Option<bool>,
+    pub raw_image: Option<String>,
     pub tbddate: Option<bool>,
     pub probability: Option<isize>,
     pub holdreason: Option<String>,
@@ -65,6 +66,14 @@ pub struct Launch {
     pub agency_launch_attempt_count_year: Option<isize>,
 }
 
+impl Launch {
+    pub fn set_logo(&mut self, logo: Vec<String>) {
+        let mut x = self.launch_service_provider.clone().unwrap();
+        x.logo = Some(logo);
+        self.launch_service_provider = Some(x);
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Update {
     pub id: Option<usize>,
@@ -80,6 +89,7 @@ pub struct LSP {
     pub id: Option<isize>,
     pub name: Option<String>,
     pub features: Option<bool>,
+    pub logo: Option<Vec<String>>,
     #[serde(rename = "type")]
     pub org: Option<String>,
     pub country_code: Option<String>,
