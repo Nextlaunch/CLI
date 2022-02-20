@@ -11,7 +11,6 @@ use tui::backend::CrosstermBackend;
 use tui::layout::{Layout, Direction, Constraint};
 use tui::widgets::Clear;
 
-
 use chrono::{Utc, DateTime, Local};
 
 
