@@ -2,6 +2,7 @@ use tui::widgets::{Borders, Block, Paragraph, Table, Row};
 use tui::text::Text;
 use tui::style::{Style, Modifier, Color};
 use tui::layout::Constraint;
+use crate::languages::LanguagePack;
 use crate::runtime::data::launches::structures::{Launch, PadLocation, LaunchPad, LSP, RocketConfiguration, Rocket};
 
 pub fn render_missing() -> Paragraph<'static> {
@@ -17,20 +18,20 @@ pub fn render_missing() -> Paragraph<'static> {
         )
 }
 
-pub fn render_dynamic(launch: Launch) -> Table<'static> {
-    let suc = Text::styled("Launch Successful", Style::default().fg(Color::LightGreen));
-    let tbd = Text::styled("To Be Determined", Style::default().fg(Color::Yellow));
-    let tbc = Text::styled("To Be Confirmed", Style::default().fg(Color::LightYellow));
-    let paf = Text::styled("Partial Failure", Style::default().fg(Color::LightYellow));
-    let fal = Text::styled("Launch Failure", Style::default().fg(Color::Red));
-    let g4l = Text::styled("Go For Launch", Style::default().fg(Color::Green));
-    let inf = Text::styled("In Flight", Style::default().fg(Color::LightGreen));
-    let hol = Text::styled("On Hold", Style::default().fg(Color::Gray));
-    let fetching = Text::raw("Fetching...");
+pub fn render_dynamic(language: &LanguagePack, launch: Launch) -> Table<'static> {
+    let suc = Text::styled(language.launch.status.success, Style::default().fg(Color::LightGreen));
+    let tbd = Text::styled(language.launch.status.to_be_determined, Style::default().fg(Color::Yellow));
+    let tbc = Text::styled(language.launch.status.to_be_confirmed, Style::default().fg(Color::LightYellow));
+    let paf = Text::styled(language.launch.status.partial_failure, Style::default().fg(Color::LightYellow));
+    let fal = Text::styled(language.launch.status.failure, Style::default().fg(Color::Red));
+    let g4l = Text::styled(language.launch.status.go_for_liftoff, Style::default().fg(Color::Green));
+    let inf = Text::styled(language.launch.status.in_flight, Style::default().fg(Color::LightGreen));
+    let hol = Text::styled(language.launch.status.on_hold, Style::default().fg(Color::Gray));
+    let fetching = Text::raw(format!("{}...", language.launch.status.fetching));
 
-    let raw_name = launch.name.clone().unwrap_or("Unknown Launch | Unknown Mission".to_string());
+    let raw_name = launch.name.clone().unwrap_or(format!("{} | {}", language.launch.unknown_launch, language.launch.unknown_mission));
     let pieces: Vec<&str> = raw_name.split(" | ").collect();
-    let mission = pieces.last().unwrap_or(&"Unknown Mission").to_string();
+    let mission = pieces.last().unwrap_or(&format!("{}", language.launch.unknown_mission).as_str()).to_string();
 
     let vehicle = launch.rocket.clone().unwrap_or(Rocket {
         id: None,
@@ -122,17 +123,17 @@ pub fn render_dynamic(launch: Launch) -> Table<'static> {
     };
 
     Table::new(vec![
-        Row::new(vec![Text::from(" Name"), Text::styled(launch.name.unwrap_or("Unknown Launch | Unknown Mission".to_string()), Style::default().add_modifier(Modifier::UNDERLINED))]),
-        Row::new(vec![" Provider".to_string(), lsp.name.unwrap_or("Unknown Provider".to_string())]),
-        Row::new(vec![" Vehicle".to_string(), vehicle.name.unwrap_or("Unknown Launch Vehicle".to_string())]),
-        Row::new(vec![" Mission".to_string(), mission.clone()]),
-        Row::new(vec![" Pad".to_string(), launchpad.name.unwrap_or("Unkown Launchpad".to_string())]),
-        Row::new(vec![" Location".to_string(), launchpad.location.name.unwrap_or("Unkown Location".to_string())]),
-        Row::new(vec![Text::from(" Status"), status]),
+        Row::new(vec![Text::from(format!(" {}", language.launch.name)), Text::styled(launch.name.unwrap_or("Unknown Launch | Unknown Mission".to_string()), Style::default().add_modifier(Modifier::UNDERLINED))]),
+        Row::new(vec![format!(" {}", language.launch.provider), lsp.name.unwrap_or("Unknown Provider".to_string())]),
+        Row::new(vec![format!(" {}", language.launch.vehicle), vehicle.name.unwrap_or("Unknown Launch Vehicle".to_string())]),
+        Row::new(vec![format!(" {}", language.launch.mission), mission.clone()]),
+        Row::new(vec![format!(" {}", language.launch.pad), launchpad.name.unwrap_or("Unkown Launchpad".to_string())]),
+        Row::new(vec![format!(" {}", language.launch.location), launchpad.location.name.unwrap_or("Unkown Location".to_string())]),
+        Row::new(vec![Text::from(format!(" {}", language.launch.status.name)), status]),
     ])
         .widths(&[
             Constraint::Min(10),
             Constraint::Min(45)
         ])
-        .block(Block::default().title(" Launch Info ").borders(Borders::ALL))
+        .block(Block::default().title(format!(" {} ", language.titles.launch)).borders(Borders::ALL))
 }

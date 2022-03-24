@@ -37,6 +37,7 @@ pub struct LaunchResponse {
 pub struct Launch {
     pub id: Option<String>,
     pub name: Option<String>,
+    pub slug: Option<String>,
     pub status: Status,
     pub updates: Option<Vec<Update>>,
     pub net: Option<String>,

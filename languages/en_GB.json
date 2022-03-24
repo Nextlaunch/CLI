@@ -1,10 +1,6 @@
 {
   "names": [
-    "english",
-    "english (uk)",
-    "en",
-    "en-gb",
-    "en-us"
+    "en-GB"
   ],
   "time": {
     "year": "year",
@@ -28,6 +24,7 @@
     "pad": "Pad",
     "location": "Location",
     "status": {
+      "name": "Status",
       "success": "Success",
       "to_be_determined": "To Be Determined",
       "to_be_confirmed": "To Be Confirmed",
@@ -36,8 +33,10 @@
       "go_for_liftoff": "Go For Liftoff",
       "in_flight": "In Flight",
       "on_hold": "On Hold",
-      "fetching": "Fetching..."
-    }
+      "fetching": "Fetching"
+    },
+    "unknown_mission": "Unknown Mission",
+    "unknown_vehicle": "Unknown Vehicle"
   },
   "titles": {
     "launch": "Launch Info",

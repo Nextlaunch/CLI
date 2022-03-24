@@ -1,9 +1,6 @@
 {
   "names": [
-    "deutsch",
-    "deutsch (de)",
-    "de",
-    "de-de"
+    "de-DE"
   ],
   "time": {
     "year": "jahr",
@@ -27,6 +24,7 @@
     "pad": "Pad",
     "location": "Ort",
     "status": {
+      "name": "Status",
       "success": "Erfolg",
       "to_be_determined": "Bestimmt werden",
       "to_be_confirmed": "Noch zu bestätigen",
@@ -36,7 +34,9 @@
       "in_flight": "Im Flug",
       "on_hold": "In Wartestellung",
       "fetching": "Holen..."
-    }
+    },
+    "unknown_mission": "Unknown Mission",
+    "unknown_vehicle": "Unknown Vehicle"
   },
   "titles": {
     "launch": "Launch Info",

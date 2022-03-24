@@ -74,7 +74,7 @@ impl Display {
     }
 }
 
-pub fn process_image(path: &str, launch: Launch) -> Vec<String> {
+pub fn process_image(path: &str, _launch: Launch) -> Vec<String> {
     let img = match image::open(path) {
         Ok(image) => image.to_luma(),
         Err(err) => {
@@ -118,8 +118,8 @@ pub fn parse_path(previous: Option<Launch>) -> String {
         x.raw_image = Some(source.clone());
     }
 
-    let mut components: Vec<&str> = source.split(".").collect();
-    let mut extension: String = components.last().unwrap().clone().to_string();
+    let components: Vec<&str> = source.split(".").collect();
+    let extension: String = components.last().unwrap().clone().to_string();
 
     let tree = tmp_dir.split("\\").collect::<Vec<&str>>();
 
@@ -152,7 +152,7 @@ pub fn agency_logo(id: isize) -> &'static str {
         118 => "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/logo/international2520launch2520services_logo_20200714154120.png",
         121 => "https://dehayf5mhw1h7.cloudfront.net/wp-content/uploads/sites/1028/2020/05/30143403/Space-X.jpg",
         124 => "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/logo/united2520launch2520alliance_logo_20190223000119.png",
-        141 => "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/logo/blue2520origin_logo_20190207032427.png",
+        141 => "https://i0.wp.com/logotaglines.com/wp-content/uploads/2021/06/Blue-Origin-Logo-slogan-tagline-founder-owner-motto.jpg",
         147 => "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/logo/rocket2520lab2520ltd_logo_20190207032456.png",
         178 => "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/logo/airbus2520defence2520and2520space_logo_20190207032423.png",
         179 => "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/logo/orbital2520atk_logo_20190207032453.png",

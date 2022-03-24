@@ -1,13 +1,10 @@
 use crate::runtime::data::launches::structures::Launch;
 use tui::widgets::{Paragraph, Borders, Block};
 use tui::text::{Spans, Span};
-use crate::utilities::countdown;
-use chrono::Utc;
-use webbrowser::BrowserOptions;
-use tui::style::{Style, Color};
+use tui::style::Style;
 use crate::runtime::state::State;
 
-pub fn render_list(state: &mut State, launch: Launch) -> Paragraph<'static> {
+pub fn render_list(_state: &mut State, launch: Launch) -> Paragraph<'static> {
     let mut lines: Vec<Spans> = vec![];
     
     let lsp = launch.launch_service_provider.unwrap();

@@ -1,5 +1,5 @@
 use std::sync::{Arc, Mutex};
-use std::io::{Write, Read};
+use std::io::Write;
 
 use crate::runtime::data::launches::structures::{Launch, Article};
 use crate::runtime::data::launches::{update, news_update};
@@ -74,6 +74,9 @@ pub async fn launch_main(mut cfg: Config, token: String) {
 
     let mut log: Vec<(DateTime<Local>, String, u8)> = vec![];
     let mut image_path = String::new();
+
+    let _ = image_path;
+    
     let mut launch: Option<Launch> = update(&client, &mut log, token.clone()).await;
     let mut news: Option<Vec<Article>> = news_update(&client, &mut log).await;
     if launch.is_some() && news.is_some() {

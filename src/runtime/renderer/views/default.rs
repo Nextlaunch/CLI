@@ -1,6 +1,6 @@
 use crate::runtime::data::launches::structures::{Launch, Article};
 use crate::languages::LanguagePack;
-use crate::runtime::renderer::render_help_menu;
+use crate::runtime::renderer::{render_help_menu, render_qr};
 use crate::settings::Config;
 use crate::runtime::state::State;
 
@@ -18,7 +18,7 @@ mod widgets;
 
 
 pub fn run(
-    _language: &LanguagePack,
+    language: &LanguagePack,
     out: &mut Terminal<CrosstermBackend<Stdout>>,
     launch_present: bool,
     i: &Option<Launch>,
@@ -128,7 +128,7 @@ pub fn run(
                 .split(right[0]);
 
             // Render launch widget ("Launch Info")
-            f.render_widget(widgets::launch_info::render_dynamic(launch.clone()), left[0]);
+            f.render_widget(widgets::launch_info::render_dynamic(&language, launch.clone()), left[0]);
 
             // Render logs widget ("Logs")
             f.render_widget(widgets::system_logs::render(log), right_status[1]);
@@ -155,6 +155,8 @@ pub fn run(
 
             if state.render_help {
                 render_help_menu(f);
+            } else if state.render_qr {
+                render_qr(f, format!("https://spacelaunchnow.me/launch/{}", launch.clone().slug.unwrap_or("".to_string())))
             }
         });
     } else {
@@ -200,6 +202,8 @@ pub fn run(
 
             if state.render_help {
                 render_help_menu(f);
+            } else if state.render_qr {
+                render_qr(f, format!("https://spacelaunchnow.me/"))
             }
         });
     }

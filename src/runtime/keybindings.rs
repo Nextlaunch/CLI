@@ -214,10 +214,12 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                                     state.lock().unwrap().should_clear = true;
                                                     state.lock().unwrap().render_help = true;
                                                     state.lock().unwrap().render_settings = false;
+                                                    state.lock().unwrap().render_qr = false;
                                                 } else {
                                                     state.lock().unwrap().should_clear = true;
                                                     state.lock().unwrap().render_help = false;
                                                     state.lock().unwrap().render_settings = false;
+                                                    state.lock().unwrap().render_qr = false;
                                                 }
                                             }
                                             2 => {
@@ -252,10 +254,12 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                                         state.lock().unwrap().should_clear = true;
                                                         state.lock().unwrap().render_help = true;
                                                         state.lock().unwrap().render_settings = false;
+                                                        state.lock().unwrap().render_qr = false;
                                                     } else {
                                                         state.lock().unwrap().should_clear = true;
                                                         state.lock().unwrap().render_help = false;
                                                         state.lock().unwrap().render_settings = false;
+                                                        state.lock().unwrap().render_qr = false;
                                                     }
                                                 }
                                                 's' => {
@@ -263,10 +267,12 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                                         state.lock().unwrap().should_clear = true;
                                                         state.lock().unwrap().render_help = false;
                                                         state.lock().unwrap().render_settings = true;
+                                                        state.lock().unwrap().render_qr = false;
                                                     } else {
                                                         state.lock().unwrap().should_clear = true;
                                                         state.lock().unwrap().render_help = false;
                                                         state.lock().unwrap().render_settings = false;
+                                                        state.lock().unwrap().render_qr = false;
                                                     }
                                                 }
                                                 'c' => {
@@ -285,6 +291,19 @@ pub fn keybinder(state: Arc<Mutex<State>>) {
                                                         println!(" Thank you for using NextLaunch, goodbye.");
                                                         let _ = crossterm::terminal::disable_raw_mode();
                                                         exit(0);
+                                                    }
+                                                }
+                                                'm' => {
+                                                    if !state.lock().unwrap().render_qr {
+                                                        state.lock().unwrap().should_clear = true;
+                                                        state.lock().unwrap().render_help = false;
+                                                        state.lock().unwrap().render_settings = false;
+                                                        state.lock().unwrap().render_qr = true;
+                                                    } else {
+                                                        state.lock().unwrap().should_clear = true;
+                                                        state.lock().unwrap().render_help = false;
+                                                        state.lock().unwrap().render_settings = false;
+                                                        state.lock().unwrap().render_qr = false;
                                                     }
                                                 }
                                                 _ => {}

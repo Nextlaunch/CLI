@@ -9,9 +9,16 @@ pub mod structures;
 
 pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>, token: String) -> Option<structures::Launch> {
     let req = if token.len() == 0 {
-        c.get(crate::constants::LAUNCH_API).send().await
+        c.get(crate::constants::LAUNCH_API)
+        .header("X-Client", "Nextlaunch")
+        .send()
+        .await
     } else {
-        c.get(crate::constants::LAUNCH_API).header("Authorization", format!("Token {}", token)).send().await
+        c.get(crate::constants::LAUNCH_API)
+        .header("X-Client", "Nextlaunch")
+        .header("Authorization", format!("Token {}", token))
+        .send()
+        .await
     };
 
     return if let Ok(resp) = req {
@@ -51,8 +58,13 @@ pub async fn update(c: &Client, logs: &mut Vec<(DateTime<Local>, String, u8)>, t
                 Some(next)
             } else {
                 if launches.detail.is_some() {
+                    let detail = launches.detail.unwrap();
+                    let mut x = detail.split("Request was throttled. ").collect::<Vec<&str>>();
+
                     logs.push((Local::now(), "Failed to update launch cache".to_string(), 1));
                     logs.push((Local::now(), " ^--> Request throttled by API".to_string(), 1));
+
+                    logs.push((Local::now(), format!(" ^--> {}",x.pop().unwrap_or("No further details")), 1));
                 } else {
                     logs.push((Local::now(), "Failed to update launch cache".to_string(), 1));
                     logs.push((Local::now(), " ^--> Unknown error".to_string(), 1));

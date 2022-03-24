@@ -17,7 +17,8 @@ pub struct State {
     pub stored_value: Vec<char>,
     pub save_stored: bool,
     pub needs_update: bool,
-    pub show_logo: bool
+    pub show_logo: bool,
+    pub render_qr: bool
 }
 
 impl State {
@@ -41,6 +42,7 @@ impl State {
             save_stored: false,
             needs_update: false,
             show_logo: false,
+            render_qr: false,
         }
     }
 }

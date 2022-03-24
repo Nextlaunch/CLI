@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LanguagePack {
@@ -38,6 +38,8 @@ pub struct LaunchPack {
     pub pad: &'static str,
     pub location: &'static str,
     pub status: StatusPack,
+    pub unknown_mission: &'static str,
+    pub unknown_launch: &'static str,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -51,6 +53,7 @@ pub struct TitlePack {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StatusPack {
+    pub name: &'static str,
     pub success: &'static str,
     pub to_be_determined: &'static str,
     pub to_be_confirmed: &'static str,
@@ -62,57 +65,53 @@ pub struct StatusPack {
     pub fetching: &'static str,
 }
 
-
-pub fn select_language(id: &str) -> LanguagePack {
-    match id {
-        _ => load_language(1)
-    }
-}
-
-pub fn load_language(_id: usize) -> LanguagePack {
+pub fn select_language(_id: &str) -> LanguagePack {
     // let f = dirs_2;
-    
+
     LanguagePack {
-        name: "",
+        name: "en-GB",
         time: TimePack {
-            year: "",
-            year_plural: "",
-            week: "",
-            week_plural: "",
-            day: "",
-            day_plural: "",
-            hour: "",
-            hour_plural: "",
-            minute: "",
-            minute_plural: "",
-            second: "",
-            second_plural: ""
+            year: "Year",
+            year_plural: "Years",
+            week: "Week",
+            week_plural: "Weeks",
+            day: "Day",
+            day_plural: "Days",
+            hour: "Hour",
+            hour_plural: "Hours",
+            minute: "Minute",
+            minute_plural: "Minutes",
+            second: "Second",
+            second_plural: "Seconds",
         },
         launch: LaunchPack {
-            name: "",
-            provider: "",
-            vehicle: "",
-            mission: "",
-            pad: "",
-            location: "",
+            name: "Name",
+            provider: "Provider",
+            vehicle: "Vehicle",
+            mission: "Mission",
+            pad: "Pad",
+            location: "Location",
             status: StatusPack {
-                success: "",
-                to_be_determined: "",
-                to_be_confirmed: "",
-                partial_failure: "",
-                failure: "",
-                go_for_liftoff: "",
-                in_flight: "",
-                on_hold: "",
-                fetching: ""
-            }
+                name: "Status",
+                success: "Success",
+                to_be_determined: "To Be Determined",
+                to_be_confirmed: "To Be Confirmed",
+                partial_failure: "Partial Failure",
+                failure: "Failure",
+                go_for_liftoff: "Go For Liftoff",
+                in_flight: "In Flight",
+                on_hold: "On Hold",
+                fetching: "Fetching",
+            },
+            unknown_launch: "Unkown Launch",
+            unknown_mission: "Unknown Mission",
         },
         titles: TitlePack {
-            launch: "",
-            updates: "",
-            news: "",
-            logs: "",
-            countdown: ""
-        }
+            launch: "Launch",
+            updates: "Updates",
+            news: "News",
+            logs: "Logo",
+            countdown: "Countdown",
+        },
     }
 }
