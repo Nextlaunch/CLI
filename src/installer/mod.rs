@@ -36,7 +36,7 @@ pub async fn install() {
     
                     let mut archive = zip::ZipArchive::new(file).unwrap();
     
-                    if let Err(e) = archive.extract(format!("{}/languages", dp)) {
+                    if let Err(e) = archive.extract(format!("{}/", dp)) {
                         println!("NextLaunch failed to unpack language files.");
                         println!("{:#?}", e);
                         exit(1);
@@ -69,7 +69,7 @@ pub async fn install() {
     
                     let mut archive = zip::ZipArchive::new(file).unwrap();
     
-                    if let Err(e) = archive.extract(format!("{}/readme", dp)) {
+                    if let Err(e) = archive.extract(format!("{}/", dp)) {
                         println!("NextLaunch failed to unpack language files.");
                         println!("{:#?}", e);
                         exit(1);

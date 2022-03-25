@@ -1,7 +1,5 @@
 {
-  "names": [
-    "en-GB"
-  ],
+  "name": "en-GB",
   "time": {
     "year": "year",
     "year_plural": "years",

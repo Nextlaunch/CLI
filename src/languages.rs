@@ -85,15 +85,19 @@ pub fn select_language(id: &str) -> LanguagePack {
                     language = p;
                 } else {
                     println!("Failed to parse language pack: {}", id);
+                    println!("{}", path);
                     dbg!(pack);
+                    std::process::exit(1);
                 }
             } else {
                 println!("Failed to read language pack: {}", id);
+                println!("{}", path);
                 dbg!(m);
                 std::process::exit(1);
             }
         } else {
             println!("Failed to read metadata for language pack: {}", id);
+            println!("{}", path);
             dbg!(m);
             std::process::exit(1);
         }
