@@ -40,6 +40,9 @@ pub struct LaunchPack {
     pub status: StatusPack,
     pub unknown_mission: &'static str,
     pub unknown_launch: &'static str,
+    pub unknown_provider: &'static str,
+    pub unknown_launchpad: &'static str,
+    pub unknown_location: &'static str,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -105,6 +108,9 @@ pub fn select_language(_id: &str) -> LanguagePack {
             },
             unknown_launch: "Unkown Launch",
             unknown_mission: "Unknown Mission",
+            unknown_provider: "Unknown Provider",
+            unknown_launchpad: "Unknown Launchpad",
+            unknown_location: "Unknown Location"
         },
         titles: TitlePack {
             launch: "Launch",

@@ -123,12 +123,12 @@ pub fn render_dynamic(language: &LanguagePack, launch: Launch) -> Table<'static>
     };
 
     Table::new(vec![
-        Row::new(vec![Text::from(format!(" {}", language.launch.name)), Text::styled(launch.name.unwrap_or("Unknown Launch | Unknown Mission".to_string()), Style::default().add_modifier(Modifier::UNDERLINED))]),
+        Row::new(vec![Text::from(format!(" {}", language.launch.name)), Text::styled(launch.name.unwrap_or(format!("{} | {}", language.titles.unknown_vehicle, language.titles.unknown_mission)), Style::default().add_modifier(Modifier::UNDERLINED))]),
         Row::new(vec![format!(" {}", language.launch.provider), lsp.name.unwrap_or("Unknown Provider".to_string())]),
-        Row::new(vec![format!(" {}", language.launch.vehicle), vehicle.name.unwrap_or("Unknown Launch Vehicle".to_string())]),
+        Row::new(vec![format!(" {}", language.launch.vehicle), vehicle.name.unwrap_or(language.title.unknown_vehicle)]),
         Row::new(vec![format!(" {}", language.launch.mission), mission.clone()]),
-        Row::new(vec![format!(" {}", language.launch.pad), launchpad.name.unwrap_or("Unkown Launchpad".to_string())]),
-        Row::new(vec![format!(" {}", language.launch.location), launchpad.location.name.unwrap_or("Unkown Location".to_string())]),
+        Row::new(vec![format!(" {}", language.launch.pad), launchpad.name.unwrap_or(language.titles.unknown_launchpad)]),
+        Row::new(vec![format!(" {}", language.launch.location), launchpad.location.name.unwrap_or(language.titles.unknown_location)]),
         Row::new(vec![Text::from(format!(" {}", language.launch.status.name)), status]),
     ])
         .widths(&[

@@ -36,7 +36,10 @@
       "fetching": "Fetching"
     },
     "unknown_mission": "Unknown Mission",
-    "unknown_vehicle": "Unknown Vehicle"
+    "unknown_vehicle": "Unknown Vehicle",
+    "unknown_provider": "Unknown Provider",
+    "unknown_launchpad": "Unknown Launchpad",
+    "unknown_location": "Unknown Location"
   },
   "titles": {
     "launch": "Launch Info",

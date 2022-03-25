@@ -3,8 +3,9 @@ use tui::text::Text;
 use tui::style::{Style, Color};
 use tui::layout::Constraint;
 use chrono::{DateTime, Local};
+use crate::languages::LanguagePack;
 
-pub fn render(logs: &Vec<(DateTime<Local>, String, u8)>) -> Table<'static> {
+pub fn render(language: &LanguagePack, logs: &Vec<(DateTime<Local>, String, u8)>) -> Table<'static> {
     let mut parsed_logs = vec![];
 
     let mut unprocessed = logs.clone();
@@ -36,6 +37,6 @@ pub fn render(logs: &Vec<(DateTime<Local>, String, u8)>) -> Table<'static> {
             Constraint::Min(6),
             Constraint::Min(30)
         ])
-        .block(Block::default().title(" Logs ")
+        .block(Block::default().title(format!(" {} ", language.titles.logs))
             .borders(Borders::ALL))
 }

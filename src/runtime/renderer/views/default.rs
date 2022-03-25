@@ -131,7 +131,7 @@ pub fn run(
             f.render_widget(widgets::launch_info::render_dynamic(&language, launch.clone()), left[0]);
 
             // Render logs widget ("Logs")
-            f.render_widget(widgets::system_logs::render(log), right_status[1]);
+            f.render_widget(widgets::system_logs::render(&language, log), right_status[1]);
 
             // Render dynamic countdown widget ("Countdown")
             f.render_widget(widgets::countdown::render_dynamic(timespan, launch.clone()), whole[1]);

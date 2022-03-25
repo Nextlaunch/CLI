@@ -5,9 +5,9 @@ use std::process::exit;
 use std::fs;
 use std::io::Write;
 
-const LANG_URL: &str = "https://raw.githubusercontent.com/nextlaunch/cli/main/languages/languages.zip";
-const CONFIG_URL: &str = "https://raw.githubusercontent.com/nextlaunch/cli/main/nextlaunch.json";
-const README_URL: &str = "https://raw.githubusercontent.com/nextlaunch/cli/main/documents/readmes.zip";
+const LANG_URL: &str = "https://raw.githubusercontent.com/nextlaunch/cli/main/installer_files/languages.zip";
+const CONFIG_URL: &str = "https://raw.githubusercontent.com/nextlaunch/cli/main/installer_files/nextlaunch.json";
+const README_URL: &str = "https://raw.githubusercontent.com/nextlaunch/cli/main/installer_files/readmes.zip";
 
 fn main() {
     let raw_data_dir = dirs_2::data_dir();
