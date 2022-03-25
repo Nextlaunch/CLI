@@ -128,13 +128,13 @@ pub fn run(
                 .split(right[0]);
 
             // Render launch widget ("Launch Info")
-            f.render_widget(widgets::launch_info::render_dynamic(&language, launch.clone()), left[0]);
+            f.render_widget(widgets::launch_info::render_dynamic(language.clone(), launch.clone()), left[0]);
 
             // Render logs widget ("Logs")
-            f.render_widget(widgets::system_logs::render(&language, log), right_status[1]);
+            f.render_widget(widgets::system_logs::render(language.clone(), log), right_status[1]);
 
             // Render dynamic countdown widget ("Countdown")
-            f.render_widget(widgets::countdown::render_dynamic(timespan, launch.clone()), whole[1]);
+            f.render_widget(widgets::countdown::render_dynamic(language.clone(), timespan, launch.clone()), whole[1]);
 
             // Render dynamic news widget ("News")
             f.render_widget(Clear, right_status[0]);
@@ -197,7 +197,7 @@ pub fn run(
             f.render_widget(widgets::launch_info::render_missing(), left[0]);
             f.render_widget(Clear, right[1]);
             f.render_widget(widgets::news_articles::render(&mut state, news_dimensions, news.clone().unwrap_or(vec![])), right[1]);
-            f.render_widget(widgets::system_logs::render(log), left[1]);
+            f.render_widget(widgets::system_logs::render(crate::languages::select_language("en_GB"), log), left[1]);
             f.render_widget(widgets::countdown::render_blank(), whole[1]);
 
             if state.render_help {

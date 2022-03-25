@@ -18,15 +18,15 @@ pub fn render_missing() -> Paragraph<'static> {
         )
 }
 
-pub fn render_dynamic(language: &LanguagePack, launch: Launch) -> Table<'static> {
-    let suc = Text::styled(language.launch.status.success, Style::default().fg(Color::LightGreen));
-    let tbd = Text::styled(language.launch.status.to_be_determined, Style::default().fg(Color::Yellow));
-    let tbc = Text::styled(language.launch.status.to_be_confirmed, Style::default().fg(Color::LightYellow));
-    let paf = Text::styled(language.launch.status.partial_failure, Style::default().fg(Color::LightYellow));
-    let fal = Text::styled(language.launch.status.failure, Style::default().fg(Color::Red));
-    let g4l = Text::styled(language.launch.status.go_for_liftoff, Style::default().fg(Color::Green));
-    let inf = Text::styled(language.launch.status.in_flight, Style::default().fg(Color::LightGreen));
-    let hol = Text::styled(language.launch.status.on_hold, Style::default().fg(Color::Gray));
+pub fn render_dynamic(language: LanguagePack, launch: Launch) -> Table<'static> {
+    let suc = Text::styled(language.launch.status.success.clone(), Style::default().fg(Color::LightGreen));
+    let tbd = Text::styled(language.launch.status.to_be_determined.clone(), Style::default().fg(Color::Yellow));
+    let tbc = Text::styled(language.launch.status.to_be_confirmed.clone(), Style::default().fg(Color::LightYellow));
+    let paf = Text::styled(language.launch.status.partial_failure.clone(), Style::default().fg(Color::LightYellow));
+    let fal = Text::styled(language.launch.status.failure.clone(), Style::default().fg(Color::Red));
+    let g4l = Text::styled(language.launch.status.go_for_liftoff.clone(), Style::default().fg(Color::Green));
+    let inf = Text::styled(language.launch.status.in_flight.clone(), Style::default().fg(Color::LightGreen));
+    let hol = Text::styled(language.launch.status.on_hold.clone(), Style::default().fg(Color::Gray));
     let fetching = Text::raw(format!("{}...", language.launch.status.fetching));
 
     let raw_name = launch.name.clone().unwrap_or(format!("{} | {}", language.launch.unknown_launch, language.launch.unknown_mission));
@@ -123,12 +123,12 @@ pub fn render_dynamic(language: &LanguagePack, launch: Launch) -> Table<'static>
     };
 
     Table::new(vec![
-        Row::new(vec![Text::from(format!(" {}", language.launch.name)), Text::styled(launch.name.unwrap_or(format!("{} | {}", language.titles.unknown_vehicle, language.titles.unknown_mission)), Style::default().add_modifier(Modifier::UNDERLINED))]),
-        Row::new(vec![format!(" {}", language.launch.provider), lsp.name.unwrap_or("Unknown Provider".to_string())]),
-        Row::new(vec![format!(" {}", language.launch.vehicle), vehicle.name.unwrap_or(language.title.unknown_vehicle)]),
+        Row::new(vec![Text::from(format!(" {}", language.launch.name)), Text::styled(launch.name.unwrap_or(format!("{} | {}", language.launch.unknown_vehicle, language.launch.unknown_mission)), Style::default().add_modifier(Modifier::UNDERLINED))]),
+        Row::new(vec![format!(" {}", language.launch.provider), lsp.name.unwrap_or(language.launch.unknown_provider.to_string())]),
+        Row::new(vec![format!(" {}", language.launch.vehicle), vehicle.name.unwrap_or(language.launch.unknown_vehicle.to_string())]),
         Row::new(vec![format!(" {}", language.launch.mission), mission.clone()]),
-        Row::new(vec![format!(" {}", language.launch.pad), launchpad.name.unwrap_or(language.titles.unknown_launchpad)]),
-        Row::new(vec![format!(" {}", language.launch.location), launchpad.location.name.unwrap_or(language.titles.unknown_location)]),
+        Row::new(vec![format!(" {}", language.launch.pad), launchpad.name.unwrap_or(language.launch.unknown_launchpad.to_string())]),
+        Row::new(vec![format!(" {}", language.launch.location), launchpad.location.name.unwrap_or(language.launch.unknown_location.to_string())]),
         Row::new(vec![Text::from(format!(" {}", language.launch.status.name)), status]),
     ])
         .widths(&[

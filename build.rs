@@ -7,7 +7,7 @@ use std::io::Write;
 
 const LANG_URL: &str = "https://raw.githubusercontent.com/nextlaunch/cli/main/installer_files/languages.zip";
 const CONFIG_URL: &str = "https://raw.githubusercontent.com/nextlaunch/cli/main/installer_files/nextlaunch.json";
-const README_URL: &str = "https://raw.githubusercontent.com/nextlaunch/cli/main/installer_files/readmes.zip";
+const README_URL: &str = "https://raw.githubusercontent.com/nextlaunch/cli/main/installer_files/documents.zip";
 
 fn main() {
     let raw_data_dir = dirs_2::data_dir();

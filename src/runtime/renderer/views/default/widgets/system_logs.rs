@@ -5,7 +5,7 @@ use tui::layout::Constraint;
 use chrono::{DateTime, Local};
 use crate::languages::LanguagePack;
 
-pub fn render(language: &LanguagePack, logs: &Vec<(DateTime<Local>, String, u8)>) -> Table<'static> {
+pub fn render(language: LanguagePack, logs: &Vec<(DateTime<Local>, String, u8)>) -> Table<'static> {
     let mut parsed_logs = vec![];
 
     let mut unprocessed = logs.clone();

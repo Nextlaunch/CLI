@@ -39,7 +39,8 @@
     "unknown_vehicle": "Unknown Vehicle",
     "unknown_provider": "Unknown Provider",
     "unknown_launchpad": "Unknown Launchpad",
-    "unknown_location": "Unknown Location"
+    "unknown_location": "Unknown Location",
+    "unknown_launch": "Unknown Launch"
   },
   "titles": {
     "launch": "Launch Info",
