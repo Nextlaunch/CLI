@@ -9,7 +9,6 @@ include = [
     "Cargo.toml",
     "README.md"
 ]
-build = "build.rs"
 
 repository = "https://github.com/AltriusRS/NextLaunch"
 keywords = [

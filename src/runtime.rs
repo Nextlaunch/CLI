@@ -41,7 +41,7 @@ pub async fn launch_main(mut cfg: Config, token: String) {
     let _ = crossterm::terminal::enable_raw_mode();
 
 
-    let language = select_language(&cfg.saved.language);
+    let mut language = select_language(&cfg.saved.language);
     let state: Arc<Mutex<State>> = Arc::new(Mutex::new(State::new()));
 
     let state2 = state.clone();
@@ -200,10 +200,12 @@ pub async fn launch_main(mut cfg: Config, token: String) {
 
             if state.lock().unwrap().should_clear {
                 state.lock().unwrap().should_clear = false;
+                language = select_language(&cfg.saved.language);
             }
 
             if state.lock().unwrap().open_selected {
                 state.lock().unwrap().open_selected = false;
+                language = select_language(&cfg.saved.language);
             }
 
             log.pop();
