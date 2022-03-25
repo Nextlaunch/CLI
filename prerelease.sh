@@ -2,9 +2,11 @@
 sudo apt install zip unzip
 
 # Compress language packs into ZIP file
+rm installer_files/languages.zip
 zip -r installer_files/languages.zip languages
 
 # Compress documents folder into ZIP file
+rm installer_files/documents.zip
 zip -r installer_files/documents.zip documents
 
 # Change working directory to the hash calculator sub-program
