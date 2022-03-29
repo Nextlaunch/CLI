@@ -23,7 +23,7 @@ pub async fn install() {
         let config_response = reqwest::get(CONFIG_URL).await;
         println!("Downloading components...");
         let readme_response = reqwest::get(README_URL).await;
-    
+
         if let Ok(raw_pack) = pack_response {
             println!("unpacking language files...");
             let bytes = raw_pack.bytes().await;
@@ -33,9 +33,9 @@ pub async fn install() {
                     let bytes: Vec<u8> = raw_bytes.to_vec();
                     let _ = file.write_all(bytes.as_slice());
                     let _ = file.flush();
-    
+
                     let mut archive = zip::ZipArchive::new(file).unwrap();
-    
+
                     if let Err(e) = archive.extract(format!("{}/languages", dp)) {
                         println!("NextLaunch failed to unpack language files.");
                         println!("{:#?}", e);
@@ -56,7 +56,7 @@ pub async fn install() {
             println!("{:#?}", pack_response.unwrap_err());
             exit(1);
         }
-    
+
         if let Ok(raw_pack) = readme_response {
             println!("unpacking language files...");
             let bytes = raw_pack.bytes().await;
@@ -66,9 +66,9 @@ pub async fn install() {
                     let bytes: Vec<u8> = raw_bytes.to_vec();
                     let _ = file.write_all(bytes.as_slice());
                     let _ = file.flush();
-    
+
                     let mut archive = zip::ZipArchive::new(file).unwrap();
-    
+
                     if let Err(e) = archive.extract(format!("{}/readme", dp)) {
                         println!("NextLaunch failed to unpack language files.");
                         println!("{:#?}", e);
@@ -89,7 +89,7 @@ pub async fn install() {
             println!("{:#?}", readme_response.unwrap_err());
             exit(1);
         }
-    
+
         if let Ok(raw_config) = config_response {
             println!("unpacking config files.");
             let bytes = raw_config.bytes().await;
@@ -114,10 +114,10 @@ pub async fn install() {
             println!("{:#?}", config_response.unwrap_err());
             exit(1);
         }
-    
+
         let _ = fs::remove_file(format!("{}/lang_pack.tmpfile", dp));
         let _ = fs::remove_file(format!("{}/readme_pack.tmpfile", dp));
-    
+
     } else {
         println!("NextLaunch failed to determine location to store required files.");
         exit(1);
