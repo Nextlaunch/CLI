@@ -181,20 +181,21 @@ pub fn render_qr(f: &mut Frame<CrosstermBackend<Stdout>>, link: String) {
 
     // Temporarily disable RAW mode (allows ANSI to function)
     let _ = crossterm::terminal::disable_raw_mode();
-    
+
     println!("\x1b[0;0H\x1b[0;0F");
 
-    println!("\x1b[2A┌───────── Scan this QR Code ─────────┐");
+    println!("\x1b[2A┌─────────── Scan this QR Code ───────────┐");
     // println!("\x1b[2A┌─────── Scan this QR Code ───────┐");
 
     for line in artscii_lines {
         if line.len() > 0 {
             println!("│{}│", line);
+
         }
     }
 
     // println!("└───── To track on the move ──────┘");
-    println!("└─────── To track on the move ────────┘");
+    println!("└───────── To track on the move ──────────┘");
 
     // Reenable RAW mode until the next frame is drawn (resumes keybind mapping)
     let _ = crossterm::terminal::enable_raw_mode();

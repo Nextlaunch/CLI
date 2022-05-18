@@ -5,7 +5,7 @@ use tui::layout::Constraint;
 use crate::languages::LanguagePack;
 use crate::runtime::data::launches::structures::{Launch, PadLocation, LaunchPad, LSP, RocketConfiguration, Rocket};
 
-pub fn render_missing() -> Paragraph<'static> {
+pub fn render_missing(language: LanguagePack) -> Paragraph<'static> {
     Paragraph::new(
         Text::raw(
             " Unfortunately, there is not a launch currently available.\n Please check the logs."
@@ -13,7 +13,7 @@ pub fn render_missing() -> Paragraph<'static> {
     )
         .block(
             Block::default()
-                .title(" Launch Info ")
+                .title(format!(" {} ", language.titles.launch))
                 .borders(Borders::ALL)
         )
 }

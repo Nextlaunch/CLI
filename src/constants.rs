@@ -3,7 +3,7 @@ pub use metadata::*;
 // metadata
 mod metadata {
     /// The version of the application (should be in sync with `Cargo.toml`)
-    pub const VERSION: &str = "2.1.0";
+    pub const VERSION: &str = "2.2.0";
 
     /// The name of the program
     pub const NAME: &str = "Nextlaunch";
@@ -17,9 +17,9 @@ mod metadata {
 
     // data
     /// The api route that the program uses to fetch launch data
-    // #[cfg(debug_assertions)]
-    // pub const LAUNCH_API: &str = "https://lldev.thespacedevs.com/2.2.0/launch/upcoming/?format=json&mode=detailed&limit=5";
-    // #[cfg(not(debug_assertions))]
+    #[cfg(debug_assertions)]
+    pub const LAUNCH_API: &str = "https://lldev.thespacedevs.com/2.2.0/launch/upcoming/?format=json&mode=detailed&limit=5&hide_recent_previous=true";
+    #[cfg(not(debug_assertions))]
     pub const LAUNCH_API: &str = "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?format=json&mode=detailed&limit=5&hide_recent_previous=true";
 
     /// The api route that the program uses to fetch telemetry information
@@ -32,7 +32,7 @@ mod metadata {
     // pub const FC_BASE: &str = "https://flightclub.io/result/2d?id=";
     // pub const SLN_BASE: &str = "https://spacelaunchnow.me/launch/";
     // pub const G4L_BASE: &str = "https://go4liftoff.com/launch/";
-    // pub const NL_BASE: &str = "https://nextlaunch.org/rooms/";
+    // pub const NL_BASE: &str = "https://nextlaunch.net/forum/";
 }
 //
 // pub mod weather {

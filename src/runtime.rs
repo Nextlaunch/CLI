@@ -10,7 +10,16 @@ use crate::runtime::state::State;
 use crate::settings::Config;
 
 use tokio::time::{Instant, Duration};
-
+use discord_rich_presence::{
+    activity::{
+        Activity,
+        Button,
+        // Party,
+        Assets
+    },
+    DiscordIpc,
+    DiscordIpcClient
+};
 use chrono::{DateTime, Local};
 
 
@@ -51,6 +60,32 @@ pub async fn launch_main(mut cfg: Config, token: String) {
         keybinder(state2)
     }).unwrap();
 
+    let mut discord = DiscordIpcClient::new("850286429980327936").unwrap();
+    let e = discord.connect();
+    if e.is_err() {
+        println!("RPC Client failed to connect");
+        let _ = dbg!(e);
+    } else {
+        state.lock().unwrap().rpc = true;
+    }
+
+    if state.lock().unwrap().rpc {
+        let _ = discord.set_activity(Activity::new()
+            .details("Initializing")
+            .state("Fetching Information")
+            .buttons(vec!(
+                Button::new("Try It Yourself", "https://github.com/nextlaunch/cli")
+            ))
+            .assets(
+                Assets::new()
+                    .small_image("tsd")
+                    .small_text("Powered by The Space Devs")
+                    .large_image("icon-red")
+                    .large_text(format!("Nextlaunch V{}", crate::VERSION).as_str())
+            )
+        );
+    }
+
     renderer::process(
         &language,
         &None,
@@ -76,7 +111,7 @@ pub async fn launch_main(mut cfg: Config, token: String) {
     let mut image_path = String::new();
 
     let _ = image_path;
-    
+
     let mut launch: Option<Launch> = update(&client, &mut log, token.clone()).await;
     let mut news: Option<Vec<Article>> = news_update(&client, &mut log).await;
     if launch.is_some() && news.is_some() {
@@ -117,7 +152,7 @@ pub async fn launch_main(mut cfg: Config, token: String) {
             file.write(raw_image.as_ref()).unwrap();
         }
         let img = renderer::views::process_image(image_path.as_str(), tpl.clone());
-        tpl.set_logo(img); 
+        tpl.set_logo(img);
         launch = Some(tpl);
     }
 
@@ -155,7 +190,7 @@ pub async fn launch_main(mut cfg: Config, token: String) {
                     file.write(raw_image.as_ref()).unwrap();
                 }
                 let img = renderer::views::process_image(image_path.as_str(), tpl.clone());
-                tpl.set_logo(img); 
+                tpl.set_logo(img);
                 launch = Some(tpl);
             }
             if temp_news.is_some() {
@@ -201,6 +236,32 @@ pub async fn launch_main(mut cfg: Config, token: String) {
             if state.lock().unwrap().should_clear {
                 state.lock().unwrap().should_clear = false;
                 language = select_language(&cfg.saved.language);
+                if state.lock().unwrap().rpc && launch.is_some() {
+                    let l = launch.clone().unwrap();
+                    let large = match l.launch_service_provider.clone().unwrap().id.unwrap() {
+                        44 => "nasa",
+                        121 => "spacex",
+                        141 => "blue-origin",
+                        147 => "rocketlab",
+                        _ => "icon-red"
+                    };
+
+                    let _ = discord.set_activity(Activity::new()
+                        .details(l.mission.unwrap().name.unwrap_or("Unknown Mission".to_string()).as_str())
+                        .state(l.launch_service_provider.unwrap().name.unwrap_or("Unknown Launch Provider".to_string()).as_str())
+                        .buttons(vec!(
+                            Button::new("Space Launch Now", format!("https://spacelaunchnow.me/launch/{}", l.id.clone().unwrap()).as_str()),
+                            Button::new("Go4Liftoff", format!("https://go4liftoff.com/launch/{}", l.id.clone().unwrap()).as_str())
+                        ))
+                        .assets(
+                            Assets::new()
+                                .small_image("tsd")
+                                .small_text("Powered by The Space Devs")
+                                .large_image(large)
+                                .large_text(format!("Nextlaunch V{}", crate::VERSION).as_str())
+                        )
+                    );
+                }
             }
 
             if state.lock().unwrap().open_selected {

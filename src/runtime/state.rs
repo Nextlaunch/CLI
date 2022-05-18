@@ -18,7 +18,8 @@ pub struct State {
     pub save_stored: bool,
     pub needs_update: bool,
     pub show_logo: bool,
-    pub render_qr: bool
+    pub render_qr: bool,
+    pub rpc: bool
 }
 
 impl State {
@@ -43,6 +44,7 @@ impl State {
             needs_update: false,
             show_logo: false,
             render_qr: false,
+            rpc: false
         }
     }
 }

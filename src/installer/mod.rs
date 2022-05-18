@@ -128,5 +128,6 @@ pub async fn install() {
 
 pub fn check_integrity() -> bool {
 
-    false
+    // false
+    true
 }

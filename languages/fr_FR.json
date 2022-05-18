@@ -1,37 +1,37 @@
 {
   "name": "fr-FR",
   "time": {
-    "year": "jahr",
-    "year_plural": "jahre",
-    "week": "woche",
-    "week_plural": "wochen",
-    "day": "tag",
-    "day_plural": "tage",
-    "hour": "stunde",
-    "hour_plural": "stunden",
+    "year": "year",
+    "year_plural": "years",
+    "week": "week",
+    "week_plural": "weeks",
+    "day": "day",
+    "day_plural": "days",
+    "hour": "hour",
+    "hour_plural": "hours",
     "minute": "minute",
-    "minute_plural": "minuten",
-    "second": "sekunde",
-    "second_plural": "sekunden"
+    "minute_plural": "minutes",
+    "second": "second",
+    "second_plural": "seconds"
   },
   "launch": {
     "name": "Name",
-    "provider": "Anbieter",
-    "vehicle": "Fahrzeug",
+    "provider": "Provider",
+    "vehicle": "Vehicle",
     "mission": "Mission",
     "pad": "Pad",
-    "location": "Ort",
+    "location": "Location",
     "status": {
       "name": "Status",
-      "success": "Erfolg",
-      "to_be_determined": "Bestimmt werden",
-      "to_be_confirmed": "Noch zu bestätigen",
-      "partial_failure": "teilweiser Ausfall",
-      "failure": "Fehler",
-      "go_for_liftoff": "gehen für Liftoff",
-      "in_flight": "Im Flug",
-      "on_hold": "In Wartestellung",
-      "fetching": "Holen..."
+      "success": "Success",
+      "to_be_determined": "To Be Determined",
+      "to_be_confirmed": "To Be Confirmed",
+      "partial_failure": "Partial Failure",
+      "failure": "Failure",
+      "go_for_liftoff": "Go For Liftoff",
+      "in_flight": "In Flight",
+      "on_hold": "On Hold",
+      "fetching": "Fetching"
     },
     "unknown_mission": "Unknown Mission",
     "unknown_vehicle": "Unknown Vehicle",
@@ -42,9 +42,9 @@
   },
   "titles": {
     "launch": "Launch Info",
-    "updates": "Aktualisierung",
-    "news": "Nachrichten",
-    "logs": "Protokolle",
+    "updates": "Updates",
+    "news": "News",
+    "logs": "Logs",
     "countdown": "Countdown"
   }
 }

@@ -5,9 +5,10 @@ use crate::utilities::countdown;
 use chrono::Utc;
 use webbrowser::BrowserOptions;
 use tui::style::{Style, Color};
+use crate::languages::LanguagePack;
 use crate::runtime::state::State;
 
-pub fn render_list(state: &mut State, launch: Launch) -> Paragraph<'static> {
+pub fn render_list(language: LanguagePack, state: &mut State, launch: Launch) -> Paragraph<'static> {
     let mut updates: Vec<Spans> = vec![];
 
     let mut update_index = 0;
@@ -91,11 +92,11 @@ pub fn render_list(state: &mut State, launch: Launch) -> Paragraph<'static> {
 
     if updates.is_empty() {
         Paragraph::new(" This launch does not have any updates yet.")
-            .block(Block::default().title(" Updates ")
+            .block(Block::default().title(format!(" {} ", language.titles.updates))
                 .borders(Borders::ALL))
     } else {
         Paragraph::new(updates)
-            .block(Block::default().title(" Updates ")
+            .block(Block::default().title(format!(" {} ", language.titles.updates))
                 .borders(Borders::ALL))
     }
 }

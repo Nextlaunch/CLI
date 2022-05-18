@@ -141,22 +141,22 @@ pub fn run(
             if state.show_logo {
                 f.render_widget(widgets::logo::render(&mut state, news_dimensions, launch.clone()), right_status[0]);
             } else {
-                f.render_widget(widgets::news_articles::render(&mut state, news_dimensions, news.clone().unwrap_or(vec![])), right_status[0]);
-            
+                f.render_widget(widgets::news_articles::render(language.clone(), &mut state, news_dimensions, news.clone().unwrap_or(vec![])), right_status[0]);
+
             }
 
             // Render dynamic launch update widget ("Updates")
             f.render_widget(Clear, left[1]);
-            if state.show_stats { 
+            if state.show_stats {
                 f.render_widget(widgets::lsp_stats::render_list(&mut state, launch.clone()), left[1]);
             } else {
-                f.render_widget(widgets::launch_updates::render_list(&mut state, launch.clone()), left[1]);
+                f.render_widget(widgets::launch_updates::render_list(language.clone(), &mut state, launch.clone()), left[1]);
             }
 
             if state.render_help {
                 render_help_menu(f);
             } else if state.render_qr {
-                render_qr(f, format!("https://spacelaunchnow.me/launch/{}", launch.clone().slug.unwrap_or("".to_string())))
+                render_qr(f, format!("https://nextlaunch.net/forum/topic/{}", launch.clone().slug.unwrap_or("".to_string())))
             }
         });
     } else {
@@ -194,16 +194,16 @@ pub fn run(
                 )
                 .split(right[0]);
 
-            f.render_widget(widgets::launch_info::render_missing(), left[0]);
+            f.render_widget(widgets::launch_info::render_missing(language.clone()), left[0]);
             f.render_widget(Clear, right[1]);
-            f.render_widget(widgets::news_articles::render(&mut state, news_dimensions, news.clone().unwrap_or(vec![])), right[1]);
-            f.render_widget(widgets::system_logs::render(crate::languages::select_language("en_GB"), log), left[1]);
-            f.render_widget(widgets::countdown::render_blank(), whole[1]);
+            f.render_widget(widgets::news_articles::render(language.clone(), &mut state, news_dimensions, news.clone().unwrap_or(vec![])), right[1]);
+            f.render_widget(widgets::system_logs::render(language.clone() , log), left[1]);
+            f.render_widget(widgets::countdown::render_blank(language.clone()), whole[1]);
 
             if state.render_help {
                 render_help_menu(f);
             } else if state.render_qr {
-                render_qr(f, format!("https://spacelaunchnow.me/"))
+                render_qr(f, format!("https://nextlaunch.net/forum/forecast"))
             }
         });
     }

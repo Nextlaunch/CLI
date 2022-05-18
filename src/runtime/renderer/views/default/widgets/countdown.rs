@@ -58,7 +58,7 @@ pub fn render_dynamic(language: LanguagePack, timespan: TimeFrame, launch: Launc
         .wrap(Wrap { trim: false })
 }
 
-pub fn render_blank() -> Paragraph<'static> {
+pub fn render_blank(language: LanguagePack) -> Paragraph<'static> {
     Paragraph::new(vec![
         "",
         "#####   #####        #####   #####        #####   #####",
@@ -70,7 +70,7 @@ pub fn render_blank() -> Paragraph<'static> {
         "#####   #####        #####   #####        #####   #####",
         "",
     ].join("\n"))
-        .block(Block::default().title(" Countdown ").borders(Borders::ALL))
+        .block(Block::default().title(format!(" {} ", language.titles.countdown)).borders(Borders::ALL))
         .alignment(Alignment::Center)
         .wrap(Wrap { trim: false })
 }
@@ -117,16 +117,16 @@ fn center(word: &String, width: usize) -> String {
     let middle = (width+2)/2;
 
     if middle % 2 == 1 {
-        left = "+".to_string();
+        left = " ".to_string();
     }
 
     let half_word = word.len()/2;
 
     while left.len() < middle-half_word {
-        left = format!("-{}", left);
+        left = format!(" {}", left);
     }
     while right.len() < middle-half_word {
-        right = format!("-{}", right);
+        right = format!(" {}", right);
     }
 
     format!("{}{}{}", left, word, right)

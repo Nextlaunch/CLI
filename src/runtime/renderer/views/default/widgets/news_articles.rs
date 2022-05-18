@@ -5,8 +5,9 @@ use webbrowser::BrowserOptions;
 use tui::style::{Style, Color, Modifier};
 use crate::runtime::state::State;
 use chrono::Utc;
+use crate::languages::LanguagePack;
 
-pub fn render(state: &mut State, news_dimensions: (u16, u16), articles: Vec<Article>) -> Paragraph<'static> {
+pub fn render(language: LanguagePack, state: &mut State, news_dimensions: (u16, u16), articles: Vec<Article>) -> Paragraph<'static> {
 
 
     // let mut news_lines_used = 0;
@@ -146,9 +147,9 @@ pub fn render(state: &mut State, news_dimensions: (u16, u16), articles: Vec<Arti
 
     return if processed_articles.is_empty() {
         Paragraph::new(Text::raw(" There is no available news articles to display.\n Please check the logs."))
-            .block(Block::default().title(" News ").borders(Borders::ALL))
+            .block(Block::default().title(format!(" {} ", language.titles.news)).borders(Borders::ALL))
     } else {
         Paragraph::new(processed_articles)
-            .block(Block::default().title(" News ").borders(Borders::ALL))
+            .block(Block::default().title(format!(" {} ", language.titles.news)).borders(Borders::ALL))
     };
 }
